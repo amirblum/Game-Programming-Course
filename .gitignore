@@ -26,3 +26,12 @@
 *.exe
 *.out
 *.app
+
+# Xcode files
+CGP.xcworkspace/
+*.xcodeproj/
+
+# Non-ex files
+*/include/
+xcode-template/
+Tutorial1/
