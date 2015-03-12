@@ -32,13 +32,13 @@ public:
     mat4 GetViewProjection();
 
 private:
-    vec3 dir;
-    vec3 pos;
-    vec3 up;
+    vec3 _dir;
+    vec3 _pos;
+    vec3 _up;
     
-    mat4 view;
-    mat4 projection;
-    mat4 viewProjection;
+    mat4 _view;
+    mat4 _projection;
+    mat4 _viewProjection;
     
     Camera();
     Camera(Camera const&);

@@ -9,15 +9,15 @@
 #include "Camera.h"
 
 Camera::Camera() {
-    dir = vec3(0.0f, 0.0f, 1.0f);
-    pos = vec3(0.0f, 1.0f, -5.0f);
-    up = vec3(0.0f, 1.0f, 0.0f);
+    _dir = vec3(0.0f, 0.0f, 1.0f);
+    _pos = vec3(0.0f, 1.0f, -5.0f);
+    _up = vec3(0.0f, 1.0f, 0.0f);
     
-    view = lookAt(pos, pos+dir, up);
-    projection = perspective(45.0f, 1.0f, 0.1f, 100.0f);
-    viewProjection = projection * view;
+    _view = lookAt(_pos, _pos + _dir, _up);
+    _projection = perspective(45.0f, 1.0f, 0.1f, 100.0f);
+    _viewProjection = _projection * _view;
 }
 
 mat4 Camera::GetViewProjection() {
-    return viewProjection;
+    return _viewProjection;
 }
