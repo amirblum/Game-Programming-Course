@@ -20,6 +20,7 @@ using namespace glm;
 
 #include "Model.h"
 #include "ShaderIO.h"
+#include "InputManager.h"
 
 #include <iostream>
 
@@ -39,12 +40,8 @@ using namespace glm;
 
 /** Key definitions */
 
-#define KEY_ANIMATE         ('a') // Key used to start animation              //
 #define KEY_ESC            ('\e') // Key used to terminate the program - ESC  //
 #define KEY_QUIT            ('q') // Key used to terminate the program        //
-#define KEY_RESET           ('r') // Key used to reset the applied TX's	      //
-#define KEY_RELOAD          ('l') // Key used to reload the shaders 	      //
-#define KEY_WIREFRAME       ('w') // Key used to toggle wireframe rendering   //
 
 /** display callback */
 void display(void);
@@ -182,30 +179,13 @@ void keyboard(unsigned char key, int x, int y)
 	
     switch(lower_key)
     {
-      case KEY_RESET:
-          // reset to initial view of the object
-          // For use in a future exercise
-          break;
-      case KEY_RELOAD:
-          // Reload the shading programs of the object
-          // For use in a future exercise
-          break;
-      case KEY_WIREFRAME:
-          // Toggle wireframe mode
-          // For use in a future exercise
-          break;
-      case KEY_ANIMATE:
-          if (!g_duringAnimation) {
-              g_startAnimation = true;
-          }
-          break;
       case KEY_QUIT:
       case KEY_ESC:
           // Terminate the program:
           exit(RC_OK);
           break;
       default:
-          std::cerr << "Key " << lower_key << " undefined\n";
+          InputManager::Instance().handleInput(lower_key, x, y);
           break;
     }
     

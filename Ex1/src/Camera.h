@@ -21,7 +21,10 @@ using namespace glm;
 #include <GL/gl.h>
 #endif
 
-class Camera {
+#include "InputManager.h"
+#include "InputReceiver.h"
+
+class Camera : public InputReceiver {
 
 public:
     static Camera& Instance() {
@@ -29,7 +32,9 @@ public:
         
         return instance;
     }
-    mat4 GetViewProjection();
+    
+    mat4 getViewProjection();
+    void receiveInput(unsigned char key, int x, int y);
 
 private:
     vec3 _dir;
@@ -43,6 +48,8 @@ private:
     Camera();
     Camera(Camera const&);
     void operator=(Camera const&);
+    
+    void updateViewProjection();
     
 };
 

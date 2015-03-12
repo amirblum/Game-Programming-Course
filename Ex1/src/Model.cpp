@@ -113,7 +113,7 @@ void Model::draw()
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Also try using GL_FILL and GL_POINT
   
-    mat4 wvp = Camera::Instance().GetViewProjection() * _world;
+    mat4 wvp = Camera::Instance().getViewProjection() * _world;
     
     // Pass the uniform variables
     {
