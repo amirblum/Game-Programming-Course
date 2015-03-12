@@ -75,15 +75,15 @@ bool    g_duringAnimation = false;
 Model _model;
 
 // camera params (again, a better practice is to have a camera singleton)
-vec3 dir = vec3(0.0f, 0.0f, -1.0f);
-vec3 pos = vec3(0.0f, 0.0f, 3.0f);
-vec3 up = vec3(0.0f, 1.0f, 0.0f);
+//vec3 dir = vec3(0.0f, 0.0f, 1.0f);
+//vec3 pos = vec3(0.0f, 1.0f, -5.0f);
+//vec3 up = vec3(0.0f, 1.0f, 0.0f);
 
-mat4 World = mat4(1.0);
-mat4 View = lookAt(pos, pos+dir, up);
-mat4 Projection = perspective(45.0f, 1.0f, 0.1f, 100.0f);
+//mat4 World = mat4(1.0);
+//mat4 View = lookAt(pos, pos+dir, up);
+//mat4 Projection = perspective(45.0f, 1.0f, 0.1f, 100.0f);
 
-mat4 wvp = Projection * View * World;
+//mat4 wvp = Projection * View * World;
 
 
 
@@ -145,7 +145,7 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Let the model to draw itself...
-    _model.draw(wvp);
+    _model.draw();
 	
     // Swap those buffers so someone will actually see the results... //
     glutSwapBuffers();

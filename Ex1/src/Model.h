@@ -22,6 +22,8 @@ using namespace glm;
 #endif
 
 class Model {
+    
+    mat4 _world;
 	
     GLuint _vao, _vbo, _ibo;
 
@@ -40,7 +42,7 @@ class Model {
     Model();
     virtual ~Model();
     void init();
-    void draw(mat4 wvp);
+    void draw();
     void resize(int width, int height);	
 };
 

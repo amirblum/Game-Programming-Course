@@ -19,6 +19,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "Camera.h"
+
 #define SHADERS_DIR "shaders/"
 
 Model::Model() :
@@ -51,18 +53,29 @@ void Model::init()
     {
         // positioning vertices
         static const GLfloat vertices[] = {
-            0.0f,  0.0f, 0.0f, 1.0f,
-            1.0f,  0.0f, 0.0f, 1.0f,
-            0.0f,  1.0f, 0.0f, 1.0f,
-            1.0f,  1.0f, 0.0f, 1.0f,
+            -1.0f, 0.0f, -1.0f, 1.0f,
+            0.0f, 0.0f, -1.0f, 1.0f,
+            1.0f, 0.0f, -1.0f, 1.0f,
+            -1.0f, 0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 0.0f, 1.0f, 1.0f
         };
         
         // connecting vertices into triangles
         static const GLubyte indices[] = {
-            0,1,3,
-            0,2,3
+            0,1,4,
+            0,4,3,
+            4,1,2,
+            4,2,5,
+            3,4,6,
+            6,4,7,
+            4,8,7,
+            4,5,8
         };      	
-        _nVertices = 6;
+        _nVertices = sizeof(vertices);
 
         // Create and bind the object's Vertex Array Object:
         glGenVertexArrays(1, &_vao);
@@ -93,13 +106,15 @@ void Model::init()
     }
 }
 
-void Model::draw(mat4 wvp)
+void Model::draw()
 {
     // Set the program to be used in subsequent lines:
     glUseProgram(programManager::sharedInstance().programWithID("default"));
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Also try using GL_FILL and GL_POINT
   
+    mat4 wvp = Camera::Instance().GetViewProjection() * _world;
+    
     // Pass the uniform variables
     {
         // wvp matrix
