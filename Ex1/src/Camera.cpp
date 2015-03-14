@@ -19,17 +19,20 @@ _viewProjection(_projection * _view)
     InputManager::Instance().registerReceiver(this);
 }
 
-void Camera::updateViewProjection() {
+void Camera::updateViewProjection()
+{
     _view = lookAt(_pos, _pos + _dir, _up);
     // No need to update the projection every time
     _viewProjection = _projection * _view;
 }
 
-mat4 Camera::getViewProjection() {
+mat4 Camera::getViewProjection()
+{
     return _viewProjection;
 }
 
-void Camera::receiveInput(unsigned char key, int x, int y) {
+void Camera::receiveInput(unsigned char key, int x, int y)
+{
     vec4 newDir;
     switch (key) {
         case KEY_FORWARD:

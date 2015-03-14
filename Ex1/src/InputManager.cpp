@@ -18,14 +18,16 @@ InputManager::InputManager() {}
 /**
  * Register a new receiver
  */
-void InputManager::registerReceiver(InputReceiver *receiver) {
+void InputManager::registerReceiver(InputReceiver *receiver)
+{
     _receivers.push_back(receiver);
 }
 
 /**
  * Unregister a receiver
  */
-void InputManager::unregisterReceiver(InputReceiver *receiver) {
+void InputManager::unregisterReceiver(InputReceiver *receiver)
+{
     std::vector<InputReceiver*>::iterator it;
     it = std::find(_receivers.begin(), _receivers.end(), receiver);
     
@@ -37,7 +39,8 @@ void InputManager::unregisterReceiver(InputReceiver *receiver) {
 /**
  * Forward the input to all the registered objects
  */
-void InputManager::handleInput(unsigned char key, int x, int y) {
+void InputManager::handleInput(unsigned char key, int x, int y)
+{
     std::vector<InputReceiver*>::iterator it;
     for (it = _receivers.begin(); it != _receivers.end(); ++it) {
         InputReceiver *receiver = *it;
