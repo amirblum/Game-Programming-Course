@@ -21,9 +21,15 @@ using namespace glm;
 #include <GL/gl.h>
 #endif
 
+#import <vector>
+
 class Model {
     
+    // World transformation
     mat4 _world;
+    
+    // Terrain vertices
+    std::vector<vec3> _terrain;
 	
     GLuint _vao, _vbo, _ibo;
 
@@ -43,7 +49,11 @@ class Model {
     virtual ~Model();
     void init();
     void draw();
-    void resize(int width, int height);	
+    void resize(int width, int height);
+    
+private:
+    void initGrid(int width, int length, float elementSize);
+    void pushGridVertices();
 };
 
 #endif /* defined(__ex0__Model__) */
