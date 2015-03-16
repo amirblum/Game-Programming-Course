@@ -18,11 +18,16 @@
 
 using namespace glm;
 
-#include "Model.h"
+#include "Renderable.h"
+#include "Terrain.h"
 #include "ShaderIO.h"
 #include "InputManager.h"
 
 #include <iostream>
+
+/** Implementation Definitions */
+#define GRID_WIDTH (50)
+#define GRID_LENGTH (50)
 
 /** Internal Definitions */
 
@@ -69,20 +74,7 @@ bool    g_startAnimation = false;
 bool    g_duringAnimation = false;
 
 // A global variable for our model (a better practice would be to use a singletone that holds all model):
-Model _model;
-
-// camera params (again, a better practice is to have a camera singleton)
-//vec3 dir = vec3(0.0f, 0.0f, 1.0f);
-//vec3 pos = vec3(0.0f, 1.0f, -5.0f);
-//vec3 up = vec3(0.0f, 1.0f, 0.0f);
-
-//mat4 World = mat4(1.0);
-//mat4 View = lookAt(pos, pos+dir, up);
-//mat4 Projection = perspective(45.0f, 1.0f, 0.1f, 100.0f);
-
-//mat4 wvp = Projection * View * World;
-
-
+Renderable *terrain;
 
 /** main function */
 int main(int argc, char* argv[])
@@ -125,7 +117,7 @@ int main(int argc, char* argv[])
     glutTimerFunc(100, timer, 0);   // uint millis int value
 	
     // Init anything that can be done once and for all:
-    _model.init();
+    terrain = new Terrain(GRID_WIDTH, GRID_LENGTH);
 
     // Set clear color to black:
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -142,7 +134,7 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Let the model to draw itself...
-    _model.draw();
+    terrain->draw();
 	
     // Swap those buffers so someone will actually see the results... //
     glutSwapBuffers();
@@ -150,10 +142,7 @@ void display(void)
 
 // This method is called when the window is resized
 void windowResize(int w, int h)
-{
-    // Update model to fit the new resolution
-    _model.resize(w, h);
-    
+{    
     // set the new viewport //
     glViewport(0, 0, w, h);
     
