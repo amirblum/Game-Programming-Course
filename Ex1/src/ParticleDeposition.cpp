@@ -120,6 +120,12 @@ void ParticleDeposition::depositParticle(int x, int y)
             
             // Skip test with self
             if (neighborX == x && neighborY == y) continue;
+            // Skip out of bounds neighbors
+            if (neighborX < 0 || neighborX > _terrain->getGridWidth() || neighborY < 0 ||
+                neighborY > _terrain->getGridLength())
+            {
+                continue;
+            }
             
             // Check height against self
             float neighborHeight = _terrain->getVertexHeight(neighborX, neighborY);

@@ -6,6 +6,11 @@
 //  With help from the fine folks at lighthouse3d.com.
 //  http://www.lighthouse3d.com/opengl/terrain/index.php?mpd2
 //
+//  ...so this is actually not finished. It only performs the first
+//  step right now. It was abandoned for the sake of Particle Deposition
+//  which better suited the grid I had created.
+//  I will leave this class here for...posterity, or something.
+//
 //  Created by Amir Blum on 3/16/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
@@ -72,11 +77,11 @@ void MidPointDisplacement::performDeformationStep()
     _terrain->setVertexHeight(_H, newHHeight);
     _terrain->setVertexHeight(_I, newIHeight);
     
-    // Tell terrain to update
-    _terrain->pushGridVertices();
-    
     // Update max-displacement
     _maximumDisplacement *= pow(2, -_roughness);
+    
+    // Tell terrain to update
+    _terrain->pushGridVertices();
     
     _deformationStep++;
 }

@@ -39,7 +39,8 @@ using namespace glm;
 
 /** Internal Definitions */
 
-#define	WINDOW_SIZE         (600) // initial size of the window               //
+#define	WINDOW_WIDTH         (1024) // initial width of the window               //
+#define	WINDOW_HEIGHT         (768) // initial height of the window               //
 #define	WINDOW_POS_X        (100) // initial X position of the window         //
 #define	WINDOW_POS_Y        (100) // initial Y position of the window         //
 
@@ -104,7 +105,7 @@ int main(int argc, char* argv[])
     glutInitContextProfile(GLUT_CORE_PROFILE);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 #endif
-    glutInitWindowSize(WINDOW_SIZE, WINDOW_SIZE);
+    glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutInitWindowPosition(WINDOW_POS_X, WINDOW_POS_Y);
     glutCreateWindow("CGP Ex 1");
 	
