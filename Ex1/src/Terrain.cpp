@@ -193,12 +193,22 @@ void Terrain::setVertexHeight(int x, int y, float newHeight)
 
 float Terrain::interpolatedHeight(float x, float z)
 {
-    // For now just return the average height of the four surrounding vertices
-    // TODO: Linearly interpolate between them
     float bottomLeftHeight = getVertexHeight((int)x, (int)z);
     float bottomRightHeight = getVertexHeight((int)(x+1), (int)z);
     float topLeftHeight = getVertexHeight((int)x, (int)(z+1));
     float topRightHeight = getVertexHeight((int)(x+1), (int)(z+1));
     
-    return (bottomLeftHeight + bottomRightHeight + topLeftHeight + topRightHeight) / 4;
+    float xSquareOffset = x - (_leftBound + (int)x * GRID_ELEMENT_SIZE);
+    float zSquareOffset = z - (_frontBound + (int)z * GRID_ELEMENT_SIZE);
+    
+    float xWeight = xSquareOffset / GRID_ELEMENT_SIZE;
+    float zWeight = zSquareOffset / GRID_ELEMENT_SIZE;
+    
+    float bottomInterpolatedHeight = mix(bottomLeftHeight, bottomRightHeight, xWeight);
+    float topInterpolatedHeight = mix(topLeftHeight, topRightHeight, xWeight);
+    
+    float interpolatedHeight = mix(bottomInterpolatedHeight, topInterpolatedHeight, zWeight);
+    return interpolatedHeight;
+    
+//    return (bottomLeftHeight + bottomRightHeight + topLeftHeight + topRightHeight) / 4;
 }
