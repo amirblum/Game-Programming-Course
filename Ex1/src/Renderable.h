@@ -2,6 +2,8 @@
 //  Renderable.h
 //  CGP-Ex1
 //
+//  Base class for groups of vertices that can be rendered by OpenGL/
+//
 //  Created by Amir Blum on 3/16/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //

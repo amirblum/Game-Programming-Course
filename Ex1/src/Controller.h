@@ -2,6 +2,9 @@
 //  Controller.h
 //  CGP-Ex1
 //
+//  Essentially a character controller class. Interprets the input and moves the
+//  camera along accordingly, taking into account the heigh of the terrain etc.
+//
 //  Created by Amir Blum on 3/17/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
@@ -40,6 +43,7 @@ public:
     void update(float dt);
     
 private:
+    // Private functions
     void move(vec3 direction);
     void turn(float angle);
     

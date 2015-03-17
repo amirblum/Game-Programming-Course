@@ -26,6 +26,7 @@ class Terrain : public Renderable {
     Terrain(int gridWidth, int gridLength);
     virtual ~Terrain();
     
+    // Getters
     int getGridWidth();
     int getGridLength();
     float getLeftBound();
@@ -47,9 +48,11 @@ class Terrain : public Renderable {
     // Linearly-interpolated hieght
     float interpolatedHeight(float x, float z);
     
+    // Updates OpenGL to the changes
     void pushGridVertices();
     
 private:
+    // Initialize VBO and IBO
     void initGrid(int width, int length);
 };
 

@@ -2,6 +2,8 @@
 //  TerrainDeformer.h
 //  CGP-Ex1
 //
+//  Interface for terrain deformation classes
+//
 //  Created by Amir Blum on 3/16/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
@@ -17,6 +19,8 @@ protected:
     
 public:
     TerrainDeformer(Terrain *terrain);
+    
+    // Deform the terrain a bit (overriden by children)
     virtual void performDeformationStep() = 0;
 };
 

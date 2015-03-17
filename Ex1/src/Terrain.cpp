@@ -9,17 +9,28 @@
 #include "Terrain.h"
 #include "Camera.h"
 
+/**
+ * Terrain constructor
+ */
 Terrain::Terrain(int gridWidth, int gridLength) : _gridWidth(gridWidth), _gridLength(gridLength)
 {
     initGrid(gridWidth, gridLength);
 }
 
+/**
+ * Deconstructor
+ */
 Terrain::~Terrain()
 {
 }
 
+/**
+ * Initialize the grid using a width and a length
+ */
 void Terrain::initGrid(int width, int length)
 {
+    // For now grid always starts with bottom left corner at 0,0,0.
+    // This can be changed in the future (though world matrix should be used to position)
     _leftBound = 0;
     _rightBound = width * GRID_ELEMENT_SIZE - 1;
     _frontBound = 0;
@@ -107,6 +118,9 @@ void Terrain::initGrid(int width, int length)
 
 }
 
+/**
+ * Convert terrain vector to vertex array and push to OpenGL
+ */
 void Terrain::pushGridVertices()
 {
     // For now, convert to float array for every push.
@@ -126,53 +140,85 @@ void Terrain::pushGridVertices()
     glBindVertexArray(0);
 }
 
+/**
+ * Get grid width
+ */
 int Terrain::getGridWidth()
 {
     return _gridWidth;
 }
 
+/**
+ * Get grid length
+ */
 int Terrain::getGridLength()
 {
     return _gridLength;
 }
 
+/**
+ * Get left bound of terrain
+ */
 float Terrain::getLeftBound()
 {
     return _leftBound;
 }
 
+/**
+ * Get right bound of terrain
+ */
 float Terrain::getRightBound()
 {
     return _rightBound;
 }
 
+/**
+ * Get front bound of terrain
+ */
 float Terrain::getFrontBound()
 {
     return _frontBound;
 }
 
+/**
+ * Get back bound of terrain
+ */
 float Terrain::getBackBound()
 {
     return _backBound;
 }
 
+/**
+ * Return the number of a vertex based on x,y coordinates (of the grids 2D matrix)
+ */
 int Terrain::getVertexFromCoords(int x, int y)
 {
     return _gridWidth * y + x;
 }
 
+/**
+ * Return the height of the numbered vertex
+ * -1 if out of bounds
+ */
 float Terrain::getVertexHeight(int vertex)
 {
-    if (vertex >= _grid.size()) return -1.f;
+    if (vertex < 0 || vertex >= _grid.size()) return -1.f;
     return _grid[vertex].y;
 }
 
+/**
+ * Set the height of a numbered vertex
+ */
 void Terrain::setVertexHeight(int vertex, float newHeight)
 {
-    if (vertex >= _grid.size()) return;
+    if (vertex < 0 || vertex >= _grid.size()) return;
     _grid[vertex].y = newHeight;
 }
 
+/**
+ * Get height of vertex based on coordinates
+ * Returns -1 if vertex doesn't exist
+ */
 float Terrain::getVertexHeight(int x, int y)
 {
     int vertex = getVertexFromCoords(x, y);
@@ -182,6 +228,9 @@ float Terrain::getVertexHeight(int x, int y)
     return getVertexHeight(vertex);
 }
 
+/**
+ * Set height of vertex based on coordinates
+ */
 void Terrain::setVertexHeight(int x, int y, float newHeight)
 {
     int vertex = getVertexFromCoords(x, y);
@@ -191,8 +240,12 @@ void Terrain::setVertexHeight(int x, int y, float newHeight)
     setVertexHeight(vertex, newHeight);
 }
 
+/**
+ * Gets interpolated height of four surrounding vertices of a point in the world
+ */
 float Terrain::interpolatedHeight(float x, float z)
 {
+    // Get heights of the four surrounding vertices
     float bottomLeftHeight = getVertexHeight((int)x, (int)z);
     float bottomRightHeight = getVertexHeight((int)(x+1), (int)z);
     float topLeftHeight = getVertexHeight((int)x, (int)(z+1));
@@ -201,14 +254,16 @@ float Terrain::interpolatedHeight(float x, float z)
     float xSquareOffset = x - (_leftBound + (int)x * GRID_ELEMENT_SIZE);
     float zSquareOffset = z - (_frontBound + (int)z * GRID_ELEMENT_SIZE);
     
+    // Interpolation weight
     float xWeight = xSquareOffset / GRID_ELEMENT_SIZE;
     float zWeight = zSquareOffset / GRID_ELEMENT_SIZE;
     
+    // Interpolate bottom and top
     float bottomInterpolatedHeight = mix(bottomLeftHeight, bottomRightHeight, xWeight);
     float topInterpolatedHeight = mix(topLeftHeight, topRightHeight, xWeight);
     
+    // Then interpolate the to previous
     float interpolatedHeight = mix(bottomInterpolatedHeight, topInterpolatedHeight, zWeight);
-    return interpolatedHeight;
     
-//    return (bottomLeftHeight + bottomRightHeight + topLeftHeight + topRightHeight) / 4;
+    return interpolatedHeight;
 }

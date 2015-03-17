@@ -32,6 +32,9 @@ Renderable::~Renderable()
     if (_ibo != 0) glDeleteBuffers(1, &_ibo);
 }
 
+/**
+ * Set up handlers
+ */
 void Renderable::init()
 {
     programManager::sharedInstance()
@@ -72,6 +75,9 @@ void Renderable::init()
     }
 }
 
+/**
+ * Tell OpenGL to draw
+ */
 void Renderable::draw()
 {
     // Set the program to be used in subsequent lines:

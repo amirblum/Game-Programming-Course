@@ -18,39 +18,60 @@ _viewProjection(_projection * _view)
 {
 }
 
-vec3 Camera::getDir()
-{
-    return _dir;
-}
-
+/**
+ * Get position
+ */
 vec3 Camera::getPos()
 {
     return _pos;
 }
 
+/**
+ * Get the looking direction
+ */
+vec3 Camera::getDir()
+{
+    return _dir;
+}
+
+/**
+ * Get up vector
+ */
 vec3 Camera::getUp()
 {
     return _up;
 }
 
+/**
+ * Set direction
+ */
 void Camera::setDir(vec3 dir)
 {
     _dir = dir;
     updateViewProjection();
 }
 
+/**
+ * Set position
+ */
 void Camera::setPos(vec3 pos)
 {
     _pos = pos;
     updateViewProjection();
 }
 
+/**
+ * Set up vector
+ */
 void Camera::setUp(vec3 up)
 {
     _up = up;
     updateViewProjection();
 }
 
+/**
+ * Update the state
+ */
 void Camera::updateViewProjection()
 {
     _view = lookAt(_pos, _pos + _dir, _up);
@@ -58,6 +79,9 @@ void Camera::updateViewProjection()
     _viewProjection = _projection * _view;
 }
 
+/**
+ * Get the view projection matrix
+ */
 mat4 Camera::getViewProjection()
 {
     return _viewProjection;

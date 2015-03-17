@@ -12,16 +12,25 @@
 #define VALLEY_PERCENT (35)
 #define CHUNK_SIZE (0.25)
 
+/**
+ * Contsructor
+ */
 ParticleDeposition::ParticleDeposition(Terrain *terrain, float displacement) :
 TerrainDeformer(terrain),
 _displacement(displacement),
 _iteration(0),
 _valleyMode(false)
 {
-    beginNewMountain();
+    beginNewChunk();
 }
 
-void ParticleDeposition::beginNewMountain()
+/**
+ * Initialize a new chunk. Basically, decide on the number of iterations this chunk 
+ * will run and choose a starting point.
+ * Also, sometimes particles will raise vertices (to create mountains) and sometimes 
+ * lower (for valleys).
+ */
+void ParticleDeposition::beginNewChunk()
 {
     // Initialize drop point to random point to begin
     do {
@@ -55,16 +64,20 @@ void ParticleDeposition::beginNewMountain()
     _currentIterations = rand() % (maxIterations - minIterations) + minIterations;
     _iteration = 0;
     
-    std::cout << "Starting " << (_valleyMode ? "valley" : "mountain") << " deposition with " << _currentIterations << " iterations" << std::endl;
+    std::cout << "Starting " << (_valleyMode ? "valley" : "mountain") << " deposition with " << \
+    _currentIterations << " iterations" << std::endl;
 }
 
+/**
+ * Perform the actual step. Advance in a random direction and deposit a particle.
+ */
 void ParticleDeposition::performDeformationStep()
 {
     // Check if to move to next mountain
     _iteration++;
     if (_iteration > _currentIterations)
     {
-        beginNewMountain();
+        beginNewChunk();
     }
     
     // Advance in random direction
@@ -100,13 +113,17 @@ void ParticleDeposition::performDeformationStep()
             break;
     }
     
-    // "Deopsit" particle
+    // "Deposit" particle
     depositParticle(_currentX, _currentY);
     
     // Update vbo
     _terrain->pushGridVertices();
 }
 
+/**
+ * Drop the particle. Recursively tumble down the mountain or valley and the deform
+ * the terrain at the bottom
+ */
 void ParticleDeposition::depositParticle(int x, int y)
 {
     float myHeight = _terrain->getVertexHeight(x, y);

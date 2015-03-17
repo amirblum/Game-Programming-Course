@@ -1,8 +1,8 @@
 //
 //  InputManager.h
 //  CGP-Ex1
-//  Singleton InputManager that InputReceivers can register to to
-//  receive input.
+//
+//  Singleton InputManager that registers keys pressed
 //
 //  Created by Amir Blum on 3/12/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
@@ -24,18 +24,19 @@
 #define KEY_CROUCH ('z')
 
 class InputManager {
-    unsigned char keyPressed;
-    
 public:
+    // Singleton implementation
     static InputManager& Instance() {
         static InputManager instance;
         
         return instance;
     }
     
+    // Receive input events
     void handleKeyDown(unsigned char key, int x, int y);
     void handleKeyUp(unsigned char key, int x, int y);
     
+    // Query functions
     bool isPressed(unsigned char key);
     bool isPressedFirstTime(unsigned char key);
     bool isModifierPressed();
@@ -45,6 +46,7 @@ private:
     std::map<unsigned char, bool> _keyQueriedWhilePressed;
     bool _modifier;
     
+    // Singleton private instantiation
     InputManager();
     InputManager(InputManager const&);
     void operator=(InputManager const&);

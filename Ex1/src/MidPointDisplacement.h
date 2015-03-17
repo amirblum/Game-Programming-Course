@@ -22,8 +22,7 @@ private:
     // Current vertices we are working with
     int _A, _B, _C, _D, _E, _F, _G, _H, _I;
     
-    // Helper functions
-    int getVertexFromCoords(int x, int y);
+    // Helper function
     float randomDisplacement();
     
 public:

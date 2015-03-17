@@ -33,28 +33,29 @@ _roughness(roughness)
     int lastCol = terrain->getGridWidth() - 1;
 
     // Initialize vertices for first step
-    _A = getVertexFromCoords(0, 0);
-    _B = getVertexFromCoords(0, lastCol);
-    _C = getVertexFromCoords(lastRow, 0);
-    _D = getVertexFromCoords(lastRow, lastCol);
-    _E = getVertexFromCoords(lastRow / 2, lastCol / 2);
-    _F = getVertexFromCoords(lastRow / 2, 0);
-    _G = getVertexFromCoords(0, lastCol / 2);
-    _H = getVertexFromCoords(lastRow / 2, lastCol);
-    _I = getVertexFromCoords(lastRow, lastCol / 2);
+    _A = _terrain->getVertexFromCoords(0, 0);
+    _B = _terrain->getVertexFromCoords(0, lastCol);
+    _C = _terrain->getVertexFromCoords(lastRow, 0);
+    _D = _terrain->getVertexFromCoords(lastRow, lastCol);
+    _E = _terrain->getVertexFromCoords(lastRow / 2, lastCol / 2);
+    _F = _terrain->getVertexFromCoords(lastRow / 2, 0);
+    _G = _terrain->getVertexFromCoords(0, lastCol / 2);
+    _H = _terrain->getVertexFromCoords(lastRow / 2, lastCol);
+    _I = _terrain->getVertexFromCoords(lastRow, lastCol / 2);
 }
 
-int MidPointDisplacement::getVertexFromCoords(int x, int y)
-{
-    return _terrain->getGridWidth() * y + x;
-}
-
+/**
+ * Get a random float between [-d, d]
+ */
 float MidPointDisplacement::randomDisplacement()
 {
     float scale = ((float)rand()) / (float)RAND_MAX;
     return _maximumDisplacement * 2 * scale - _maximumDisplacement;
 }
 
+/**
+ * Perform the deformation step. Currently this is only the first phase
+ */
 void MidPointDisplacement::performDeformationStep()
 {
     float aHeight = _terrain->getVertexHeight(_A);

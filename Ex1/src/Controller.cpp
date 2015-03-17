@@ -19,6 +19,9 @@
 #define JUMP_SPEED (1.5f)
 #define GRAVITY (0.4f)
 
+/**
+ * Constructor. Sets camera to the desired initial position.
+ */
 Controller::Controller(Camera *camera, Terrain *terrain) :
 _myCamera(camera),
 _terrain(terrain),
@@ -29,11 +32,12 @@ _yVelocity(0)
     float x = _terrain->getLeftBound() + 1.0f;
     float z = _terrain->getFrontBound() + 1.0f;
     float y = _terrain->interpolatedHeight(x, z) + PLAYER_HEIGHT;
-    std::cout << "Initial x: " << x << ", z: " << z << std::endl;
-    std::cout << "Setting initial height to: " << _terrain->interpolatedHeight(x, z) << " + " << PLAYER_HEIGHT << std::endl;
     _myCamera->setPos(vec3(x, y, z));
 }
 
+/**
+ * The update function. Every frame check inputs and move camera around accordingly.
+ */
 void Controller::update(float dt)
 {
     InputManager &input = InputManager::Instance();
@@ -97,8 +101,12 @@ void Controller::update(float dt)
     }
 }
 
+/**
+ * Move in a direction
+ */
 void Controller::move(vec3 direction)
 {
+    // Check for boost;
     if (InputManager::Instance().isModifierPressed())
     {
         direction *= MOVE_BOOST;
@@ -121,24 +129,36 @@ void Controller::move(vec3 direction)
     _myCamera->setPos(newPos);
 }
 
+/**
+ * Turn the camera
+ */
 void Controller::turn(float angle)
 {
+    // Check for boost
     if (InputManager::Instance().isModifierPressed())
     {
         angle *= MOVE_BOOST;
     }
     
+    // Probably not the prettiest, but use a glm rotation matrix to rotate
+    // to the desired direction
     vec4 newDir(_myCamera->getDir(), 1.0f);
     newDir = rotate(mat4(1.0f), angle, _myCamera->getUp()) * newDir;
     _myCamera->setDir(normalize(vec3(newDir.x, newDir.y, newDir.z)));
 }
 
+/**
+ * Simple. Set the y velocity to a positive value and watch the magic happend
+ */
 void Controller::jump()
 {
     _yVelocity = JUMP_SPEED;
     _isJumping = true;
 }
 
+/**
+ * Well we can't jump forever...
+ */
 void Controller::fall(float dt)
 {
     vec3 newPos = _myCamera->getPos();
@@ -146,6 +166,7 @@ void Controller::fall(float dt)
     newPos.y += _yVelocity * dt;
     _yVelocity -= GRAVITY * dt;
     
+    // Don't fall through the terrain
     float minHeight = _terrain->interpolatedHeight(newPos.x, newPos.z) + PLAYER_HEIGHT;
     if (newPos.y < minHeight)
     {
@@ -156,12 +177,16 @@ void Controller::fall(float dt)
     _myCamera->setPos(newPos);
 }
 
+/**
+ * Crouch to position over time
+ */
 void Controller::crouch(float dt)
 {
     vec3 newPos = _myCamera->getPos();
     
     newPos.y -= CROUCH_SPEED * dt;
     
+    // When reaching the desired crouch height, stop the process
     float minHeight = _terrain->interpolatedHeight(newPos.x, newPos.z) + PLAYER_CROUCH_HEIGHT;
     if (newPos.y < minHeight)
     {
@@ -171,9 +196,11 @@ void Controller::crouch(float dt)
     }
     
     _myCamera->setPos(newPos);
-    
 }
 
+/**
+ * Uncrouch
+ */
 void Controller::uncrouch(float dt)
 {
     vec3 newPos = _myCamera->getPos();
