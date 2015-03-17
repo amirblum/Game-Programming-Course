@@ -9,14 +9,31 @@
 #
 ##################################################################
 
-EXEC = 
+TAR = amirblum_cgp_ex1.tgz
 
 # list of all the sources files
 SRCS	=  	main.cpp		\
-		Model.cpp 	\
+		Terrain.cpp 	\
 		ShaderIO.cpp	\
-			
-# compiler 
+        Camera.cpp  \
+        InputManager.cpp    \
+        TerrainDeformer.cpp \
+        MidPointDisplacement.cpp    \
+        Renderable.cpp  \
+        ParticleDeposition.cpp  \
+        Controller.cpp
+
+HDRS	=  	Terrain.h 	\
+            ShaderIO.h	\
+            Camera.cpp  \
+            InputManager.h    \
+            TerrainDeformer.h \
+            MidPointDisplacement.h    \
+            Renderable.h  \
+            ParticleDeposition.h  \
+            Controller.h
+
+# compiler
 CC	= g++
 
 INCLUDE = -I/usr/include -I/usr/X11R6/include -I/cs/course/current/cg/include
@@ -51,7 +68,7 @@ LDFLAGS	=
 
 
 # the name of the lib to create 
-APP = cgp_tutorial1
+APP = cgp_ex1
 
 # each lib should add with -l flag
 LIBS =  -L/usr/lib -lm -lGLEW -lglut -lGL -lGLU -ldl -L/usr/X11R6/lib
@@ -81,9 +98,9 @@ $(OBJS) : $(SRCS)
 
 
 tar:
-	tar cvf $(EXEC).tar Makefile $(SRCS) $(HDRS) README
+	tar czvf $(TAR) Makefile $(SRCS) $(HDRS) README
 	
 
 .PHONY:
 clean :
-	rm -f $(OBJS) $(EXEC) *~ $(APP)
+	rm -f $(OBJS) $(TAR) *~ $(APP)
