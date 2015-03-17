@@ -20,6 +20,10 @@ using namespace glm;
 
 #include "Renderable.h"
 #include "Terrain.h"
+#include "TerrainDeformer.h"
+#include "MidPointDisplacement.h"
+#include "ParticleDeposition.h"
+
 #include "ShaderIO.h"
 #include "InputManager.h"
 
@@ -28,6 +32,8 @@ using namespace glm;
 /** Implementation Definitions */
 #define GRID_WIDTH (50)
 #define GRID_LENGTH (50)
+#define DISPLACEMENT_START_HEIGHT (50.0f)
+#define DISPLACEMENT_ROUGHNESS (1.0f)
 
 /** Internal Definitions */
 
@@ -74,7 +80,8 @@ bool    g_startAnimation = false;
 bool    g_duringAnimation = false;
 
 // A global variable for our model (a better practice would be to use a singletone that holds all model):
-Renderable *terrain;
+Terrain *_terrain;
+TerrainDeformer *_terrainDeformer;
 
 /** main function */
 int main(int argc, char* argv[])
@@ -117,7 +124,11 @@ int main(int argc, char* argv[])
     glutTimerFunc(100, timer, 0);   // uint millis int value
 	
     // Init anything that can be done once and for all:
-    terrain = new Terrain(GRID_WIDTH, GRID_LENGTH);
+    _terrain = new Terrain(GRID_WIDTH, GRID_LENGTH);
+    _terrainDeformer = new ParticleDeposition(_terrain, 1.0f);
+    for (int i = 0; i < 10; ++i) {
+        _terrainDeformer->performDeformationStep();
+    }
 
     // Set clear color to black:
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -134,7 +145,7 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Let the model to draw itself...
-    terrain->draw();
+    _terrain->draw();
 	
     // Swap those buffers so someone will actually see the results... //
     glutSwapBuffers();
@@ -224,6 +235,7 @@ void motion(int x, int y)
 }
 
 //static const float animationDurationInFrames = 300;
+static const float framesPerDeformation = 10;
 
 void timer(int value) {
     /* Set the timer to be called again in X milli - seconds. */
@@ -234,8 +246,15 @@ void timer(int value) {
 //        g_startAnimation = false;
 //    }
     
+    float t = (float)value / (float)framesPerDeformation;
+    if (t > 1) {
+        value = 0;
+        _terrainDeformer->performDeformationStep();
+    }
+    
     glutTimerFunc(25, timer, ++value);   // uint millis int value
     glutPostRedisplay();
+    
     
 //    if (g_duringAnimation) {
 //        float t = (float)value / (float)animationDurationInFrames;

@@ -123,3 +123,48 @@ void Terrain::pushGridVertices()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glBindVertexArray(0);
 }
+
+int Terrain::getGridWidth()
+{
+    return _gridWidth;
+}
+
+int Terrain::getGridLength()
+{
+    return _gridLength;
+}
+
+int Terrain::getVertexFromCoords(int x, int y)
+{
+    return _gridWidth * y + x;
+}
+
+float Terrain::getVertexHeight(int vertex)
+{
+    if (vertex >= _grid.size()) return -1.f;
+    return _grid[vertex].y;
+}
+
+void Terrain::setVertexHeight(int vertex, float newHeight)
+{
+    if (vertex >= _grid.size()) return;
+    _grid[vertex].y = newHeight;
+}
+
+float Terrain::getVertexHeight(int x, int y)
+{
+    int vertex = getVertexFromCoords(x, y);
+    if (vertex == -1) {
+        return -1.0f;
+    }
+    return getVertexHeight(vertex);
+}
+
+void Terrain::setVertexHeight(int x, int y, float newHeight)
+{
+    int vertex = getVertexFromCoords(x, y);
+    if (vertex == -1) {
+        return;
+    }
+    setVertexHeight(vertex, newHeight);
+}

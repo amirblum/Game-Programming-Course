@@ -28,9 +28,21 @@ class Terrain : public Renderable {
     int getGridWidth();
     int getGridLength();
     
+    // Vertex helper
+    int getVertexFromCoords(int x, int y);
+    
+    // Height according to vertex
+    float getVertexHeight(int vertex);
+    void setVertexHeight(int vertex, float newHeight);
+    
+    // Height according to coordinates
+    float getVertexHeight(int x, int y);
+    void setVertexHeight(int x, int y, float newHeight);
+    
+    void pushGridVertices();
+    
 private:
     void initGrid(int width, int length);
-    void pushGridVertices();
 };
 
 #endif /* defined(__ex0__Terrain__) */
