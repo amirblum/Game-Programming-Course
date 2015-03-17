@@ -15,6 +15,7 @@ class ParticleDeposition : public TerrainDeformer {
     float _displacement;
     int _currentX, _currentY;
     int _iteration, _currentIterations;
+    bool _valleyMode;
     
 public:
     ParticleDeposition(Terrain *terrain, float displacement);

@@ -9,10 +9,14 @@
 #include "ParticleDeposition.h"
 #include <iostream>
 
+#define VALLEY_PERCENT (35)
+#define CHUNK_SIZE (0.25)
+
 ParticleDeposition::ParticleDeposition(Terrain *terrain, float displacement) :
 TerrainDeformer(terrain),
 _displacement(displacement),
-_iteration(0)
+_iteration(0),
+_valleyMode(false)
 {
     beginNewMountain();
 }
@@ -25,15 +29,33 @@ void ParticleDeposition::beginNewMountain()
         _currentY = rand() % _terrain->getGridLength();
     } while (_terrain->getVertexHeight(_currentX, _currentY) > 0);
     
-    // Get random iterations for mountain
+    // Determine number of iterations
     int terrainSize = _terrain->getGridWidth() * _terrain->getGridLength();
-    int quarterTerrain = terrainSize / 4;
-    int eighthTerrain = quarterTerrain / 2;
+    int minIterations;
+    int maxIterations;
     
-    _currentIterations = rand() % (quarterTerrain - eighthTerrain) + eighthTerrain;
+    // Decide if to mountain or valley
+    int valleyProb = rand() % 100;
+    if (valleyProb < VALLEY_PERCENT)
+    {
+        // Valley gets less iterations
+        maxIterations = terrainSize * CHUNK_SIZE * VALLEY_PERCENT / 100;
+        _valleyMode = true;
+    }
+    else
+    {
+        maxIterations = terrainSize * CHUNK_SIZE * (100 - VALLEY_PERCENT) / 100;
+        _valleyMode = false;
+    }
+    
+    minIterations = maxIterations / 2;
+    
+    // Get random iterations for mountain
+    
+    _currentIterations = rand() % (maxIterations - minIterations) + minIterations;
     _iteration = 0;
     
-    std::cout << "Starting deposition with " << _currentIterations << " iterations" << std::endl;
+    std::cout << "Starting " << (_valleyMode ? "valley" : "mountain") << " deposition with " << _currentIterations << " iterations" << std::endl;
 }
 
 void ParticleDeposition::performDeformationStep()
@@ -116,8 +138,9 @@ void ParticleDeposition::depositParticle(int x, int y)
     }
     else
     {
-        // Raise this vertex
-        _terrain->setVertexHeight(x, y, myHeight + _displacement);
+        // Deform this vertex
+        float newHeight = myHeight + (_displacement * (!_valleyMode ? 1.0f : -0.05f));
+        _terrain->setVertexHeight(x, y, newHeight);
     }
     
 }

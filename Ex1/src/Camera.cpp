@@ -13,7 +13,7 @@ _dir(0.0f, 0.0f, 1.0f),
 _pos(0.0f, 1.0f, -5.0f),
 _up(0.0f, 1.0f, 0.0f),
 _view(lookAt(_pos, _pos + _dir, _up)),
-_projection(perspective(45.0f, 1.0f, 0.1f, 100.0f)),
+_projection(perspective(45.0f, 1.0f, 0.1f, 1000.0f)),
 _viewProjection(_projection * _view)
 {
 }
