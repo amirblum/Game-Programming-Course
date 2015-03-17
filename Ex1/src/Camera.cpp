@@ -16,7 +16,39 @@ _view(lookAt(_pos, _pos + _dir, _up)),
 _projection(perspective(45.0f, 1.0f, 0.1f, 100.0f)),
 _viewProjection(_projection * _view)
 {
-    InputManager::Instance().registerReceiver(this);
+}
+
+vec3 Camera::getDir()
+{
+    return _dir;
+}
+
+vec3 Camera::getPos()
+{
+    return _pos;
+}
+
+vec3 Camera::getUp()
+{
+    return _up;
+}
+
+void Camera::setDir(vec3 dir)
+{
+    _dir = dir;
+    updateViewProjection();
+}
+
+void Camera::setPos(vec3 pos)
+{
+    _pos = pos;
+    updateViewProjection();
+}
+
+void Camera::setUp(vec3 up)
+{
+    _up = up;
+    updateViewProjection();
 }
 
 void Camera::updateViewProjection()
@@ -29,31 +61,4 @@ void Camera::updateViewProjection()
 mat4 Camera::getViewProjection()
 {
     return _viewProjection;
-}
-
-void Camera::receiveInput(unsigned char key, int x, int y)
-{
-    vec4 newDir;
-    switch (key) {
-        case KEY_FORWARD:
-            _pos += _dir;
-            break;
-        case KEY_BACKWARD:
-            _pos -= _dir;
-            break;
-        case KEY_TURN_LEFT:
-            newDir = vec4(_dir, 1.0f);
-            newDir = rotate(mat4(1.0f), 10.0f, _up) * newDir;
-            _dir = normalize(vec3(newDir.x, newDir.y, newDir.z));
-            break;
-        case KEY_TURN_RIGHT:
-            newDir = vec4(_dir, 1.0f);
-            newDir = rotate(mat4(1.0f), -10.0f, _up) * newDir;
-            _dir = normalize(vec3(newDir.x, newDir.y, newDir.z));
-            break;
-        default:
-            break;
-    }
-    
-    updateViewProjection();
 }

@@ -9,17 +9,15 @@
 #ifndef __CGP_Ex1__Renderable__
 #define __CGP_Ex1__Renderable__
 
-#include <stdio.h>
-
-#include <glm/glm.hpp>
-using namespace glm;
-
 #include <GL/glew.h>
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
 #else
 #include <GL/gl.h>
 #endif
+
+#include <glm/glm.hpp>
+using namespace glm;
 
 class Renderable {
 protected:

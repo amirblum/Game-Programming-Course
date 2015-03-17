@@ -12,8 +12,6 @@
 #include "TerrainDeformer.h"
 #include "Terrain.h"
 
-#include <stdio.h>
-
 class MidPointDisplacement : public TerrainDeformer {
 private:
     // What step are we on?

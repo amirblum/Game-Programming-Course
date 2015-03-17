@@ -9,8 +9,6 @@
 #ifndef __CGP_Ex1__TerrainDeformer__
 #define __CGP_Ex1__TerrainDeformer__
 
-#include <stdio.h>
-
 #include "Terrain.h"
 
 class TerrainDeformer {

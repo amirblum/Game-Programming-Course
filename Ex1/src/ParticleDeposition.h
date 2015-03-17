@@ -9,17 +9,20 @@
 #ifndef __CGP_Ex1__ParticleDeposition__
 #define __CGP_Ex1__ParticleDeposition__
 
-#include <stdio.h>
 #include "TerrainDeformer.h"
 
 class ParticleDeposition : public TerrainDeformer {
-private:
     float _displacement;
     int _currentX, _currentY;
+    int _iteration, _currentIterations;
+    
 public:
     ParticleDeposition(Terrain *terrain, float displacement);
     void performDeformationStep();
     void depositParticle(int x, int y);
+    
+private:
+    void beginNewMountain();
 };
 
 #endif /* defined(__CGP_Ex1__ParticleDeposition__) */

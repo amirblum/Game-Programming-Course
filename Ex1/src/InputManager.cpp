@@ -8,42 +8,37 @@
 
 #include "InputManager.h"
 
-#include <algorithm>
+#include <iostream>
 
 /**
  * Constructor. Currently empty
  */
 InputManager::InputManager() {}
 
-/**
- * Register a new receiver
- */
-void InputManager::registerReceiver(InputReceiver *receiver)
+void InputManager::handleKeyDown(unsigned char key, int x, int y)
 {
-    _receivers.push_back(receiver);
+    _keyPressed[key] = true;
 }
 
-/**
- * Unregister a receiver
- */
-void InputManager::unregisterReceiver(InputReceiver *receiver)
+void InputManager::handleKeyUp(unsigned char key, int x, int y)
 {
-    std::vector<InputReceiver*>::iterator it;
-    it = std::find(_receivers.begin(), _receivers.end(), receiver);
+    _keyPressed[key] = false;
+    _keyQueriedWhilePressed[key] = false;
+}
+
+bool InputManager::isPressed(unsigned char key)
+{
+    return _keyPressed[key];
+}
+
+bool InputManager::isPressedFirstTime(unsigned char key)
+{
+    bool firstTime = _keyPressed[key] && !_keyQueriedWhilePressed[key];
     
-    if (it != _receivers.end()) {
-        _receivers.erase(it);
+    if (firstTime)
+    {
+        _keyQueriedWhilePressed[key] = true;
     }
-}
-
-/**
- * Forward the input to all the registered objects
- */
-void InputManager::handleInput(unsigned char key, int x, int y)
-{
-    std::vector<InputReceiver*>::iterator it;
-    for (it = _receivers.begin(); it != _receivers.end(); ++it) {
-        InputReceiver *receiver = *it;
-        receiver->receiveInput(key, x, y);
-    }
+    
+    return firstTime;
 }

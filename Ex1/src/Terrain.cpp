@@ -9,11 +9,8 @@
 #include "Terrain.h"
 #include "Camera.h"
 
-#define GRID_ELEMENT_SIZE (1.0f)
-
 Terrain::Terrain(int gridWidth, int gridLength) : _gridWidth(gridWidth), _gridLength(gridLength)
 {
-    std::cout << "In Terrain()" << std::endl;
     initGrid(gridWidth, gridLength);
 }
 
@@ -23,6 +20,11 @@ Terrain::~Terrain()
 
 void Terrain::initGrid(int width, int length)
 {
+    _leftBound = 0;
+    _rightBound = width * GRID_ELEMENT_SIZE - 1;
+    _frontBound = 0;
+    _backBound = length * GRID_ELEMENT_SIZE - 1;
+    
     // Populate _grid vector
     for (int row = 0; row < length; ++row) {
         for (int col = 0; col < width; ++col) {
@@ -134,6 +136,26 @@ int Terrain::getGridLength()
     return _gridLength;
 }
 
+float Terrain::getLeftBound()
+{
+    return _leftBound;
+}
+
+float Terrain::getRightBound()
+{
+    return _rightBound;
+}
+
+float Terrain::getFrontBound()
+{
+    return _frontBound;
+}
+
+float Terrain::getBackBound()
+{
+    return _backBound;
+}
+
 int Terrain::getVertexFromCoords(int x, int y)
 {
     return _gridWidth * y + x;
@@ -167,4 +189,16 @@ void Terrain::setVertexHeight(int x, int y, float newHeight)
         return;
     }
     setVertexHeight(vertex, newHeight);
+}
+
+float Terrain::interpolatedHeight(float x, float z)
+{
+    // For now just return the average height of the four surrounding vertices
+    // TODO: Linearly interpolate between them
+    float bottomLeftHeight = getVertexHeight((int)x, (int)z);
+    float bottomRightHeight = getVertexHeight((int)(x+1), (int)z);
+    float topLeftHeight = getVertexHeight((int)x, (int)(z+1));
+    float topRightHeight = getVertexHeight((int)(x+1), (int)(z+1));
+    
+    return (bottomLeftHeight + bottomRightHeight + topLeftHeight + topRightHeight) / 4;
 }

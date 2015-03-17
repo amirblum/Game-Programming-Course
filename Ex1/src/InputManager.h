@@ -11,9 +11,7 @@
 #ifndef __CGP_Ex1__InputManager__
 #define __CGP_Ex1__InputManager__
 
-#include "InputReceiver.h"
-
-#include <vector>
+#include <map>
 
 // Key definitions
 #define KEY_FORWARD ('w')
@@ -21,8 +19,13 @@
 #define KEY_TURN_LEFT ('a')
 #define KEY_TURN_RIGHT ('d')
 #define KEY_JUMP (' ')
+#define KEY_STRAFE_LEFT ('q')
+#define KEY_STRAFE_RIGHT ('e')
+#define KEY_CROUCH ('z')
 
 class InputManager {
+    unsigned char keyPressed;
+    
 public:
     static InputManager& Instance() {
         static InputManager instance;
@@ -30,12 +33,15 @@ public:
         return instance;
     }
     
-    void registerReceiver(InputReceiver *receiver);
-    void unregisterReceiver(InputReceiver *receiver);
-    void handleInput(unsigned char key, int x, int y);
+    void handleKeyDown(unsigned char key, int x, int y);
+    void handleKeyUp(unsigned char key, int x, int y);
+    
+    bool isPressed(unsigned char key);
+    bool isPressedFirstTime(unsigned char key);
     
 private:
-    std::vector<InputReceiver*> _receivers;
+    std::map<unsigned char, bool> _keyPressed;
+    std::map<unsigned char, bool> _keyQueriedWhilePressed;
     
     InputManager();
     InputManager(InputManager const&);

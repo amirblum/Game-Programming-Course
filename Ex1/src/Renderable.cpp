@@ -14,6 +14,8 @@
 
 #include "Camera.h"
 
+#include <iostream>
+
 #define SHADERS_DIR "shaders/"
 
 Renderable::Renderable() :

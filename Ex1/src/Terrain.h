@@ -10,9 +10,9 @@
 
 #include "Renderable.h"
 
-//using namespace glm;
-
 #import <vector>
+
+#define GRID_ELEMENT_SIZE (1.0f)
 
 class Terrain : public Renderable {
     // Terrain vertices
@@ -20,6 +20,7 @@ class Terrain : public Renderable {
     
     // Info
     int _gridWidth, _gridLength;
+    float _leftBound, _rightBound, _frontBound, _backBound;
 
  public:
     Terrain(int gridWidth, int gridLength);
@@ -27,6 +28,10 @@ class Terrain : public Renderable {
     
     int getGridWidth();
     int getGridLength();
+    float getLeftBound();
+    float getRightBound();
+    float getFrontBound();
+    float getBackBound();
     
     // Vertex helper
     int getVertexFromCoords(int x, int y);
@@ -38,6 +43,9 @@ class Terrain : public Renderable {
     // Height according to coordinates
     float getVertexHeight(int x, int y);
     void setVertexHeight(int x, int y, float newHeight);
+    
+    // Linearly-interpolated hieght
+    float interpolatedHeight(float x, float z);
     
     void pushGridVertices();
     

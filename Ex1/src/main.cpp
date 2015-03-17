@@ -18,6 +18,8 @@
 
 using namespace glm;
 
+#include "Controller.h"
+
 #include "Renderable.h"
 #include "Terrain.h"
 #include "TerrainDeformer.h"
@@ -52,7 +54,6 @@ using namespace glm;
 /** Key definitions */
 
 #define KEY_ESC            ('\e') // Key used to terminate the program - ESC  //
-#define KEY_QUIT            ('q') // Key used to terminate the program        //
 
 /** display callback */
 void display(void);
@@ -60,8 +61,11 @@ void display(void);
 /** window reshape callback  */
 void windowResize(int width, int height);
 
-/** keyboard callback  */
-void keyboard(unsigned char key, int x, int y);
+/** keyboardDown callback  */
+void keyboardDown(unsigned char key, int x, int y);
+
+/** keyboardUp callback  */
+void keyboardUp(unsigned char key, int x, int y);
 
 /** mouse click callback */
 void mouse(int button, int state, int x, int y) ;
@@ -70,7 +74,7 @@ void mouse(int button, int state, int x, int y) ;
 void motion(int x, int y) ;
 
 /** timer callback */
-void timer(int value) ;
+void deformationTimer(int value) ;
 
 /** Global variables */
 
@@ -80,6 +84,8 @@ bool    g_startAnimation = false;
 bool    g_duringAnimation = false;
 
 // A global variable for our model (a better practice would be to use a singletone that holds all model):
+
+Controller *_controller;
 Terrain *_terrain;
 TerrainDeformer *_terrainDeformer;
 
@@ -118,17 +124,21 @@ int main(int argc, char* argv[])
     // Set callback functions:
     glutDisplayFunc(display) ;
     glutReshapeFunc(windowResize) ;
-    glutKeyboardFunc(keyboard);
+    glutKeyboardFunc(keyboardDown);
+    glutKeyboardUpFunc(keyboardUp);
     glutMouseFunc(mouse);
     glutMotionFunc(motion);
-    glutTimerFunc(100, timer, 0);   // uint millis int value
+    glutTimerFunc(100, deformationTimer, 0);   // uint millis int value
 	
+    // Initialize random seed
+    srand(time(NULL));
+    
     // Init anything that can be done once and for all:
     _terrain = new Terrain(GRID_WIDTH, GRID_LENGTH);
     _terrainDeformer = new ParticleDeposition(_terrain, 1.0f);
-    for (int i = 0; i < 10; ++i) {
-        _terrainDeformer->performDeformationStep();
-    }
+    
+    // Set up controller
+    _controller = new Controller(&Camera::Instance(), _terrain);
 
     // Set clear color to black:
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -139,16 +149,27 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+int oldTimeSinceStart = 0;
 void display(void)
 {
     // Clear the screen buffer
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    // Update the state
+    int timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
+    int deltaTime = timeSinceStart - oldTimeSinceStart;
+    oldTimeSinceStart = timeSinceStart;
+    
+    _controller->update((float)deltaTime / 100.0f);
 
     // Let the model to draw itself...
     _terrain->draw();
 	
     // Swap those buffers so someone will actually see the results... //
     glutSwapBuffers();
+    
+    // Refresh the display
+    glutPostRedisplay();
 }
 
 // This method is called when the window is resized
@@ -173,23 +194,23 @@ void windowResize(int w, int h)
  *             It supports terminating the application when the KEY_QUIT is pressed.
  *
  \******************************************************************/
-void keyboard(unsigned char key, int x, int y)
+void keyboardDown(unsigned char key, int x, int y)
 {
     unsigned int lower_key = tolower(key);
-	
-    switch(lower_key)
+    
+    if (lower_key == KEY_ESC)
     {
-      case KEY_QUIT:
-      case KEY_ESC:
-          // Terminate the program:
-          exit(RC_OK);
-          break;
-      default:
-          InputManager::Instance().handleInput(lower_key, x, y);
-          break;
+        exit(RC_OK);
     }
     
-    return;
+    InputManager::Instance().handleKeyDown(lower_key, x, y);
+}
+
+void keyboardUp(unsigned char key, int x, int y)
+{
+    unsigned int lower_key = tolower(key);
+    
+    InputManager::Instance().handleKeyUp(lower_key, x, y);
 }
 
 /********************************************************************
@@ -234,35 +255,20 @@ void motion(int x, int y)
     return;
 }
 
-//static const float animationDurationInFrames = 300;
-static const float framesPerDeformation = 10;
-
-void timer(int value) {
-    /* Set the timer to be called again in X milli - seconds. */
-//    if (g_startAnimation)
-//    {
+/**
+ * Update the deformation every X frames
+ */
+static const int deformationInMilli = 50;
+void deformationTimer(int value) {
+    
+//    float t = (float)value / (float)framesPerDeformation;
+//    if (t > 1) {
 //        value = 0;
-//        g_duringAnimation = true;
-//        g_startAnimation = false;
+//        _terrainDeformer->performDeformationStep();
 //    }
     
-    float t = (float)value / (float)framesPerDeformation;
-    if (t > 1) {
-        value = 0;
-        _terrainDeformer->performDeformationStep();
-    }
-    
-    glutTimerFunc(25, timer, ++value);   // uint millis int value
-    glutPostRedisplay();
-    
-    
-//    if (g_duringAnimation) {
-//        float t = (float)value / (float)animationDurationInFrames;
-//        if (t > 1) {
-//            g_duringAnimation = false;
-//            return;
-//        }
-//        
-//        glutPostRedisplay();
-//    }
+    /* Set the timer to be called again in X milli - seconds. */
+    glutTimerFunc(deformationInMilli, deformationTimer, ++value);   // uint millis int value
+    _terrainDeformer->performDeformationStep();
+//    glutPostRedisplay();
 }

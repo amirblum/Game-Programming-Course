@@ -9,22 +9,21 @@
 #ifndef __CGP_Ex1__Camera__
 #define __CGP_Ex1__Camera__
 
-// GLM headers
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-using namespace glm;
-
-#include <iostream>
+#include <GL/glew.h>
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
 #else
 #include <GL/gl.h>
 #endif
 
-#include "InputManager.h"
-#include "InputReceiver.h"
+// GLM headers
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+using namespace glm;
 
-class Camera : public InputReceiver {
+#include "InputManager.h"
+
+class Camera {
 
 public:
     static Camera& Instance() {
@@ -33,8 +32,15 @@ public:
         return instance;
     }
     
+    vec3 getDir();
+    vec3 getPos();
+    vec3 getUp();
+    
+    void setDir(vec3 dir);
+    void setPos(vec3 pos);
+    void setUp(vec3 up);
+    
     mat4 getViewProjection();
-    void receiveInput(unsigned char key, int x, int y);
 
 private:
     vec3 _dir;
@@ -50,7 +56,6 @@ private:
     void operator=(Camera const&);
     
     void updateViewProjection();
-    
 };
 
 #endif /* defined(__CGP_Ex1__Camera__) */

@@ -7,18 +7,44 @@
 //
 
 #include "ParticleDeposition.h"
+#include <iostream>
 
 ParticleDeposition::ParticleDeposition(Terrain *terrain, float displacement) :
 TerrainDeformer(terrain),
-_displacement(displacement)
+_displacement(displacement),
+_iteration(0)
+{
+    beginNewMountain();
+}
+
+void ParticleDeposition::beginNewMountain()
 {
     // Initialize drop point to random point to begin
-    _currentX = rand() % terrain->getGridWidth();
-    _currentY =rand() % terrain->getGridLength();
+    do {
+        _currentX = rand() % _terrain->getGridWidth();
+        _currentY = rand() % _terrain->getGridLength();
+    } while (_terrain->getVertexHeight(_currentX, _currentY) > 0);
+    
+    // Get random iterations for mountain
+    int terrainSize = _terrain->getGridWidth() * _terrain->getGridLength();
+    int quarterTerrain = terrainSize / 4;
+    int eighthTerrain = quarterTerrain / 2;
+    
+    _currentIterations = rand() % (quarterTerrain - eighthTerrain) + eighthTerrain;
+    _iteration = 0;
+    
+    std::cout << "Starting deposition with " << _currentIterations << " iterations" << std::endl;
 }
 
 void ParticleDeposition::performDeformationStep()
 {
+    // Check if to move to next mountain
+    _iteration++;
+    if (_iteration > _currentIterations)
+    {
+        beginNewMountain();
+    }
+    
     // Advance in random direction
     int direction = rand() % 4;
     switch (direction) {
