@@ -34,8 +34,11 @@ using namespace glm;
 /** Implementation Definitions */
 #define GRID_WIDTH (50)
 #define GRID_LENGTH (50)
+// For MidPointDisplacement
 #define DISPLACEMENT_START_HEIGHT (50.0f)
 #define DISPLACEMENT_ROUGHNESS (1.0f)
+// For all deformers
+#define MILLIS_PER_DEFORMATION (10)
 
 /** Internal Definitions */
 
@@ -259,7 +262,7 @@ void motion(int x, int y)
 /**
  * Update the deformation every X frames
  */
-static const int deformationInMilli = 50;
+//static const int deformationInMilli = 50;
 void deformationTimer(int value) {
     
 //    float t = (float)value / (float)framesPerDeformation;
@@ -269,7 +272,7 @@ void deformationTimer(int value) {
 //    }
     
     /* Set the timer to be called again in X milli - seconds. */
-    glutTimerFunc(deformationInMilli, deformationTimer, ++value);   // uint millis int value
+    glutTimerFunc(MILLIS_PER_DEFORMATION, deformationTimer, value);   // uint millis int value
     _terrainDeformer->performDeformationStep();
 //    glutPostRedisplay();
 }
