@@ -11,7 +11,8 @@
 
 #define PLAYER_HEIGHT (1.0f)
 #define PLAYER_CROUCH_HEIGHT (0.5f)
-#define MOVE_SPEED (1.0f)
+#define MOVE_SPEED (0.7f)
+#define MOVE_BOOST (2.5);
 #define CROUCH_SPEED (0.4)
 #define TURN_ANGLE (10.0f)
 #define LEAN_ANGLE (5.0f)
@@ -35,32 +36,38 @@ _yVelocity(0)
 
 void Controller::update(float dt)
 {
+    InputManager &input = InputManager::Instance();
+    
     // Moving
-    if (InputManager::Instance().isPressed(KEY_FORWARD))
+    if (input.isPressed(KEY_FORWARD))
     {
-        move(_myCamera->getDir() * MOVE_SPEED * dt);
+        vec3 movementVec = _myCamera->getDir() * MOVE_SPEED;
+        move(movementVec * dt);
     }
-    else if (InputManager::Instance().isPressed(KEY_BACKWARD))
+    else if (input.isPressed(KEY_BACKWARD))
     {
-        move(-_myCamera->getDir() * MOVE_SPEED * dt);
+        vec3 movementVec = -_myCamera->getDir() * MOVE_SPEED;
+        move(movementVec * dt);
     }
     
     // Turning
-    if (InputManager::Instance().isPressed(KEY_TURN_LEFT))
+    if (input.isPressed(KEY_TURN_LEFT))
     {
-        turn(TURN_ANGLE * dt);
+        float angle = TURN_ANGLE;
+        turn(angle * dt);
     }
-    else if (InputManager::Instance().isPressed(KEY_TURN_RIGHT))
+    else if (input.isPressed(KEY_TURN_RIGHT))
     {
-        turn(-TURN_ANGLE * dt);
+        float angle = -TURN_ANGLE;
+        turn(angle * dt);
     }
     
     // Strafing
-    if (InputManager::Instance().isPressed(KEY_STRAFE_LEFT))
+    if (input.isPressed(KEY_STRAFE_LEFT))
     {
         move(-cross(_myCamera->getDir(), _myCamera->getUp()) * MOVE_SPEED * dt);
     }
-    else if (InputManager::Instance().isPressed(KEY_STRAFE_RIGHT))
+    else if (input.isPressed(KEY_STRAFE_RIGHT))
     {
         move(cross(_myCamera->getDir(), _myCamera->getUp()) * MOVE_SPEED * dt);
     }
@@ -68,13 +75,13 @@ void Controller::update(float dt)
     // Jumping / crouching
     
     // Cache couch press
-    bool crouchPressed = InputManager::Instance().isPressedFirstTime(KEY_CROUCH);
+    bool crouchPressed = input.isPressedFirstTime(KEY_CROUCH);
     
     if (_isJumping)
     {
         fall(dt);
     }
-    else if (InputManager::Instance().isPressedFirstTime(KEY_JUMP) && !_isCrouched)
+    else if (input.isPressedFirstTime(KEY_JUMP) && !_isCrouched)
     {
         jump();
     }
@@ -92,6 +99,11 @@ void Controller::update(float dt)
 
 void Controller::move(vec3 direction)
 {
+    if (InputManager::Instance().isModifierPressed())
+    {
+        direction *= MOVE_BOOST;
+    }
+    
     vec3 newPos = _myCamera->getPos() + direction;
     
     // Check for bounds
@@ -111,6 +123,11 @@ void Controller::move(vec3 direction)
 
 void Controller::turn(float angle)
 {
+    if (InputManager::Instance().isModifierPressed())
+    {
+        angle *= MOVE_BOOST;
+    }
+    
     vec4 newDir(_myCamera->getDir(), 1.0f);
     newDir = rotate(mat4(1.0f), angle, _myCamera->getUp()) * newDir;
     _myCamera->setDir(normalize(vec3(newDir.x, newDir.y, newDir.z)));

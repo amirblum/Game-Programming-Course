@@ -6,6 +6,12 @@
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
 
+#include <GL/glew.h>
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/freeglut.h>
+#endif
 #include "InputManager.h"
 
 #include <iostream>
@@ -18,6 +24,7 @@ InputManager::InputManager() {}
 void InputManager::handleKeyDown(unsigned char key, int x, int y)
 {
     _keyPressed[key] = true;
+    _modifier = glutGetModifiers();
 }
 
 void InputManager::handleKeyUp(unsigned char key, int x, int y)
@@ -41,4 +48,9 @@ bool InputManager::isPressedFirstTime(unsigned char key)
     }
     
     return firstTime;
+}
+
+bool InputManager::isModifierPressed()
+{
+    return _modifier;
 }

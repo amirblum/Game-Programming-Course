@@ -38,10 +38,12 @@ public:
     
     bool isPressed(unsigned char key);
     bool isPressedFirstTime(unsigned char key);
+    bool isModifierPressed();
     
 private:
     std::map<unsigned char, bool> _keyPressed;
     std::map<unsigned char, bool> _keyQueriedWhilePressed;
+    bool _modifier;
     
     InputManager();
     InputManager(InputManager const&);
