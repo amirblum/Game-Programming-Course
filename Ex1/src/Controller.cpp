@@ -26,7 +26,8 @@ Controller::Controller(Camera *camera, Terrain *terrain) :
 _myCamera(camera),
 _terrain(terrain),
 _isJumping(false),
-_yVelocity(0)
+_yVelocity(0),
+_isCrouched(false)
 {
     // Set camera to corner of terrain to begin
     float x = _terrain->getLeftBound() + 1.0f;
