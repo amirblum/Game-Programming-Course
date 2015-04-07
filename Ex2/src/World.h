@@ -29,7 +29,12 @@ public:
     World();
     void update(float dt);
     void draw();
+    
+    // Getters
     vec3 getStartPosition();
+    
+    // State changers
+    void advanceCorridor(float amount);
 };
 
 #endif /* defined(__CGP_Ex2__World__) */

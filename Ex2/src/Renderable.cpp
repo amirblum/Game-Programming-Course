@@ -14,23 +14,24 @@
 
 #include "Camera.h"
 
-#include <iostream>
 
 #define SHADERS_DIR "shaders/"
 
-Renderable::Renderable() :
+Renderable::Renderable(std::string shaderProgram,
+                       std::string vertexShaderFilename,
+                       std::string fragmentShaderFilename) :
 _vao(0), _vbo(0), _ibo(0), _world(1.0f)
 {
     programManager::sharedInstance()
-    .createProgram("default",
-                   SHADERS_DIR "SimpleShader.vert",
-                   SHADERS_DIR "SimpleShader.frag");
+    .createProgram(shaderProgram,
+                   (SHADERS_DIR + vertexShaderFilename).c_str(),
+                   (SHADERS_DIR + fragmentShaderFilename).c_str());
     
-    GLuint program = programManager::sharedInstance().programWithID("default");
+    _shaderProgram = programManager::sharedInstance().programWithID(shaderProgram);
     
     // Obtain uniform variable handles:
-    _fillColorUV  = glGetUniformLocation(program, "fillColor");
-    _gpuWVP  = glGetUniformLocation(program, "wvp");
+    _wvpUniform  = glGetUniformLocation(_shaderProgram, "wvp");
+    _textureUniform  = glGetUniformLocation(_shaderProgram, "textureSampler");
     
     // Initialize VBO and transfer it to OpenGL
     {
@@ -46,7 +47,7 @@ _vao(0), _vbo(0), _ibo(0), _world(1.0f)
         // Tell OpenGL that there is vertex data in this buffer object and what form that vertex data takes:
         // Obtain attribute handles:
         //        std::cout << "Generating VertexAttribute Pointer" << std::endl;
-        _posAttrib = glGetAttribLocation(program, "position");
+        _posAttrib = glGetAttribLocation(_shaderProgram, "position");
         glEnableVertexAttribArray(_posAttrib);
         glBindBuffer(GL_ARRAY_BUFFER, _vbo);
         glVertexAttribPointer(_posAttrib, // attribute handle
@@ -58,6 +59,12 @@ _vao(0), _vbo(0), _ibo(0), _world(1.0f)
         
         // Unbind vertex array:
         glBindVertexArray(0);
+    }
+    
+    // Initialize texture
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glGenTextures(1, &_tex);
     }
 }
 
@@ -74,26 +81,26 @@ Renderable::~Renderable()
 void Renderable::draw()
 {
     // Set the program to be used in subsequent lines:
-    glUseProgram(programManager::sharedInstance().programWithID("default"));
+    glUseProgram(_shaderProgram);
     
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Also try using GL_FILL and GL_POINT
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Also try using GL_FILL and GL_POINT
     
     mat4 wvp = Camera::Instance().getViewProjection() * _world;
     
     // Pass the uniform variables
     {
         // wvp matrix
-        glUniformMatrix4fv (_gpuWVP, 1, GL_FALSE, value_ptr(wvp));
+        glUniformMatrix4fv(_wvpUniform, 1, GL_FALSE, value_ptr(wvp));
         
-        // Corridor color
-        glUniform4f(_fillColorUV, 0.3f, 0.5f, 0.3f, 1.0);
+        glUniform1i(_textureUniform, 0);
     }
     
     // Draw using the state stored in the Vertex Array object:
     {
+        customBindings();
+        
         glBindVertexArray(_vao);
         
-//        std::cout << "Drawing VBO" << std::endl;
         glDrawElements(GL_TRIANGLES, _nElementIndices, GL_UNSIGNED_BYTE, (GLvoid*)0);
         
         // Unbind the Vertex Array object
@@ -102,4 +109,9 @@ void Renderable::draw()
     
     // Cleanup, not strictly necessary
     glUseProgram(0);
+}
+
+/** Empty customBindings by default */
+void Renderable::customBindings()
+{
 }

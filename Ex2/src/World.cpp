@@ -12,7 +12,9 @@
 
 #define CORRIDOR_WIDTH (5.0f)
 #define CORRIDOR_HEIGHT (5.0f)
-#define CORRIDOR_LENGTH (100.0f)
+#define CORRIDOR_LENGTH (20.0f)
+
+#define ADVANCE_STEP (0.1f)
 
 World::World() :
 _corridor(CORRIDOR_WIDTH, CORRIDOR_HEIGHT, CORRIDOR_LENGTH),
@@ -33,4 +35,9 @@ void World::draw()
 vec3 World::getStartPosition()
 {
     return _startPosition;
+}
+
+void World::advanceCorridor(float amount)
+{
+    _corridor.increaseOffset(ADVANCE_STEP * amount);
 }

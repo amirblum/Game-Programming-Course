@@ -11,7 +11,7 @@
 
 #define PLAYER_HEIGHT (2.0f)
 #define PLAYER_CROUCH_HEIGHT (0.5f)
-#define MOVE_SPEED (0.7f)
+#define MOVE_SPEED (0.2f)
 #define MOVE_BOOST (2.5);
 #define CROUCH_SPEED (0.4)
 #define TURN_ANGLE (10.0f)
@@ -43,13 +43,17 @@ void Controller::update(float dt)
     // Moving
     if (input.isPressed(KEY_FORWARD))
     {
-        vec3 movementVec = _myCamera->getDir() * MOVE_SPEED;
-        move(movementVec * dt);
+//        vec3 movementVec = _myCamera->getDir() * MOVE_SPEED;
+//        move(movementVec * dt);
+        
+        _world->advanceCorridor(-MOVE_SPEED * dt);
     }
     else if (input.isPressed(KEY_BACKWARD))
     {
-        vec3 movementVec = -_myCamera->getDir() * MOVE_SPEED;
-        move(movementVec * dt);
+//        vec3 movementVec = -_myCamera->getDir() * MOVE_SPEED;
+//        move(movementVec * dt);
+        
+        _world->advanceCorridor(MOVE_SPEED * dt);
     }
     
     // Turning

@@ -21,25 +21,34 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
+#include <iostream>
+
 class Renderable {
 protected:
     // World transformation
     mat4 _world;
     
     // Buffer handlers
-    GLuint _vao, _vbo, _ibo;
+    GLuint _vao, _vbo, _ibo, _tex;
     
     // Attribute handle:
     GLint _posAttrib;
     
+    // Shader program ID
+    GLuint _shaderProgram;
+    
     // Uniform handle:
-    GLint _fillColorUV, _gpuWVP;
+    GLint _wvpUniform, _textureUniform;
     
     // Number of elements
     size_t _nElementIndices;
     
+    virtual void customBindings();
+    
 public:
-    Renderable();
+    Renderable(std::string shaderProgram,
+               std::string vertexShaderFilename,
+               std::string fragmentShaderFilename);
     virtual ~Renderable();
     void draw();
 };

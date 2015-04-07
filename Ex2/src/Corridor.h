@@ -17,7 +17,13 @@
 class Corridor : public Renderable {
 private:
     // Info
-    float _width, _height, _length;
+    float _width, _height, _length, _offset;
+    
+    // Custom uniform variables
+    GLuint _offsetUniform;
+    
+public:
+    void customBindings();
 
 public:
     Corridor(float width, float height, float length);
@@ -27,7 +33,10 @@ public:
     float getWidth();
     float getHeight();
     float getLength();
-
+    float getOffset();
+    
+    // Setter
+    void increaseOffset(float increment);
 };
 
 #endif /* defined(__ex2__Corridor__) */
