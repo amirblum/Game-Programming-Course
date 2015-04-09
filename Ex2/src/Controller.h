@@ -13,8 +13,6 @@
 #define __CGP_Ex2__Controller__
 
 
-#include "InputManager.h"
-
 #include "Camera.h"
 #include "World.h"
 
@@ -27,14 +25,10 @@ using namespace glm;
 class Controller {
     Camera *_myCamera;
     World *_world;
-    
-    // Jumping
-    bool _isJumping;
-    float _yVelocity;
-    
-    // Crouching
-    bool _isCrouching;
-    bool _isCrouched;
+    vec3 _lightOffset;
+    float _currentBobAmount;
+    bool _leaningLeft;
+    bool _unBobbing;
     
 public:
     Controller(Camera *camera, World *world);
@@ -44,15 +38,10 @@ public:
     
 private:
     // Private functions
-    void move(vec3 direction);
-    void moveToPosition(vec3 position);
+    void advance(bool forward, float dt);
+    void strafe(vec3 direction);
     void turn(float angle);
-    
-    void jump();
-    void fall(float dt);
-    
-    void crouch(float dt);
-    void uncrouch(float dt);
+    void unBob(float dt);
 };
 
 #endif /* defined(__CGP_Ex2__Controller__) */

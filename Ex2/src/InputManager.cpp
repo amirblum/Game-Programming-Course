@@ -39,6 +39,11 @@ void InputManager::handleKeyUp(unsigned char key, int x, int y)
     _keyQueriedWhilePressed[key] = false;
 }
 
+void InputManager::handleMouseMove(float x, float y)
+{
+    _mousePos = vec2(x, y);
+}
+
 /**
  * Query if a key is pressed
  */
@@ -70,4 +75,12 @@ bool InputManager::isPressedFirstTime(unsigned char key)
 bool InputManager::isModifierPressed()
 {
     return _modifier;
+}
+
+/**
+ * Get the current mouse position
+ */
+vec2 InputManager::getMousePos()
+{
+    return _mousePos;
 }

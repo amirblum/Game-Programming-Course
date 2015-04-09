@@ -19,7 +19,8 @@
 
 Renderable::Renderable(std::string shaderProgram,
                        std::string vertexShaderFilename,
-                       std::string fragmentShaderFilename) :
+                       std::string fragmentShaderFilename,
+                       vec3 positionVec, vec3 scaleVec) :
 _vao(0), _vbo(0), _ibo(0), _world(1.0f)
 {
     programManager::sharedInstance()
@@ -28,10 +29,6 @@ _vao(0), _vbo(0), _ibo(0), _world(1.0f)
                    (SHADERS_DIR + fragmentShaderFilename).c_str());
     
     _shaderProgram = programManager::sharedInstance().programWithID(shaderProgram);
-    
-    // Obtain uniform variable handles:
-    _wvpUniform  = glGetUniformLocation(_shaderProgram, "wvp");
-    _textureUniform  = glGetUniformLocation(_shaderProgram, "textureSampler");
     
     // Initialize VBO and transfer it to OpenGL
     {
@@ -61,10 +58,28 @@ _vao(0), _vbo(0), _ibo(0), _world(1.0f)
         glBindVertexArray(0);
     }
     
-    // Initialize texture
+    // Initialize texture/bump
     {
         glActiveTexture(GL_TEXTURE0);
         glGenTextures(1, &_tex);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glGenTextures(1, &_bump);
+    }
+    
+    // Obtain uniform variable handles:
+    {
+        _worldUniform  = glGetUniformLocation(_shaderProgram, "W");
+        _viewProjectionUniform  = glGetUniformLocation(_shaderProgram, "PV");
+        _textureUniform  = glGetUniformLocation(_shaderProgram, "textureSampler");
+        _bumpUniform  = glGetUniformLocation(_shaderProgram, "bumpSampler");
+        _bumpMappingOnUniform = glGetUniformLocation(_shaderProgram, "bumpMappingOn");
+    }
+    
+    // Set up world translation
+    {
+        _world = _world * translate(mat4(1.0f), positionVec);
+        _world = _world * scale(mat4(1.0f), scaleVec);
     }
 }
 
@@ -85,14 +100,16 @@ void Renderable::draw()
     
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Also try using GL_FILL and GL_POINT
     
-    mat4 wvp = Camera::Instance().getViewProjection() * _world;
-    
     // Pass the uniform variables
     {
-        // wvp matrix
-        glUniformMatrix4fv(_wvpUniform, 1, GL_FALSE, value_ptr(wvp));
+        // w,vp matrices
+        glUniformMatrix4fv(_worldUniform, 1, GL_FALSE, value_ptr(_world));
+        glUniformMatrix4fv(_viewProjectionUniform, 1, GL_FALSE,
+                           value_ptr(Camera::Instance().getViewProjection()));
         
         glUniform1i(_textureUniform, 0);
+        glUniform1i(_bumpUniform, 1);
+        glUniform1i(_bumpMappingOnUniform, _bumpMappingOn);
     }
     
     // Draw using the state stored in the Vertex Array object:
@@ -114,4 +131,14 @@ void Renderable::draw()
 /** Empty customBindings by default */
 void Renderable::customBindings()
 {
+}
+
+mat4 Renderable::getWorldMat()
+{
+    return _world;
+}
+
+void Renderable::toggleBumpMapping()
+{
+    _bumpMappingOn = !_bumpMappingOn;
 }

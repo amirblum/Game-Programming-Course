@@ -17,16 +17,22 @@
 class Corridor : public Renderable {
 private:
     // Info
-    float _width, _height, _length, _offset;
+    float _width, _height, _length, _offset, _texturePercent;
+    
+    // Light info
+    vec3 _lightPos, _lightDir;
+    float _lightCutoff;
     
     // Custom uniform variables
-    GLuint _offsetUniform;
+    GLuint _offsetUniform, _texturePercentUniform;
+    GLuint _lightPosUniform, _lightDirUniform;
+    GLuint _lightCutoffUniform, _lightDarkenStartUniform, _lightDarkenEndUniform;
     
 public:
     void customBindings();
 
 public:
-    Corridor(float width, float height, float length);
+    Corridor(vec3 positionVec, vec3 scaleVec);
     virtual ~Corridor();
     
     // Getters
@@ -35,7 +41,10 @@ public:
     float getLength();
     float getOffset();
     
-    // Setter
+    // Setters
+    void setLightPos(vec3 lightPos);
+    void setLightDir(vec3 lightDir);
+    void setLightCutoff(float lightCutoff);
     void increaseOffset(float increment);
 };
 

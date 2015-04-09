@@ -23,8 +23,13 @@ using namespace glm;
 
 class World {
 private:
-    Corridor _corridor;
     vec3 _startPosition;
+    float _leftBound, _rightBound;
+    
+    Corridor _corridor;
+    vec3 _lightPos;
+    vec3 _lightDir;
+    
 public:
     World();
     void update(float dt);
@@ -32,9 +37,14 @@ public:
     
     // Getters
     vec3 getStartPosition();
+    float getLeftBound();
+    float getRightBound();
     
     // State changers
     void advanceCorridor(float amount);
+    void setLightPos(vec3 lightPos);
+    void setLightCutoff(float lightCutoff);
+    void moveLight(vec2 mousePos);
 };
 
 #endif /* defined(__CGP_Ex2__World__) */

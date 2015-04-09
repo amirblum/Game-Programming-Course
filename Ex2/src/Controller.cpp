@@ -7,17 +7,28 @@
 //
 
 #include "Controller.h"
+#include "InputManager.h"
+
 #include <iostream>
 
 #define PLAYER_HEIGHT (2.0f)
 #define PLAYER_CROUCH_HEIGHT (0.5f)
-#define MOVE_SPEED (0.2f)
+
+#define LIGHT_OFFSET_X (-0.5f)
+#define LIGHT_OFFSET_Y (0.0f)
+#define LIGHT_OFFSET_Z (0.0f)
+#define LIGHT_CUTOFF_ANGLE (10.0f)
+
+#define MOVE_SPEED (0.02f)
+#define STRAFE_SPEED (0.2f)
+
+#define BOB_SPEED (0.01f)
+#define BOB_MAX (0.1f)
+
 #define MOVE_BOOST (2.5);
-#define CROUCH_SPEED (0.4)
+
 #define TURN_ANGLE (10.0f)
 #define LEAN_ANGLE (5.0f)
-#define JUMP_SPEED (1.5f)
-#define GRAVITY (0.4f)
 
 /**
  * Constructor. Sets camera to the desired initial position.
@@ -25,12 +36,21 @@
 Controller::Controller(Camera *camera, World *world) :
 _myCamera(camera),
 _world(world),
-_isJumping(false),
-_yVelocity(0),
-_isCrouched(false)
+_lightOffset(LIGHT_OFFSET_X, LIGHT_OFFSET_Y, LIGHT_OFFSET_Z),
+_currentBobAmount(0.0f),
+_leaningLeft(true),
+_unBobbing(false)
 {
+    vec3 startPosition = world->getStartPosition();
+    startPosition.x -= (BOB_SPEED / BOB_MAX);
+    vec3 cameraPosition = vec3(startPosition.x, startPosition.y + PLAYER_HEIGHT, startPosition.z);
+    
     // Set camera to middle of corridor
-    moveToPosition(world->getStartPosition());
+    _myCamera->setPos(cameraPosition);
+    
+    // Set the light to player height
+    _world->setLightPos(cameraPosition + _lightOffset);
+    _world->setLightCutoff(cos(radians(LIGHT_CUTOFF_ANGLE)));
 }
 
 /**
@@ -40,20 +60,18 @@ void Controller::update(float dt)
 {
     InputManager &input = InputManager::Instance();
     
+    // Flashlight
+    _world->moveLight(input.getMousePos());
+    
     // Moving
     if (input.isPressed(KEY_FORWARD))
     {
-//        vec3 movementVec = _myCamera->getDir() * MOVE_SPEED;
-//        move(movementVec * dt);
-        
-        _world->advanceCorridor(-MOVE_SPEED * dt);
+        // TODO: Accelerate slightly at first
+        advance(true, dt);
     }
     else if (input.isPressed(KEY_BACKWARD))
     {
-//        vec3 movementVec = -_myCamera->getDir() * MOVE_SPEED;
-//        move(movementVec * dt);
-        
-        _world->advanceCorridor(MOVE_SPEED * dt);
+        advance(false, dt);
     }
     
     // Turning
@@ -71,18 +89,58 @@ void Controller::update(float dt)
     // Strafing
     if (input.isPressed(KEY_STRAFE_LEFT))
     {
-        move(-cross(_myCamera->getDir(), _myCamera->getUp()) * MOVE_SPEED * dt);
+        strafe(-cross(_myCamera->getDir(), _myCamera->getUp()) * STRAFE_SPEED * dt);
     }
     else if (input.isPressed(KEY_STRAFE_RIGHT))
     {
-        move(cross(_myCamera->getDir(), _myCamera->getUp()) * MOVE_SPEED * dt);
+        strafe(cross(_myCamera->getDir(), _myCamera->getUp()) * STRAFE_SPEED * dt);
+    }
+    
+    // Unbob
+    if (_unBobbing) {
+        unBob(dt);
+    }
+}
+
+/**
+ * Advance down the corridor
+ */
+void Controller::advance(bool forward, float dt)
+{
+    float amount = -MOVE_SPEED * dt;
+    float bobAmount = BOB_SPEED * dt;
+
+    if (!forward) amount = -amount;
+    
+    // Check for boost;
+    if (InputManager::Instance().isModifierPressed())
+    {
+        amount *= MOVE_BOOST;
+        bobAmount *= MOVE_BOOST;
+    }
+    
+    _world->advanceCorridor(amount);
+    
+    // Bob up
+    if (!_unBobbing) {
+        float leanAmount = (_leaningLeft) ? bobAmount : -bobAmount;
+        vec3 cameraPos = _myCamera->getPos();
+        cameraPos.y += bobAmount;
+        cameraPos.x += leanAmount;
+        
+        _myCamera->setPos(cameraPos);
+        
+        if (cameraPos.y - PLAYER_HEIGHT > BOB_MAX) {
+            _leaningLeft = !_leaningLeft;
+            _unBobbing = true;
+        }
     }
 }
 
 /**
  * Move in a direction
  */
-void Controller::move(vec3 direction)
+void Controller::strafe(vec3 direction)
 {
     // Check for boost;
     if (InputManager::Instance().isModifierPressed())
@@ -90,22 +148,14 @@ void Controller::move(vec3 direction)
         direction *= MOVE_BOOST;
     }
     
-    vec3 newPos = _myCamera->getPos() + direction;
-    newPos.y = 0.0f;
+    vec3 newCameraPos = _myCamera->getPos() + direction;
+    vec3 newLightPos = newCameraPos + _lightOffset;
     
-    moveToPosition(newPos);
-}
-
-/**
- * Move in a direction
- */
-void Controller::moveToPosition(vec3 position)
-{
-    float playerHeight = (_isCrouched) ? PLAYER_CROUCH_HEIGHT : PLAYER_HEIGHT;
-    position.y += playerHeight;
+    newCameraPos.x = clamp(newCameraPos.x, _world->getLeftBound(), _world->getRightBound());
+    newLightPos.x = clamp(newLightPos.x, _world->getLeftBound(), _world->getRightBound());
     
-    // Set position
-    _myCamera->setPos(position);
+    _myCamera->setPos(newCameraPos);
+    _world->setLightPos(newLightPos);
 }
 
 /**
@@ -124,5 +174,27 @@ void Controller::turn(float angle)
     vec4 newDir(_myCamera->getDir(), 1.0f);
     newDir = rotate(mat4(1.0f), angle, _myCamera->getUp()) * newDir;
     _myCamera->setDir(normalize(vec3(newDir.x, newDir.y, newDir.z)));
+}
+
+void Controller::unBob(float dt)
+{
+    float bobAmount = BOB_SPEED * dt;
+    
+    // Check for boost;
+    if (InputManager::Instance().isModifierPressed())
+    {
+        bobAmount *= MOVE_BOOST;
+    }
+    
+    vec3 cameraPos = _myCamera->getPos();
+    cameraPos.y -= bobAmount * 4.0f;
+//    cameraPos.x += (_leaningLeft) ? bobAmount : -bobAmount;
+    if (cameraPos.y < PLAYER_HEIGHT) {
+        cameraPos.y = PLAYER_HEIGHT;
+//        _leaningLeft = !_leaningLeft;
+        _unBobbing = false;
+    }
+    
+    _myCamera->setPos(cameraPos);
 }
 

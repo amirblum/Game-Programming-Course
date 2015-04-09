@@ -126,7 +126,10 @@ int main(int argc, char* argv[])
     glutKeyboardUpFunc(keyboardUp);
     glutMouseFunc(mouse);
     glutMotionFunc(motion);
+    glutPassiveMotionFunc(motion);
 //    glutTimerFunc(100, deformationTimer, 0);   // uint millis int value
+    
+    glutSetCursor(GLUT_CURSOR_NONE);
 	
     // Initialize random seed
     srand(time(NULL));
@@ -170,9 +173,13 @@ void display(void)
     glutPostRedisplay();
 }
 
+float _screenWidth, _screenHeight;
 // This method is called when the window is resized
 void windowResize(int w, int h)
-{    
+{
+    _screenWidth = w;
+    _screenHeight = h;
+    
     // set the new viewport //
     glViewport(0, 0, w, h);
     
@@ -207,6 +214,18 @@ void keyboardDown(unsigned char key, int x, int y)
     InputManager::Instance().handleKeyDown(lower_key, x, y);
 }
 
+/********************************************************************
+ * Function  :	keyboardUp
+ * Arguments :	key : the key that was relased
+ *              x   : x value of the current mouse location
+ *              y   : y value of the current mouse location
+ * Returns   : n/a
+ * Throws    : n/a
+ *
+ * Purpose   : This function handles all the keyboard input from the user.
+ *             It supports terminating the application when the KEY_QUIT is pressed.
+ *
+ \******************************************************************/
 void keyboardUp(unsigned char key, int x, int y)
 {
     unsigned int lower_key = tolower(key);
@@ -253,7 +272,13 @@ void mouse(int button, int state, int x, int y)
  \******************************************************************/
 void motion(int x, int y)
 {
-    return;
+    float oglX = x / _screenWidth;
+    float oglY = y / _screenHeight;
+    
+    oglX = oglX * 2.0f - 1.0f;
+    oglY = oglY * -2.0f + 1.0f;
+    
+    InputManager::Instance().handleMouseMove(oglX, oglY);
 }
 
 /**

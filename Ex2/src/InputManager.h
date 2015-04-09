@@ -13,15 +13,17 @@
 
 #include <map>
 
+#include <glm/glm.hpp>
+using namespace glm;
+
 // Key definitions
 #define KEY_FORWARD ('w')
 #define KEY_BACKWARD ('s')
-#define KEY_TURN_LEFT ('a')
-#define KEY_TURN_RIGHT ('d')
-#define KEY_JUMP (' ')
-#define KEY_STRAFE_LEFT ('q')
-#define KEY_STRAFE_RIGHT ('e')
-#define KEY_CROUCH ('z')
+#define KEY_STRAFE_LEFT ('a')
+#define KEY_STRAFE_RIGHT ('d')
+#define KEY_TURN_LEFT ('q')
+#define KEY_TURN_RIGHT ('e')
+#define KEY_BUMP_TOGGLE ('b')
 
 class InputManager {
 public:
@@ -35,16 +37,19 @@ public:
     // Receive input events
     void handleKeyDown(unsigned char key, int x, int y);
     void handleKeyUp(unsigned char key, int x, int y);
+    void handleMouseMove(float x, float y);
     
     // Query functions
     bool isPressed(unsigned char key);
     bool isPressedFirstTime(unsigned char key);
     bool isModifierPressed();
+    vec2 getMousePos();
     
 private:
     std::map<unsigned char, bool> _keyPressed;
     std::map<unsigned char, bool> _keyQueriedWhilePressed;
     bool _modifier;
+    vec2 _mousePos;
     
     // Singleton private instantiation
     InputManager();

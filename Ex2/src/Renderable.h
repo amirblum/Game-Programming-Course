@@ -19,6 +19,7 @@
 #endif
 
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 using namespace glm;
 
 #include <iostream>
@@ -29,16 +30,19 @@ protected:
     mat4 _world;
     
     // Buffer handlers
-    GLuint _vao, _vbo, _ibo, _tex;
+    GLuint _vao, _vbo, _ibo, _tex, _bump;
     
     // Attribute handle:
     GLint _posAttrib;
     
     // Shader program ID
     GLuint _shaderProgram;
+    bool _bumpMappingOn;
     
-    // Uniform handle:
-    GLint _wvpUniform, _textureUniform;
+    // Uniform handles:
+    GLint _worldUniform, _viewProjectionUniform,
+    _textureUniform, _bumpUniform,
+    _bumpMappingOnUniform;
     
     // Number of elements
     size_t _nElementIndices;
@@ -48,9 +52,12 @@ protected:
 public:
     Renderable(std::string shaderProgram,
                std::string vertexShaderFilename,
-               std::string fragmentShaderFilename);
+               std::string fragmentShaderFilename,
+               vec3 position, vec3 scale);
     virtual ~Renderable();
     void draw();
+    mat4 getWorldMat();
+    void toggleBumpMapping();
 };
 
 #endif /* defined(__CGP_Ex2__Renderable__) */
