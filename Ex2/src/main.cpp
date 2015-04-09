@@ -22,6 +22,7 @@ using namespace glm;
 #include "Controller.h"
 
 #include "ShaderIO.h"
+#include "PPBuffer.h"
 #include "InputManager.h"
 
 #include <iostream>
@@ -72,20 +73,10 @@ void mouse(int button, int state, int x, int y) ;
 /** mouse dragging callback  */
 void motion(int x, int y) ;
 
-/** timer callback */
-void deformationTimer(int value) ;
-
-/** Global variables */
-
-int     g_nFPS = 0, g_nFrames = 0;              // FPS and FPS Counter
-int     g_dwLastFPS = 0;                        // Last FPS Check Time
-bool    g_startAnimation = false;
-bool    g_duringAnimation = false;
-
-// A global variable for our model (a better practice would be to use a singletone that holds all model):
-
+// Game-related objects
 World *_world;
 Controller *_controller;
+PPBuffer *_ppBuffer;
 
 /** main function */
 int main(int argc, char* argv[])
@@ -137,6 +128,8 @@ int main(int argc, char* argv[])
     // Set up game
     _world = new World();
     _controller = new Controller(&Camera::Instance(), _world);
+    
+    _ppBuffer = new PPBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Set clear color to black:
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -150,10 +143,13 @@ int main(int argc, char* argv[])
 int oldTimeSinceStart = 0;
 void display(void)
 {
-    // Clear the screen buffer
-    glClear(GL_COLOR_BUFFER_BIT);
+    _ppBuffer->setup();
     
-    // Update the state
+    // Clear the screen buffer
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    
+    // Update the delta
     int timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
     int deltaTime = timeSinceStart - oldTimeSinceStart;
     oldTimeSinceStart = timeSinceStart;
@@ -165,6 +161,8 @@ void display(void)
 
     // Tell the world to draw itself
     _world->draw();
+    
+    _ppBuffer->render();
 	
     // Swap those buffers so someone will actually see the results... //
     glutSwapBuffers();
@@ -179,6 +177,8 @@ void windowResize(int w, int h)
 {
     _screenWidth = w;
     _screenHeight = h;
+    
+    _ppBuffer->resize(w, h);
     
     // set the new viewport //
     glViewport(0, 0, w, h);
@@ -280,19 +280,3 @@ void motion(int x, int y)
     
     InputManager::Instance().handleMouseMove(oglX, oglY);
 }
-
-/**
- * Update the deformation every X frames
- */
-//static const int deformationInMilli = 50;
-//void deformationTimer(int value) {
-//    
-////    float t = (float)value / (float)framesPerDeformation;
-////    if (t > 1) {
-////        value = 0;
-////        _terrainDeformer->performDeformationStep();
-////    }
-//    
-//    /* Set the timer to be called again in X milli - seconds. */
-//    glutTimerFunc(MILLIS_PER_DEFORMATION, deformationTimer, value);   // uint millis int value
-//}
