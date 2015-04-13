@@ -211,6 +211,8 @@ void keyboardDown(unsigned char key, int x, int y)
         exit(RC_OK);
     }
     
+    _ppBuffer->switchConvolutionKernel(lower_key - '0');
+    
     InputManager::Instance().handleKeyDown(lower_key, x, y);
 }
 

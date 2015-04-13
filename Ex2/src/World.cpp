@@ -13,9 +13,11 @@
 
 #define CORRIDOR_WIDTH (5.0f)
 #define CORRIDOR_HEIGHT (5.0f)
-#define CORRIDOR_LENGTH (60.0f)
+#define CORRIDOR_LENGTH (120.0f)
 
-#define CORRIDOR_BOUND_BUFFER (1.7)
+#define CORRIDOR_BOUND_BUFFER (1.7f)
+
+#define MOUSE_DEPTH (10.0f)
 
 #define ADVANCE_STEP (0.1f)
 
@@ -102,7 +104,8 @@ void World::setLightCutoff(float lightCutoff)
 void World::moveLight(vec2 mousePos)
 {
     vec4 mouseInWorld = _corridor.getWorldMat() * vec4(mousePos.x, mousePos.y, 0.0f, 1.0f);
-    vec3 pointAt(mouseInWorld.x, mouseInWorld.y, -_corridor.getLength() / 4);
+//    vec3 pointAt(mouseInWorld.x, mouseInWorld.y, -_corridor.getLength() / 4);
+    vec3 pointAt(mouseInWorld.x, mouseInWorld.y, -MOUSE_DEPTH);
     _lightDir = pointAt - _lightPos;
     _corridor.setLightDir(_lightDir);
 }
