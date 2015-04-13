@@ -13,19 +13,25 @@ TAR = amirblum_cgp_ex2.tgz
 
 # list of all the sources files
 SRCS	=  	main.cpp		\
+		World.cpp		\
 		Corridor.cpp 	\
 		ShaderIO.cpp	\
         Camera.cpp  \
         InputManager.cpp    \
         Renderable.cpp  \
-        Controller.cpp
+        Controller.cpp	\
+		PPBuffer.cpp	\
+		bimage.cpp \
 
-HDRS	=  	Corridor.h 	\
+HDRS	=  	World.h	\
+			Corridor.h 	\
             ShaderIO.h	\
             Camera.cpp  \
             InputManager.h    \
             Renderable.h  \
-            Controller.h
+            Controller.h	\
+			PPBuffer.h	\
+			bimage.h
 
 # compiler
 CC	= g++
