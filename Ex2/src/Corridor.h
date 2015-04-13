@@ -21,12 +21,13 @@ private:
     
     // Light info
     vec3 _lightPos, _lightDir;
-    float _lightCutoff;
+    float _lightIntensity, _lightCutoff;
     
     // Custom uniform variables
     GLuint _offsetUniform, _texturePercentUniform;
     GLuint _lightPosUniform, _lightDirUniform;
-    GLuint _lightCutoffUniform, _lightDarkenStartUniform, _lightDarkenEndUniform;
+    GLuint _lightCutoffUniform, _lightIntensityUniform,
+           _lightDarkenStartUniform, _lightDarkenEndUniform;
     
 public:
     void customBindings();
@@ -45,6 +46,7 @@ public:
     void setLightPos(vec3 lightPos);
     void setLightDir(vec3 lightDir);
     void setLightCutoff(float lightCutoff);
+    void setLightIntensity(float lightIntensity);
     void increaseOffset(float increment);
 };
 

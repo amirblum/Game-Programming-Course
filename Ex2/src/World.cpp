@@ -17,17 +17,25 @@
 
 #define CORRIDOR_BOUND_BUFFER (1.7f)
 
+#define FLASHLIGHT_CUTOFF_ANGLE (10.0f)
+#define FLASHLIGHT_INTENSITY (2.5f)
 #define MOUSE_DEPTH (10.0f)
 
 #define ADVANCE_STEP (0.1f)
 
 World::World() :
 _startPosition(0.0f),
-_leftBound(-(CORRIDOR_WIDTH - CORRIDOR_BOUND_BUFFER) / 2), _rightBound((CORRIDOR_WIDTH - CORRIDOR_BOUND_BUFFER) / 2),
-_corridor(vec3(0.0f, CORRIDOR_HEIGHT/2, -CORRIDOR_LENGTH/2), vec3(CORRIDOR_WIDTH, CORRIDOR_HEIGHT, CORRIDOR_LENGTH)),
-_lightPos(0.0f),
-_lightDir(0.0f, 0.0f, -1.0f)
+_leftBound(-(CORRIDOR_WIDTH - CORRIDOR_BOUND_BUFFER) / 2), _rightBound((CORRIDOR_WIDTH - CORRIDOR_BOUND_BUFFER) / 2)
 {
+    _corridor = new Corridor(vec3(0.0f, CORRIDOR_HEIGHT/2, -CORRIDOR_LENGTH/2),
+                             vec3(CORRIDOR_WIDTH, CORRIDOR_HEIGHT, CORRIDOR_LENGTH));
+    _flashLight = new Flashlight(cos(radians(FLASHLIGHT_CUTOFF_ANGLE)), FLASHLIGHT_INTENSITY);
+}
+
+World::~World()
+{
+    delete _corridor;
+    delete _flashLight;
 }
 
 /**
@@ -36,8 +44,11 @@ _lightDir(0.0f, 0.0f, -1.0f)
 void World::update(float dt)
 {
     if (InputManager::Instance().isPressedFirstTime(KEY_BUMP_TOGGLE)) {
-        _corridor.toggleBumpMapping();
+        _corridor->toggleBumpMapping();
     }
+    
+    // Update flashlight
+    _flashLight->update(dt);
 }
 
 /**
@@ -45,7 +56,14 @@ void World::update(float dt)
  */
 void World::draw()
 {
-    _corridor.draw();
+    // Pass lighting infor to corridor
+    _corridor->setLightPos(_flashLight->getPosition());
+    _corridor->setLightDir(_flashLight->getDirection());
+    _corridor->setLightIntensity(_flashLight->getIntensity());
+    _corridor->setLightCutoff(_flashLight->getCutoff());
+    
+    // And draw
+    _corridor->draw();
 }
 
 /**
@@ -72,40 +90,30 @@ float World::getRightBound()
     return _rightBound;
 }
 
+Corridor* World::getCorridor()
+{
+    return _corridor;
+}
+
+Flashlight* World::getFlashlight()
+{
+    return _flashLight;
+}
+
 /**
  * Advance 'amount' down the corridor
  */
 void World::advanceCorridor(float amount)
 {
-    _corridor.increaseOffset(ADVANCE_STEP * amount);
+    _corridor->increaseOffset(ADVANCE_STEP * amount);
 }
-
-/**
- * Set the position of the light
- */
-void World::setLightPos(vec3 lightPos)
-{
-    _lightPos = lightPos;
-    _corridor.setLightPos(lightPos);
-}
-
-/**
- * Sets the light cutoff angle
- */
-void World::setLightCutoff(float lightCutoff)
-{
-    _corridor.setLightCutoff(lightCutoff);
-}
-
 
 /**
  * Update the light's direction
  */
 void World::moveLight(vec2 mousePos)
 {
-    vec4 mouseInWorld = _corridor.getWorldMat() * vec4(mousePos.x, mousePos.y, 0.0f, 1.0f);
-//    vec3 pointAt(mouseInWorld.x, mouseInWorld.y, -_corridor.getLength() / 4);
+    vec4 mouseInWorld = _corridor->getWorldMat() * vec4(mousePos.x, mousePos.y, 0.0f, 1.0f);
     vec3 pointAt(mouseInWorld.x, mouseInWorld.y, -MOUSE_DEPTH);
-    _lightDir = pointAt - _lightPos;
-    _corridor.setLightDir(_lightDir);
+    _flashLight->setDirection(pointAt - _flashLight->getPosition());
 }

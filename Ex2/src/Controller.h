@@ -15,6 +15,7 @@
 
 #include "Camera.h"
 #include "World.h"
+#include "Flashlight.h"
 
 #include <GL/glew.h>
 // GLM headers
@@ -25,10 +26,12 @@ using namespace glm;
 class Controller {
     Camera *_myCamera;
     World *_world;
+    Flashlight *_flashlight;
     vec3 _lightOffset;
     float _currentBobAmount;
     bool _leaningLeft;
     bool _unBobbing;
+    float _timeSinceLightFlicker, _timeTillLightFlicker;
     
 public:
     Controller(Camera *camera, World *world);
@@ -42,6 +45,8 @@ private:
     void strafe(vec3 direction);
     void turn(float angle);
     void unBob(float dt);
+    float nextLightFlickerTime();
+    void flickerLight(float dt);
 };
 
 #endif /* defined(__CGP_Ex2__Controller__) */

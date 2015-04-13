@@ -23,6 +23,7 @@ using namespace glm;
 #define KEY_STRAFE_RIGHT ('d')
 #define KEY_TURN_LEFT ('q')
 #define KEY_TURN_RIGHT ('e')
+#define KEY_FLICKER ('f')
 #define KEY_BUMP_TOGGLE ('b')
 
 class InputManager {

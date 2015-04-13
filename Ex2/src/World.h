@@ -20,18 +20,19 @@
 using namespace glm;
 
 #include "Corridor.h"
+#include "Flashlight.h"
 
 class World {
 private:
     vec3 _startPosition;
     float _leftBound, _rightBound;
     
-    Corridor _corridor;
-    vec3 _lightPos;
-    vec3 _lightDir;
+    Corridor *_corridor;
+    Flashlight *_flashLight;
     
 public:
     World();
+    virtual ~World();
     void update(float dt);
     void draw();
     
@@ -39,11 +40,11 @@ public:
     vec3 getStartPosition();
     float getLeftBound();
     float getRightBound();
+    Corridor* getCorridor();
+    Flashlight* getFlashlight();
     
     // State changers
     void advanceCorridor(float amount);
-    void setLightPos(vec3 lightPos);
-    void setLightCutoff(float lightCutoff);
     void moveLight(vec2 mousePos);
 };
 

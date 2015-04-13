@@ -11,6 +11,7 @@ uniform bool bumpMappingOn;
 // Light
 uniform vec3 lightPos;
 uniform vec3 lightDir;
+uniform float lightIntensity;
 uniform float lightCutoff;
 uniform float lightDarkenStart;
 uniform float lightDarkenEnd;
@@ -20,7 +21,7 @@ in vec3 texcoords;
 out vec4 outColor;
 
 #define EPS (0.01)
-#define DARKNESS_COMPONENT (0.25f)
+#define DARKNESS_COMPONENT (0.4f)
 #define BUMP_SCALE (2.0f)
 
 void main()
@@ -125,7 +126,7 @@ void main()
             if (cosAngle > lightCutoff) {
                 // In flashlight, reset darkenRatio. Don't use DARKNESS_COMPONENT, instead start it a little brighter
                 float defaultDarkenRatio = darkenRatio;
-                darkenRatio = 2.5f;
+                darkenRatio = lightIntensity;
                 
                 // Start darkening from halfway to lightDarkenStart
                 if (-myWorldPosition.z > lightDarkenStart/2) {

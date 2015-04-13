@@ -199,8 +199,9 @@ _offset(0)
         
         _lightPosUniform = glGetUniformLocation(_shaderProgram, "lightPos");
         _lightDirUniform = glGetUniformLocation(_shaderProgram, "lightDir");
-        _lightCutoffUniform = glGetUniformLocation(_shaderProgram, "lightCutoff");
         
+        _lightIntensityUniform = glGetUniformLocation(_shaderProgram, "lightIntensity");
+        _lightCutoffUniform = glGetUniformLocation(_shaderProgram, "lightCutoff");
         _lightDarkenStartUniform = glGetUniformLocation(_shaderProgram, "lightDarkenStart");
         _lightDarkenEndUniform = glGetUniformLocation(_shaderProgram, "lightDarkenEnd");
     }
@@ -215,6 +216,7 @@ void Corridor::customBindings()
     glUniform3fv(_lightPosUniform, 1, value_ptr(_lightPos));
     glUniform3fv(_lightDirUniform, 1, value_ptr(_lightDir));
     
+    glUniform1f(_lightIntensityUniform, _lightIntensity);
     glUniform1f(_lightCutoffUniform, _lightCutoff);
     glUniform1f(_lightDarkenStartUniform, _length / 4);
     glUniform1f(_lightDarkenEndUniform, _length);
@@ -290,6 +292,14 @@ void Corridor::setLightDir(vec3 lightDir)
 void Corridor::setLightCutoff(float lightCutoff)
 {
     _lightCutoff = lightCutoff;
+}
+
+/**
+ * Sets the light intensity
+ */
+void Corridor::setLightIntensity(float lightIntensity)
+{
+    _lightIntensity = lightIntensity;
 }
 
 /**

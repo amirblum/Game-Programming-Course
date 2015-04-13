@@ -17,7 +17,10 @@
 #define LIGHT_OFFSET_X (-0.5f)
 #define LIGHT_OFFSET_Y (0.0f)
 #define LIGHT_OFFSET_Z (0.0f)
-#define LIGHT_CUTOFF_ANGLE (10.0f)
+//#define LIGHT_CUTOFF_ANGLE (10.0f)
+//#define MAX_LIGHT_INTENSITY (2.5)
+#define AVERAGE_LIGHT_FLICKER_TIME (10.0f)
+#define RANGE_LIGHT_FLICKER_TIME (5.0f)
 
 #define MOVE_SPEED (0.02f)
 #define STRAFE_SPEED (0.2f)
@@ -39,7 +42,9 @@ _world(world),
 _lightOffset(LIGHT_OFFSET_X, LIGHT_OFFSET_Y, LIGHT_OFFSET_Z),
 _currentBobAmount(0.0f),
 _leaningLeft(true),
-_unBobbing(false)
+_unBobbing(false),
+_timeSinceLightFlicker(0.0f),
+_timeTillLightFlicker(nextLightFlickerTime())
 {
     vec3 startPosition = world->getStartPosition();
     startPosition.x -= (BOB_SPEED / BOB_MAX);
@@ -48,9 +53,9 @@ _unBobbing(false)
     // Set camera to middle of corridor
     _myCamera->setPos(cameraPosition);
     
-    // Set the light to player height
-    _world->setLightPos(cameraPosition + _lightOffset);
-    _world->setLightCutoff(cos(radians(LIGHT_CUTOFF_ANGLE)));
+    // Set the flashlight
+    _flashlight = _world->getFlashlight();
+    _flashlight->setPosition(cameraPosition + _lightOffset);
 }
 
 /**
@@ -62,6 +67,19 @@ void Controller::update(float dt)
     
     // Flashlight
     _world->moveLight(input.getMousePos());
+        _timeSinceLightFlicker += (dt / 10.0f); // Fix to 1 sec
+        if (_timeSinceLightFlicker > _timeTillLightFlicker) {
+            // Reset timer
+            _timeTillLightFlicker = nextLightFlickerTime();
+            _timeSinceLightFlicker = 0.0f;
+            
+            // Flicker
+//            _world->getFlashlight()->scaryFlicker(0.0f);
+        }
+    
+    if (input.isPressedFirstTime(KEY_FLICKER)) {
+        _flashlight->scaryFlicker(0.0f);
+    }
     
     // Moving
     if (input.isPressed(KEY_FORWARD))
@@ -155,7 +173,7 @@ void Controller::strafe(vec3 direction)
     newLightPos.x = clamp(newLightPos.x, _world->getLeftBound(), _world->getRightBound());
     
     _myCamera->setPos(newCameraPos);
-    _world->setLightPos(newLightPos);
+    _flashlight->setPosition(newLightPos);
 }
 
 /**
@@ -188,13 +206,18 @@ void Controller::unBob(float dt)
     
     vec3 cameraPos = _myCamera->getPos();
     cameraPos.y -= bobAmount * 4.0f;
-//    cameraPos.x += (_leaningLeft) ? bobAmount : -bobAmount;
     if (cameraPos.y < PLAYER_HEIGHT) {
         cameraPos.y = PLAYER_HEIGHT;
-//        _leaningLeft = !_leaningLeft;
         _unBobbing = false;
     }
     
     _myCamera->setPos(cameraPos);
+}
+
+float Controller::nextLightFlickerTime()
+{
+    float scale = ((float)rand()) / (float)RAND_MAX;
+    float range = RANGE_LIGHT_FLICKER_TIME * 2 * scale - RANGE_LIGHT_FLICKER_TIME;
+    return AVERAGE_LIGHT_FLICKER_TIME + range;
 }
 
