@@ -15,6 +15,8 @@
 #include <GL/gl.h>
 #endif
 
+#include <stdio.h>
+
 #define SHADERS_DIR "shaders/"
 
 PPBuffer::PPBuffer(int screen_width, int screen_height) : _convoKernel(getIdentityConvolution()){
