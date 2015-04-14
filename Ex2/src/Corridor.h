@@ -22,6 +22,7 @@ private:
     // Light info
     vec3 _lightPos, _lightDir;
     float _lightIntensity, _lightCutoff;
+    float _darknessComponent;
     
     // Glow
     bool _drawGlow;
@@ -31,6 +32,7 @@ private:
     GLuint _lightPosUniform, _lightDirUniform;
     GLuint _lightCutoffUniform, _lightIntensityUniform,
            _lightDarkenStartUniform, _lightDarkenEndUniform,
+           _darknessComponentUniform,
            _drawGlowUniform;
     
 // Overriding
@@ -55,6 +57,7 @@ public:
     void setLightDir(vec3 lightDir);
     void setLightCutoff(float lightCutoff);
     void setLightIntensity(float lightIntensity);
+    void changeDarkness(bool increase);
     void increaseOffset(float increment);
 };
 

@@ -29,6 +29,7 @@ Renderable("corridor", "CorridorShader.vert", "CorridorShader.frag", positionVec
 _width(scaleVec.x),
 _height(scaleVec.y),
 _length(scaleVec.z),
+_darknessComponent(0.25),
 _offset(0),
 _drawGlow(false)
 {
@@ -243,6 +244,8 @@ _drawGlow(false)
         _lightDarkenStartUniform = glGetUniformLocation(_shaderProgram, "lightDarkenStart");
         _lightDarkenEndUniform = glGetUniformLocation(_shaderProgram, "lightDarkenEnd");
         
+        _darknessComponentUniform = glGetUniformLocation(_shaderProgram, "darknessComponent");
+        
         _drawGlowUniform = glGetUniformLocation(_shaderProgram, "drawGlow");
     }
 }
@@ -260,6 +263,8 @@ void Corridor::customBindings()
     glUniform1f(_lightCutoffUniform, _lightCutoff);
     glUniform1f(_lightDarkenStartUniform, _length / 4);
     glUniform1f(_lightDarkenEndUniform, _length);
+    
+    glUniform1f(_darknessComponentUniform, _darknessComponent);
     
     if (_drawGlow) {
         glUniform1i(_drawGlowUniform, true);
@@ -353,6 +358,12 @@ void Corridor::setLightCutoff(float lightCutoff)
 void Corridor::setLightIntensity(float lightIntensity)
 {
     _lightIntensity = lightIntensity;
+}
+
+void Corridor::changeDarkness(bool increase)
+{
+    _darknessComponent += ((increase) ? 0.1f : -0.1f);
+    _darknessComponent = clamp(_darknessComponent, 0.0f, 1.0f);
 }
 
 /**

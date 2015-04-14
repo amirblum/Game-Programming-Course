@@ -16,6 +16,8 @@ uniform float lightCutoff;
 uniform float lightDarkenStart;
 uniform float lightDarkenEnd;
 
+uniform float darknessComponent;
+
 // Glow-related
 uniform bool drawGlow;
 
@@ -24,7 +26,6 @@ in vec3 texcoords;
 out vec4 outColor;
 
 #define EPS (0.01)
-#define DARKNESS_COMPONENT (0.4f)
 #define BUMP_SCALE (2.0f)
 
 void main()
@@ -108,7 +109,7 @@ void main()
     float darkenRatio;
     bool visibleByFlashlight;
     {
-        darkenRatio = DARKNESS_COMPONENT;
+        darkenRatio = darknessComponent;
         if (-myWorldPosition.z > lightDarkenStart) {
             // Start darkening more after lightDarkenStart
             float darkenSectionLength = lightDarkenEnd - lightDarkenStart;
@@ -129,7 +130,7 @@ void main()
             
             visibleByFlashlight = cosAngle > lightCutoff;
             if (visibleByFlashlight) {
-                // In flashlight, reset darkenRatio. Don't use DARKNESS_COMPONENT, instead start it a little brighter
+                // In flashlight, reset darkenRatio. Don't use darknessComponent, instead start it a little brighter
                 float defaultDarkenRatio = darkenRatio;
                 darkenRatio = lightIntensity;
                 

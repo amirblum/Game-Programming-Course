@@ -15,6 +15,8 @@ TAR = amirblum_cgp_ex2.tgz
 SRCS	=  	main.cpp		\
 		World.cpp		\
 		Corridor.cpp 	\
+        Flashlight.cpp  \
+        Monster.cpp     \
 		ShaderIO.cpp	\
         Camera.cpp  \
         InputManager.cpp    \
@@ -24,7 +26,9 @@ SRCS	=  	main.cpp		\
 		bimage.cpp \
 
 HDRS	=  	World.h	\
-			Corridor.h 	\
+            Corridor.h 	\
+            Flashlight.h  \
+            Monster.h     \
             ShaderIO.h	\
             Camera.cpp  \
             InputManager.h    \
@@ -98,7 +102,7 @@ $(OBJS) : $(SRCS)
 
 
 tar:
-	tar czvf $(TAR) Makefile $(SRCS) $(HDRS) README
+	tar czvf $(TAR) Makefile $(SRCS) $(HDRS) assets/ shaders/ README
 	
 
 .PHONY:

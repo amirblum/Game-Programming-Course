@@ -52,6 +52,13 @@ void World::update(float dt)
         _corridor->toggleBumpMapping();
     }
     
+    if (InputManager::Instance().isPressedFirstTime(KEY_DARKEN1) ||
+        InputManager::Instance().isPressedFirstTime(KEY_DARKEN2)) {
+        _corridor->changeDarkness(true);
+    } else if (InputManager::Instance().isPressedFirstTime(KEY_LIGHTEN)) {
+        _corridor->changeDarkness(false);
+    }
+    
     // Update flashlight
     _flashLight->update(dt);
     
