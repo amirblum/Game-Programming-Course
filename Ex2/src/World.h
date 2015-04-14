@@ -21,6 +21,7 @@ using namespace glm;
 
 #include "Corridor.h"
 #include "Flashlight.h"
+#include "Monster.h"
 
 class World {
 private:
@@ -29,6 +30,9 @@ private:
     
     Corridor *_corridor;
     Flashlight *_flashLight;
+    
+    bool _jumpScare;
+    Monster *_monster;
     
 public:
     World();
@@ -47,6 +51,8 @@ public:
     // State changers
     void advanceCorridor(float amount);
     void moveLight(vec2 mousePos);
+    void jumpScare();
+    void advanceJumpScare(float dt);
 };
 
 #endif /* defined(__CGP_Ex2__World__) */

@@ -25,11 +25,16 @@
 
 World::World() :
 _startPosition(0.0f),
-_leftBound(-(CORRIDOR_WIDTH - CORRIDOR_BOUND_BUFFER) / 2), _rightBound((CORRIDOR_WIDTH - CORRIDOR_BOUND_BUFFER) / 2)
+_leftBound(-(CORRIDOR_WIDTH - CORRIDOR_BOUND_BUFFER) / 2), _rightBound((CORRIDOR_WIDTH - CORRIDOR_BOUND_BUFFER) / 2),
+_jumpScare(false)
 {
     _corridor = new Corridor(vec3(0.0f, CORRIDOR_HEIGHT/2, -CORRIDOR_LENGTH/2),
                              vec3(CORRIDOR_WIDTH, CORRIDOR_HEIGHT, CORRIDOR_LENGTH));
     _flashLight = new Flashlight(cos(radians(FLASHLIGHT_CUTOFF_ANGLE)), FLASHLIGHT_INTENSITY);
+    _monster = new Monster(CORRIDOR_WIDTH / 2,
+                           CORRIDOR_HEIGHT / 2,
+                           _startPosition + vec3(0.0f, 2.0f, -CORRIDOR_LENGTH),
+                           CORRIDOR_LENGTH / 4);
 }
 
 World::~World()
@@ -49,6 +54,11 @@ void World::update(float dt)
     
     // Update flashlight
     _flashLight->update(dt);
+    
+    // Update jump scare
+    if (_jumpScare) {
+        advanceJumpScare(dt);
+    }
 }
 
 /**
@@ -79,6 +89,9 @@ void World::draw()
     
     // And draw
     _corridor->draw();
+    if (_jumpScare) {
+        _monster->draw();
+    }
 }
 
 /**
@@ -131,4 +144,14 @@ void World::moveLight(vec2 mousePos)
     vec4 mouseInWorld = _corridor->getWorldMat() * vec4(mousePos.x, mousePos.y, 0.0f, 1.0f);
     vec3 pointAt(mouseInWorld.x, mouseInWorld.y, -MOUSE_DEPTH);
     _flashLight->setDirection(pointAt - _flashLight->getPosition());
+}
+
+void World::jumpScare()
+{
+    _jumpScare = true;
+}
+
+void World::advanceJumpScare(float dt)
+{
+    _monster->moveForward(dt);
 }

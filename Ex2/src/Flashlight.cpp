@@ -77,27 +77,53 @@ void Flashlight::dim(float targetIntensity, float speed)
     _flickerQueue.push(flicker);
 }
 
-void Flashlight::scaryFlicker(float nextFlickerTime)
+void Flashlight::randomFlicker()
+{
+    int flickerNum = 1 + rand() % 4;
+    for (int i = 0; i < flickerNum; ++i) {
+        Flicker flicker;
+        // Between 0.5-1.0
+        float randomIntensity = (((float)rand() / RAND_MAX) + 1.0f) / 2.0f;
+        // Between 1.0-2.0
+        float randomSpeed = (float)rand() / RAND_MAX + 1.0f;
+        
+        flicker.waitTime = 0.0f;
+        flicker.targetIntensity = randomIntensity * _maxIntensity;
+        flicker.speed = randomSpeed;
+        // On last flicker, chance of not recovering
+        if (i == flickerNum - 1) {
+            // 0-1 recover
+            bool recover = rand() % 3 == 0;
+            flicker.recover = recover;
+        } else {
+            flicker.recover = true;
+        }
+        
+        _flickerQueue.push(flicker);
+    }
+}
+
+void Flashlight::scaryFlicker()
 {
     // Push three flickers:
     Flicker flicker1, flicker2, flicker3, recover;
 
-    flicker1.waitTime = nextFlickerTime;
-    flicker1.targetIntensity = 0.5f;
+    flicker1.waitTime = 0.0f;
+    flicker1.targetIntensity = 0.5f * _maxIntensity;
     flicker1.speed = 1.0f;
     flicker1.recover = true;
     
     flicker2.waitTime = 0.0f;
-    flicker2.targetIntensity = 0.75f;
-    flicker2.speed = 1.0f;
+    flicker2.targetIntensity = 0.75f * _maxIntensity;
+    flicker2.speed = 2.0f;
     flicker1.recover = true;
     
-    flicker3.waitTime = 0.0f;
+    flicker3.waitTime = 1.0f;
     flicker3.targetIntensity = 0.0f;
     flicker3.speed = 0.5f;
     flicker3.recover = false;
     
-    recover.waitTime = 2.0f;
+    recover.waitTime = 10.0f;
     recover.targetIntensity = 0.0f;
     recover.speed = -1.0f;
     recover.recover = true;
@@ -137,6 +163,7 @@ void Flashlight::doFlickerWait(float dt)
     _elapsedTime += dt;
     if (_elapsedTime > flicker.waitTime) {
         _elapsedTime = 0.0f;
+        _currentIntensity = _maxIntensity;
         _state = FLICKER_DIMMING;
     }
 }

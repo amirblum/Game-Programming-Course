@@ -17,10 +17,10 @@
 #define LIGHT_OFFSET_X (-0.5f)
 #define LIGHT_OFFSET_Y (0.0f)
 #define LIGHT_OFFSET_Z (0.0f)
-//#define LIGHT_CUTOFF_ANGLE (10.0f)
-//#define MAX_LIGHT_INTENSITY (2.5)
-#define AVERAGE_LIGHT_FLICKER_TIME (10.0f)
-#define RANGE_LIGHT_FLICKER_TIME (5.0f)
+
+#define AVERAGE_LIGHT_FLICKER_TIME (3.0f)
+#define RANGE_LIGHT_FLICKER_TIME (2.0f)
+#define JUMP_SCARE_TIME (25.0f)
 
 #define MOVE_SPEED (0.02f)
 #define STRAFE_SPEED (0.2f)
@@ -43,6 +43,8 @@ _lightOffset(LIGHT_OFFSET_X, LIGHT_OFFSET_Y, LIGHT_OFFSET_Z),
 _currentBobAmount(0.0f),
 _leaningLeft(true),
 _unBobbing(false),
+_jumpScare(false),
+_jumpScareTime(0.0f),
 _timeSinceLightFlicker(0.0f),
 _timeTillLightFlicker(nextLightFlickerTime())
 {
@@ -67,6 +69,14 @@ void Controller::update(float dt)
     
     // Flashlight
     _world->moveLight(input.getMousePos());
+    
+    _jumpScareTime += (dt / 10.0f); // Fix to 1 sec
+    if ((!_jumpScare && (_jumpScareTime >= JUMP_SCARE_TIME || input.isPressedFirstTime(KEY_FLICKER)))) {
+        _jumpScare = true;
+        _flashlight->scaryFlicker();
+        _world->jumpScare();
+    }
+    if (!_jumpScare) {
         _timeSinceLightFlicker += (dt / 10.0f); // Fix to 1 sec
         if (_timeSinceLightFlicker > _timeTillLightFlicker) {
             // Reset timer
@@ -74,35 +84,32 @@ void Controller::update(float dt)
             _timeSinceLightFlicker = 0.0f;
             
             // Flicker
-//            _world->getFlashlight()->scaryFlicker(0.0f);
+            _world->getFlashlight()->randomFlicker();
         }
-    
-    if (input.isPressedFirstTime(KEY_FLICKER)) {
-        _flashlight->scaryFlicker(0.0f);
     }
     
     // Moving
-    if (input.isPressed(KEY_FORWARD))
+    if (!_jumpScare && input.isPressed(KEY_FORWARD))
     {
         // TODO: Accelerate slightly at first
         advance(true, dt);
     }
-    else if (input.isPressed(KEY_BACKWARD))
+    else if (!_jumpScare && input.isPressed(KEY_BACKWARD))
     {
         advance(false, dt);
     }
     
-    // Turning
-    if (input.isPressed(KEY_TURN_LEFT))
-    {
-        float angle = TURN_ANGLE;
-        turn(angle * dt);
-    }
-    else if (input.isPressed(KEY_TURN_RIGHT))
-    {
-        float angle = -TURN_ANGLE;
-        turn(angle * dt);
-    }
+    // Turning (a debug move :) )
+//    if (input.isPressed(KEY_TURN_LEFT))
+//    {
+//        float angle = TURN_ANGLE;
+//        turn(angle * dt);
+//    }
+//    else if (input.isPressed(KEY_TURN_RIGHT))
+//    {
+//        float angle = -TURN_ANGLE;
+//        turn(angle * dt);
+//    }
     
     // Strafing
     if (input.isPressed(KEY_STRAFE_LEFT))

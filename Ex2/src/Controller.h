@@ -31,6 +31,8 @@ class Controller {
     float _currentBobAmount;
     bool _leaningLeft;
     bool _unBobbing;
+    bool _jumpScare;
+    float _jumpScareTime;
     float _timeSinceLightFlicker, _timeTillLightFlicker;
     
 public:

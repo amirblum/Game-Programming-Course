@@ -66,7 +66,8 @@ public:
     
     // Utility methods
     void dim(float targetIntensity, float speed);
-    void scaryFlicker(float nextFlickerTime);
+    void randomFlicker();
+    void scaryFlicker();
     
     // Update
     void update(float dt);

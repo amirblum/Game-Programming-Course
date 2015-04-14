@@ -18,6 +18,11 @@
 
 using namespace glm;
 
+////irrKlang headers
+//#include <irrklang.h>
+//
+//using namespace irrklang;
+
 #include "World.h"
 #include "Controller.h"
 
@@ -135,6 +140,21 @@ int main(int argc, char* argv[])
 
     // Set clear color to black:
     glClearColor(0.0, 0.0, 0.0, 0.0);
+    
+//    // start the sound engine with default parameters
+//    ISoundEngine* engine = createIrrKlangDevice();
+//    
+//    if (!engine)
+//    {
+//        printf("Could not startup engine\n");
+//        return 0; // error starting up the engine
+//    }
+//    
+//    // To play a sound, we only to call play2D(). The second parameter
+//    // tells the engine to play it looped.
+//    
+//    // play some sound stream, looped
+//    engine->play2D("assets/creepy.mp3", true);
 		
     // Start events/drawing loop
     glutMainLoop();

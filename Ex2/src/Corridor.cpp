@@ -13,9 +13,8 @@
 //#include "stb_image.h"
 #include "bimage.h"
 
-//static const std::string WALL_TEXTURE = "assets/brickwork-texture.bmp";
 static const std::string WALL_TEXTURE = "assets/wallTexture-squashed.bmp";
-static const std::string WALL_BUMP = "assets/ceilingTexture-squashed-bump.bmp";
+static const std::string WALL_BUMP = "assets/wallTexture-squashed-bump.bmp";
 static const std::string GROUND_TEXTURE = "assets/groundTexture-squashed.bmp";
 static const std::string GROUND_BUMP = "assets/white.bmp";
 static const std::string CEILING_TEXTURE = "assets/ceilingTexture-squashed.bmp";
@@ -34,7 +33,6 @@ _offset(0),
 _drawGlow(false)
 {
     // Initialize corridor
-    
     static const GLfloat vertices[] = {
         // Left wall
         -0.5f, -0.5f, 0.5f, 1.0f,
