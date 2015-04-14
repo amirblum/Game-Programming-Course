@@ -28,5 +28,5 @@ void main() {
         }
     }
     
-	color = outColor;    
+	color = outColor;
 }

@@ -19,7 +19,7 @@
 
 #define SHADERS_DIR "shaders/"
 
-PPBuffer::PPBuffer(int screen_width, int screen_height) : _convoKernel(getIdentityConvolution()){
+PPBuffer::PPBuffer(int screen_width, int screen_height) : _convoKernel(getIdentityConvolution()) {
     // buffer
     // The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
     

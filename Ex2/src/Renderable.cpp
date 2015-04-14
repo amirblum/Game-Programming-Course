@@ -21,7 +21,7 @@ Renderable::Renderable(std::string shaderProgram,
                        std::string vertexShaderFilename,
                        std::string fragmentShaderFilename,
                        vec3 positionVec, vec3 scaleVec) :
-_vao(0), _vbo(0), _ibo(0), _world(1.0f)
+_vao(0), _vbo(0), _ibo(0), _world(1.0f), _bumpMappingOn(false)
 {
     programManager::sharedInstance()
     .createProgram(shaderProgram,

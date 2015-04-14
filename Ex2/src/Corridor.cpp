@@ -13,8 +13,14 @@
 //#include "stb_image.h"
 #include "bimage.h"
 
-static const std::string WALL_TEXTURE = "/Users/amirblum/Development/Game-Programming-Course/Ex2/assets/brickwork-texture.bmp";
-static const std::string WALL_BUMP = "/Users/amirblum/Development/Game-Programming-Course/Ex2/assets/brickwork-bump-map.bmp";
+//static const std::string WALL_TEXTURE = "assets/brickwork-texture.bmp";
+static const std::string WALL_TEXTURE = "assets/wallTexture-squashed.bmp";
+static const std::string WALL_BUMP = "assets/ceilingTexture-squashed-bump.bmp";
+static const std::string GROUND_TEXTURE = "assets/groundTexture-squashed.bmp";
+static const std::string GROUND_BUMP = "assets/white.bmp";
+static const std::string CEILING_TEXTURE = "assets/ceilingTexture-squashed.bmp";
+static const std::string CEILING_BUMP = "assets/ceilingTexture-squashed-bump.bmp";
+
 
 /**
  * Corridor constructor
@@ -75,8 +81,25 @@ _offset(0)
         // Load wall image
 //        int wallImageWidth, wallImageHeight, wallImageChannels;
 //        unsigned char *wallImageData = stbi_load(WALL_TEXTURE.c_str(), &wallImageWidth, &wallImageHeight, &wallImageChannels, 0);
-        BImage wallImage(WALL_TEXTURE.c_str());
-        _texturePercent = wallImage.width() / _length / 100.0f;
+        BImage wallImage;
+        if (!wallImage.readImage(WALL_TEXTURE.c_str())) {
+            std::cout << "Failed to read wall texture" << std::endl;
+            exit(1);
+        }
+        
+        _texturePercent = wallImage.width() / _length / 100.0f * 2;
+        
+        BImage groundImage;
+        if (!groundImage.readImage(GROUND_TEXTURE.c_str())) {
+            std::cout << "Failed to read ground texture" << std::endl;
+            exit(1);
+        }
+        
+        BImage ceilingImage;
+        if (!ceilingImage.readImage(CEILING_TEXTURE.c_str())) {
+            std::cout << "Failed to read ceiling texture" << std::endl;
+            exit(1);
+        }
         
         // "Bind" the newly created texture : all future texture functions will modify this texture
         glActiveTexture(GL_TEXTURE0);
@@ -101,17 +124,17 @@ _offset(0)
         
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0,
                      GL_RGBA,
-                     wallImage.width(), wallImage.height(),
+                     ceilingImage.width(), ceilingImage.height(),
                      0,
                      GL_RGB, GL_UNSIGNED_BYTE,
-                     wallImage.getImageData());
+                     ceilingImage.getImageData());
         
         glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0,
                      GL_RGBA,
-                     wallImage.width(), wallImage.height(),
+                     groundImage.width(), groundImage.height(),
                      0,
                      GL_RGB, GL_UNSIGNED_BYTE,
-                     wallImage.getImageData());
+                     groundImage.getImageData());
         
         glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0,
                      GL_RGBA,
@@ -135,7 +158,23 @@ _offset(0)
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
         // Load the bump map
-        BImage bumpMap(WALL_BUMP.c_str());
+        BImage wallBumpImage;
+        if (!wallBumpImage.readImage(WALL_BUMP.c_str())) {
+            std::cout << "Failed to read wall texture bump" << std::endl;
+            exit(1);
+        }
+        
+        BImage ceilingBumpImage;
+        if (!ceilingBumpImage.readImage(CEILING_BUMP.c_str())) {
+            std::cout << "Failed to read ceiling texture bump" << std::endl;
+            exit(1);
+        }
+        
+        BImage groundBumpImage;
+        if (!groundBumpImage.readImage(GROUND_BUMP.c_str())) {
+            std::cout << "Failed to read ground texture bump" << std::endl;
+            exit(1);
+        }
         
         glActiveTexture(GL_TEXTURE1);
         
@@ -144,45 +183,45 @@ _offset(0)
         // Give the image to OpenGL (one for each face)
         glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0,
                      GL_RGBA,
-                     bumpMap.width(), bumpMap.height(),
+                     wallBumpImage.width(), wallBumpImage.height(),
                      0,
                      GL_RGB, GL_UNSIGNED_BYTE,
-                     bumpMap.getImageData());
+                     wallBumpImage.getImageData());
         
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0,
                      GL_RGBA,
-                     bumpMap.width(), bumpMap.height(),
+                     wallBumpImage.width(), wallBumpImage.height(),
                      0,
                      GL_RGB, GL_UNSIGNED_BYTE,
-                     bumpMap.getImageData());
+                     wallBumpImage.getImageData());
         
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0,
                      GL_RGBA,
-                     bumpMap.width(), bumpMap.height(),
+                     ceilingBumpImage.width(), ceilingBumpImage.height(),
                      0,
                      GL_RGB, GL_UNSIGNED_BYTE,
-                     bumpMap.getImageData());
+                     ceilingBumpImage.getImageData());
         
         glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0,
                      GL_RGBA,
-                     bumpMap.width(), bumpMap.height(),
+                     groundBumpImage.width(), groundBumpImage.height(),
                      0,
                      GL_RGB, GL_UNSIGNED_BYTE,
-                     bumpMap.getImageData());
+                     groundBumpImage.getImageData());
         
         glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0,
                      GL_RGBA,
-                     bumpMap.width(), bumpMap.height(),
+                     wallBumpImage.width(), wallBumpImage.height(),
                      0,
                      GL_RGB, GL_UNSIGNED_BYTE,
-                     bumpMap.getImageData());
+                     wallBumpImage.getImageData());
         
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0,
                      GL_RGBA,
-                     bumpMap.width(), bumpMap.height(),
+                     groundBumpImage.width(), groundBumpImage.height(),
                      0,
                      GL_RGB, GL_UNSIGNED_BYTE,
-                     bumpMap.getImageData());
+                     groundBumpImage.getImageData());
         
         // Format cube map texture
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

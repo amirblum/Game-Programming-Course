@@ -35,3 +35,10 @@ CGP.xcworkspace/
 */include/
 xcode-template/
 Tutorial1/
+*.zip
+
+# Only support bmp files for now
+*.jpg
+
+# custom non-git folders
+nogit/
