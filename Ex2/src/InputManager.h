@@ -25,6 +25,7 @@ using namespace glm;
 #define KEY_TURN_RIGHT ('e')
 #define KEY_FLICKER ('f')
 #define KEY_BUMP_TOGGLE ('b')
+#define KEY_GLOW_TOGGLE ('g')
 
 class InputManager {
 public:

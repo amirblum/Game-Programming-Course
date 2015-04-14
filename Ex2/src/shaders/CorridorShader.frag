@@ -16,6 +16,9 @@ uniform float lightCutoff;
 uniform float lightDarkenStart;
 uniform float lightDarkenEnd;
 
+// Glow-related
+uniform bool drawGlow;
+
 in vec3 myWorldPosition;
 in vec3 texcoords;
 out vec4 outColor;
@@ -103,6 +106,7 @@ void main()
     
     // Calculate darkening:
     float darkenRatio;
+    bool visibleByFlashlight;
     {
         darkenRatio = DARKNESS_COMPONENT;
         if (-myWorldPosition.z > lightDarkenStart) {
@@ -123,7 +127,8 @@ void main()
             
             float cosAngle = dot(vecToLightN, lightDirN);
             
-            if (cosAngle > lightCutoff) {
+            visibleByFlashlight = cosAngle > lightCutoff;
+            if (visibleByFlashlight) {
                 // In flashlight, reset darkenRatio. Don't use DARKNESS_COMPONENT, instead start it a little brighter
                 float defaultDarkenRatio = darkenRatio;
                 darkenRatio = lightIntensity;
@@ -136,7 +141,7 @@ void main()
                 }
                 
                 // Soften edges of light + achieve stronger-round-the-center flashlight effect
-                if (cosAngle < lightCutoff + EPS) {
+                if (cosAngle < lightCutoff + EPS && !drawGlow) {
                     darkenRatio *= (cosAngle - lightCutoff) / (EPS);
                 }
                 
@@ -152,4 +157,14 @@ void main()
     vec3 diffuseComponent = max(diffuseCoefficient * dot(lVector, normal), 0);
     
     outColor = vec4(diffuseComponent, 1.0f) * darkenRatio;
+    
+    // Draw only a
+    if (drawGlow) {
+        if (visibleByFlashlight) {
+//            outColor = vec4(1.0f, 1.0f, 1.0f, 1.0f) * darkenRatio;
+            outColor += vec4(vec3(0.5), 1.0f);
+        } else {
+            outColor = vec4(vec3(0.0f), 1.0f);
+        }
+    }
 }

@@ -35,6 +35,7 @@ public:
     virtual ~World();
     void update(float dt);
     void draw();
+    void drawGlow();
     
     // Getters
     vec3 getStartPosition();

@@ -98,6 +98,9 @@ PPBuffer::PPBuffer(int screen_width, int screen_height) : _convoKernel(getIdenti
     
     attribute_v_coord_postproc = glGetAttribLocation(program_postproc, "v_coord");
     uniform_fbo_texture = glGetUniformLocation(program_postproc, "fbo_texture");
+    
+    _glowUniform = glGetUniformLocation(program_postproc, "glowTexture");
+    _applyGlowUniform = glGetUniformLocation(program_postproc, "applyGlow");
     _convoKernelUniform = glGetUniformLocation(program_postproc, "ppKernel");
     _uStepUniform = glGetUniformLocation(program_postproc, "uStep");
     _vStepUniform = glGetUniformLocation(program_postproc, "vStep");
@@ -117,8 +120,16 @@ void PPBuffer::setup() {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 }
 
-void PPBuffer::render() {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+GLuint PPBuffer::getTexture()
+{
+    return fbo_texture;
+}
+
+void PPBuffer::render(bool toScreen, bool applyGlow, GLuint glow_texture) {
+    if (toScreen) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+    
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     
     glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -131,6 +142,15 @@ void PPBuffer::render() {
     
     glBindTexture(GL_TEXTURE_2D, fbo_texture);
     glUniform1i(uniform_fbo_texture, /*GL_TEXTURE*/0);
+    
+    if (applyGlow) {
+        glActiveTexture(GL_TEXTURE1);
+        
+        glBindTexture(GL_TEXTURE_2D, glow_texture);
+        glUniform1i(_glowUniform, /*GL_TEXTURE*/1);
+    }
+    
+    glUniform1i(_applyGlowUniform, applyGlow);
     
     glUniformMatrix3fv(_convoKernelUniform, 1, GL_FALSE, value_ptr(_convoKernel));
     glUniform1f(_uStepUniform, 1.0f / _width);

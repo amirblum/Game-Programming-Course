@@ -29,6 +29,9 @@ class PPBuffer {
 
     float _width, _height, _offsetX, _offsetY;
     
+    // Glow
+    GLuint _glowUniform, _applyGlowUniform;
+    
     // Convolution
     mat3 _convoKernel;
     GLuint _convoKernelUniform;
@@ -40,6 +43,7 @@ class PPBuffer {
     PPBuffer(int screen_width, int screen_height);
     virtual ~PPBuffer();
     void setup();
+    GLuint getTexture();
     
     void switchConvolutionKernel(int kernel);
     void setConvolutionKernel(mat3 kernel);
@@ -49,7 +53,7 @@ class PPBuffer {
     mat3 getEdgeDetectConvolution();
     mat3 getEmbossConvolution();
     
-    void render();
+    void render(bool toScreen, bool applyGlow, GLuint glow_texture);
     void resize(int width, int height);
 };
 

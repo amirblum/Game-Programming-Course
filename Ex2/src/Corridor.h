@@ -23,18 +23,26 @@ private:
     vec3 _lightPos, _lightDir;
     float _lightIntensity, _lightCutoff;
     
+    // Glow
+    bool _drawGlow;
+    
     // Custom uniform variables
     GLuint _offsetUniform, _texturePercentUniform;
     GLuint _lightPosUniform, _lightDirUniform;
     GLuint _lightCutoffUniform, _lightIntensityUniform,
-           _lightDarkenStartUniform, _lightDarkenEndUniform;
+           _lightDarkenStartUniform, _lightDarkenEndUniform,
+           _drawGlowUniform;
     
+// Overriding
 public:
     void customBindings();
 
+// Personal
 public:
     Corridor(vec3 positionVec, vec3 scaleVec);
     virtual ~Corridor();
+    
+    void drawGlow();
     
     // Getters
     float getWidth();

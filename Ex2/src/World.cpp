@@ -52,6 +52,21 @@ void World::update(float dt)
 }
 
 /**
+ * Draw all shiny objects
+ */
+void World::drawGlow()
+{
+    // Pass lighting infor to corridor
+    _corridor->setLightPos(_flashLight->getPosition());
+    _corridor->setLightDir(_flashLight->getDirection());
+    _corridor->setLightIntensity(_flashLight->getIntensity());
+    _corridor->setLightCutoff(_flashLight->getCutoff());
+    
+    // And draw
+    _corridor->drawGlow();
+}
+
+/**
  * Draw all objects in the world
  */
 void World::draw()

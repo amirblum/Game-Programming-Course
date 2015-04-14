@@ -30,7 +30,8 @@ Renderable("corridor", "CorridorShader.vert", "CorridorShader.frag", positionVec
 _width(scaleVec.x),
 _height(scaleVec.y),
 _length(scaleVec.z),
-_offset(0)
+_offset(0),
+_drawGlow(false)
 {
     // Initialize corridor
     
@@ -243,6 +244,8 @@ _offset(0)
         _lightCutoffUniform = glGetUniformLocation(_shaderProgram, "lightCutoff");
         _lightDarkenStartUniform = glGetUniformLocation(_shaderProgram, "lightDarkenStart");
         _lightDarkenEndUniform = glGetUniformLocation(_shaderProgram, "lightDarkenEnd");
+        
+        _drawGlowUniform = glGetUniformLocation(_shaderProgram, "drawGlow");
     }
 }
 
@@ -260,6 +263,12 @@ void Corridor::customBindings()
     glUniform1f(_lightDarkenStartUniform, _length / 4);
     glUniform1f(_lightDarkenEndUniform, _length);
     
+    if (_drawGlow) {
+        glUniform1i(_drawGlowUniform, true);
+    } else {
+        glUniform1i(_drawGlowUniform, false);
+    }
+    
 //    std::cout << "Light direction: x- " << _lightDir.x << " y- " << _lightDir.y << std::endl;
     
     // Cubemap texture
@@ -275,6 +284,13 @@ void Corridor::customBindings()
  */
 Corridor::~Corridor()
 {
+}
+
+void Corridor::drawGlow()
+{
+    _drawGlow = true;
+    draw();
+    _drawGlow = false;
 }
 
 /**

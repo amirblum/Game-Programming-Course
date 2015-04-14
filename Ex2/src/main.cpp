@@ -76,6 +76,7 @@ void motion(int x, int y) ;
 // Game-related objects
 World *_world;
 Controller *_controller;
+PPBuffer *_glowBuffer;
 PPBuffer *_ppBuffer;
 
 /** main function */
@@ -129,6 +130,7 @@ int main(int argc, char* argv[])
     _world = new World();
     _controller = new Controller(&Camera::Instance(), _world);
     
+    _glowBuffer = new PPBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
     _ppBuffer = new PPBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Set clear color to black:
@@ -141,14 +143,9 @@ int main(int argc, char* argv[])
 }
 
 int oldTimeSinceStart = 0;
+bool drawGlow = false;
 void display(void)
 {
-    _ppBuffer->setup();
-    
-    // Clear the screen buffer
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-    
     // Update the delta
     int timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
     int deltaTime = timeSinceStart - oldTimeSinceStart;
@@ -158,11 +155,31 @@ void display(void)
     float dt = (float)deltaTime / 100.0f;
     _world->update(dt);
     _controller->update(dt);
-
+    
+    // Drawing time
+    _glowBuffer->setup();
+//    _ppBuffer->setup();
+    
+    // Clear the screen buffer
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    
+    // Tell the world to draw itself
+    _world->drawGlow();
+    
+    _ppBuffer->setup();
+    
+    // Clear the screen buffer
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    
     // Tell the world to draw itself
     _world->draw();
     
-    _ppBuffer->render();
+    if(InputManager::Instance().isPressedFirstTime(KEY_GLOW_TOGGLE)) {
+        drawGlow = !drawGlow;
+    }
+    _ppBuffer->render(true, drawGlow, _glowBuffer->getTexture());
 	
     // Swap those buffers so someone will actually see the results... //
     glutSwapBuffers();
@@ -178,6 +195,7 @@ void windowResize(int w, int h)
     _screenWidth = w;
     _screenHeight = h;
     
+    _glowBuffer->resize(w, h);
     _ppBuffer->resize(w, h);
     
     // set the new viewport //
