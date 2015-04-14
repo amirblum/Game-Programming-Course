@@ -163,7 +163,7 @@ void main()
     if (drawGlow) {
         if (visibleByFlashlight) {
 //            outColor = vec4(1.0f, 1.0f, 1.0f, 1.0f) * darkenRatio;
-            outColor += vec4(vec3(0.5), 1.0f);
+            outColor += vec4(vec3(0.5), 1.0f) * darkenRatio;
         } else {
             outColor = vec4(vec3(0.0f), 1.0f);
         }
