@@ -20,7 +20,7 @@
 
 #define AVERAGE_LIGHT_FLICKER_TIME (3.0f)
 #define RANGE_LIGHT_FLICKER_TIME (2.0f)
-#define JUMP_SCARE_TIME (25.0f)
+#define JUMP_SCARE_TIME (7.0f)
 
 #define MOVE_SPEED (0.02f)
 #define STRAFE_SPEED (0.2f)
@@ -70,13 +70,19 @@ void Controller::update(float dt)
     // Flashlight
     _world->moveLight(input.getMousePos());
     
-    _jumpScareTime += (dt / 10.0f); // Fix to 1 sec
-    if ((!_jumpScare && (_jumpScareTime >= JUMP_SCARE_TIME || input.isPressedFirstTime(KEY_FLICKER)))) {
+    if (!_jumpScare && input.isPressedFirstTime(KEY_FLICKER)) {
+        _jumpScareTime = 0.0f;
         _jumpScare = true;
-        _flashlight->scaryFlicker();
-        _world->jumpScare();
+    } else if (_jumpScare && _jumpScareTime < JUMP_SCARE_TIME) {
+        _jumpScareTime += (dt / 10.0f); // Fix to 1 sec
+        if (_jumpScareTime >= JUMP_SCARE_TIME) {
+            _jumpScare = true;
+            _flashlight->scaryFlicker();
+            _world->jumpScare();
+        }
     }
-    if (!_jumpScare) {
+    
+    if (!(_jumpScare && _jumpScareTime >= JUMP_SCARE_TIME)) {
         _timeSinceLightFlicker += (dt / 10.0f); // Fix to 1 sec
         if (_timeSinceLightFlicker > _timeTillLightFlicker) {
             // Reset timer
@@ -89,12 +95,12 @@ void Controller::update(float dt)
     }
     
     // Moving
-    if (!_jumpScare && input.isPressed(KEY_FORWARD))
+    if (!(_jumpScare && _jumpScareTime >= JUMP_SCARE_TIME) && input.isPressed(KEY_FORWARD))
     {
         // TODO: Accelerate slightly at first
         advance(true, dt);
     }
-    else if (!_jumpScare && input.isPressed(KEY_BACKWARD))
+    else if (!(_jumpScare && _jumpScareTime >= JUMP_SCARE_TIME) && input.isPressed(KEY_BACKWARD))
     {
         advance(false, dt);
     }

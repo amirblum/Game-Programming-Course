@@ -123,7 +123,7 @@ void Flashlight::scaryFlicker()
     flicker3.speed = 0.5f;
     flicker3.recover = false;
     
-    recover.waitTime = 10.0f;
+    recover.waitTime = 7.0f;
     recover.targetIntensity = 0.0f;
     recover.speed = -1.0f;
     recover.recover = true;

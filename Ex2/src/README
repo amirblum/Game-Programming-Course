@@ -19,11 +19,12 @@ B - Toggle bump mapping on/off
 G - Toggle glow on/off
 -/+ - Decrease/Increase ambient lighting in corridor
 0,1,2,3,4 - Change the post-processing convolution kernel (detailed below)
+F - Initiate end sequence
 
 Required implementations:
 -------------------------
 I implemented the following optional features as specified in the exercise description:
-* Flickering light: I implemented a light flickering system that makes the flashlight flicker randomly every few seconds. I think it's pretty scary! If you can last 25 seconds you might even see some special flickering...
+* Flickering light: I implemented a light flickering system that makes the flashlight flicker randomly every few seconds. I think it's pretty scary! If you the 'f' key you might even see some special flickering...
 * Walking left/right: Pretty straightforward
 * Using mouse for light control: Yessir
 * Other kernels: The game includes the following kernels:
@@ -39,7 +40,7 @@ Bonus implementations:
 In addition to the features requaired by the exercise, I implemented the following because I thought it looked good or felt good:
 * When moving forward the camera lumbers from left to right to simulate the motion of walking.
 * Full bump-mapping for the walls and ceiling. Can be enabled by pressing 'b'. Is disabld by default because it doesn't look so great in the distance without mip-mapping.
-* Jump scare at the end. Without spoiling too much...play for a minute or so and see what happens. There is even a sound effect but it needs to be compiled with a library called irrKlang.
+* Jump scare at the end. Without spoiling too much...when you are ready, press 'f' and play a little more to see what happens. There is even a sound effect but it needs to be compiled with a library called irrKlang.
 
 Final note/s:
 -------------
