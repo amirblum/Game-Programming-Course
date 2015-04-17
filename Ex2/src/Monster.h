@@ -12,10 +12,21 @@
 #include <stdio.h>
 #include "Renderable.h"
 
+// OpenAL Headers
+#ifdef __APPLE__
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
+#else
+#include <AL/al.h>
+#include <AL/alc.h>
+#endif
+#include <AL/alut.h>
+
 class Monster : public Renderable {
 private:
     GLuint _lightDarkenStartUniform;
     float _lightDarkenStart;
+    ALuint _screamBuffer, _screamSource;
 public:
     Monster(float width, float height, vec3 startPosition, float lightDarkenStart);
     void customBindings();

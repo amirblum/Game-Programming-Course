@@ -3,7 +3,9 @@
 //
 //  Created by HUJI Computer Graphics course staff, 2013.
 //  Tweaked by HUJI Computer Games Programming staff 2014
+//  Expanded by Amir Blum 2015
 
+// OpenGL Headers
 #include <GL/glew.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -11,17 +13,22 @@
 #include <GL/freeglut.h>
 #endif
 
+// OpenAL Headers
+#ifdef __APPLE__
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
+#else
+#include <AL/al.h>
+#include <AL/alc.h>
+#endif
+#include <AL/alut.h>
+
 // GLM headers
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp> // for glm::value_ptr
 
 using namespace glm;
-
-////irrKlang headers
-//#include <irrklang.h>
-//
-//using namespace irrklang;
 
 #include "World.h"
 #include "Controller.h"
@@ -32,14 +39,7 @@ using namespace glm;
 
 #include <iostream>
 
-/** Implementation Definitions */
-#define GRID_WIDTH (50)
-#define GRID_LENGTH (50)
-// For MidPointDisplacement
-#define DISPLACEMENT_START_HEIGHT (50.0f)
-#define DISPLACEMENT_ROUGHNESS (1.0f)
-// For all deformers
-#define MILLIS_PER_DEFORMATION (10)
+static const std::string BACKGROUND_MUSIC = "assets/creepy.wav";
 
 /** Internal Definitions */
 
@@ -127,6 +127,21 @@ int main(int argc, char* argv[])
 //    glutTimerFunc(100, deformationTimer, 0);   // uint millis int value
     
     glutSetCursor(GLUT_CURSOR_NONE);
+    
+    // Initialize ALUT (& background music)
+    alutInit(&argc, argv);
+    
+    ALuint backgroundBuffer, backgroundSource;
+    backgroundBuffer = alutCreateBufferFromFile(BACKGROUND_MUSIC.c_str());
+    ALenum alutError = alutGetError();
+    if (alutError != AL_NO_ERROR) {
+        std::cout << "Error loading background music: " << alutGetErrorString(alutError) << std::endl;
+    }
+    
+    alGenSources(1, &backgroundSource);
+    alSourcei(backgroundSource, AL_BUFFER, backgroundBuffer);
+    alSourcei(backgroundSource, AL_LOOPING, true);
+    alSourcePlay(backgroundSource);
 	
     // Initialize random seed
     srand(time(NULL));

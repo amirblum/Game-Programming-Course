@@ -9,16 +9,12 @@
 #include "Monster.h"
 #include "bimage.h"
 
-#ifdef __APPLE__
-#include <irrklang.h>
-using namespace irrklang;
-#endif
-
 #include "glm/gtc/matrix_transform.hpp"
 
 #define MONSTER_SPEED (5.0f)
 
 static const std::string MONSTER_TEXTURE = "assets/monster.bmp";
+static const std::string SCREAM_SOUND = "assets/scream.wav";
 
 Monster::Monster(float width, float height, vec3 startPosition, float lightDarkenStart) :
 Renderable("monster", "MonsterShader.vert", "MonsterShader.frag",
@@ -92,6 +88,18 @@ _lightDarkenStart(lightDarkenStart)
     {
         _lightDarkenStartUniform = glGetUniformLocation(_shaderProgram, "lightDarkenStart");
     }
+    
+    // Load sound
+    {
+        _screamBuffer = alutCreateBufferFromFile(SCREAM_SOUND.c_str());
+        ALenum alutError = alutGetError();
+        if (alutError != AL_NO_ERROR) {
+            std::cout << "Error loading monster scream: " << alutGetErrorString(alutError) << std::endl;
+        }
+        
+        alGenSources(1, &_screamSource);
+        alSourcei(_screamSource, AL_BUFFER, _screamBuffer);
+    }
 }
 
 void Monster::customBindings()
@@ -109,27 +117,12 @@ void Monster::moveForward(float dt)
     mat4 advanceTranslate = translate(mat4(1.0f), vec3(0.0f, 0.0f, 1.0f * MONSTER_SPEED * dt));
     _world = advanceTranslate * _world;
     
-#ifdef __APPLE__
     if (!soundPlayed) {
         vec4 startPosition(0.0f, 0.0f, -120.0f, 1.0f);
         vec4 currentPosition = _world * startPosition;
         if (currentPosition.z > -30.0f) {
-            // start the sound engine with default parameters
-            ISoundEngine* engine = createIrrKlangDevice();
-            
-            if (!engine)
-            {
-                printf("Could not startup engine\n");
-                return; // error starting up the engine
-            }
-            
-            // To play a sound, we only to call play2D(). The second parameter
-            // tells the engine to play it looped.
-            
-            // play some sound stream, looped
-            engine->play2D("assets/scream.ogg");
+            alSourcePlay(_screamSource);
             soundPlayed = true;
         }
     }
-#endif
 }
