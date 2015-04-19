@@ -30,7 +30,7 @@ HDRS	=  	World.h	\
             Flashlight.h  \
             Monster.h     \
             ShaderIO.h	\
-            Camera.cpp  \
+            Camera.h  \
             InputManager.h    \
             Renderable.h  \
             Controller.h	\
@@ -75,7 +75,7 @@ LDFLAGS	=
 APP = cgp_ex2
 
 # each lib should add with -l flag
-LIBS =  -L/usr/lib -lm -lGLEW -lglut -lGL -lGLU -ldl -L/usr/X11R6/lib
+LIBS =  -L/usr/lib -lm -lGLEW -lglut -lGL -lGLU -lopenal -l:libalut.so.0 -ldl -L/usr/X11R6/lib
 
 
 # rule to change the suffix of the sources files

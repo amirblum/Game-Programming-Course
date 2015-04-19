@@ -20,7 +20,8 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 #endif
-#include <AL/alut.h>
+//#include <AL/alut.h>
+#include "alut.h"
 
 class Monster : public Renderable {
 private:
