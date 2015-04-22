@@ -35,6 +35,7 @@ CGP.xcworkspace/
 */include/
 xcode-template/
 Tutorial1/
+Resources/
 *.zip
 
 # Only support bmp files for now
