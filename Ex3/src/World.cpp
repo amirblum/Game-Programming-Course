@@ -9,17 +9,19 @@
 #include <iostream>
 
 #include "World.h"
+#include "Ship.h"
 #include "InputManager.h"
 
 World::World() :
+SceneNode(vec3(0.0f), vec3(0.0f, 1.0f, 0.0f), vec3(1.0f)),
 _startPosition(0.0f)
 {
-    _ship = new Ship(vec3(0.0f, 2.0f, -4.0f), vec3(4.0f, 4.0f, 8.0f));
+    Ship *ship = new Ship(vec3(0.0f, 2.0f, -4.0f), vec3(0.0f, 1.0f, 0.0f), vec3(4.0f, 4.0f, 8.0f));
+    addChild(ship);
 }
 
 World::~World()
 {
-    delete _ship;
 }
 
 /**
@@ -30,22 +32,23 @@ void World::update(float dt)
 }
 
 /**
- * Draw all objects in the world
+ * Render all objects in the world
  */
-void World::draw()
+void World::render()
 {
-    // Pass lighting infor to ship
-    _ship->setLightPos(vec3(0.0f));
-    _ship->setLightDir(vec3(0.0f));
     
-    // And draw
-    _ship->draw();
+//    // Pass lighting infor to ship
+//    _ship->setLightPos(vec3(0.0f));
+//    _ship->setLightDir(vec3(0.0f));
+//    
+//    // And draw
+//    _ship->draw();
 }
 
 /**
  * Gets the start position
  */
-vec3 World::getStartPosition()
+vec3 World::getStartPosition() const
 {
     return _startPosition;
 }

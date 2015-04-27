@@ -19,8 +19,8 @@ static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
 /**
  * Ship constructor
  */
-Ship::Ship(vec3 positionVec, vec3 scaleVec) :
-Renderable("ship", "ShipShader.vert", "ShipShader.frag", positionVec, scaleVec)
+Ship::Ship(vec3 position, vec3 rotation, vec3 scale) :
+Renderable("ship", "ShipShader.vert", "ShipShader.frag", position, rotation, scale)
 {
     // Initialize ship
     static const GLfloat vertices[] = {

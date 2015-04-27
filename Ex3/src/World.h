@@ -19,24 +19,20 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
-#include "Ship.h"
+#include "SceneNode.h"
 
-class World {
+class World : public SceneNode {
 private:
     vec3 _startPosition;
-    float _leftBound, _rightBound;
-    
-    Ship *_ship;
     
 public:
     World();
     virtual ~World();
-    void update(float dt);
-    void draw();
+    virtual void update(float dt);
+    virtual void render();
     
     // Getters
-    vec3 getStartPosition();
-    Ship* getShip();
+    vec3 getStartPosition() const;
 };
 
 #endif /* defined(__CGP_Ex3__World__) */

@@ -21,8 +21,7 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 #endif
-//#include <AL/alut.h>
-#include "alut.h"
+#include <AL/alut.h>
 
 // GLM headers
 #include <glm/glm.hpp>
@@ -169,7 +168,7 @@ void display(void)
     
     // Update the game state
     float dt = (float)deltaTime / 100.0f;
-    _world->update(dt);
+    _world->recursiveUpdate(dt);
     _controller->update(dt);
     
     // Drawing time
@@ -179,7 +178,7 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
     // Tell the world to draw itself
-    _world->draw();
+    _world->recursiveRender();
 	
     // Swap those buffers so someone will actually see the results... //
     glutSwapBuffers();

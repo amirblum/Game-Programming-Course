@@ -24,7 +24,9 @@ using namespace glm;
 
 #include <iostream>
 
-class Renderable {
+#include "SceneNode.h"
+
+class Renderable : public SceneNode {
 protected:
     // World transformation
     mat4 _world;
@@ -37,12 +39,10 @@ protected:
     
     // Shader program ID
     GLuint _shaderProgram;
-    bool _bumpMappingOn;
     
     // Uniform handles:
     GLint _worldUniform, _viewProjectionUniform,
-    _textureUniform, _bumpUniform,
-    _bumpMappingOnUniform;
+    _textureUniform, _bumpUniform;
     
     // Number of elements
     size_t _nElementIndices;
@@ -53,11 +53,10 @@ public:
     Renderable(std::string shaderProgram,
                std::string vertexShaderFilename,
                std::string fragmentShaderFilename,
-               vec3 position, vec3 scale);
+               vec3 position, vec3 rotation, vec3 scale);
     virtual ~Renderable();
-    void draw();
+    virtual void render();
     mat4 getWorldMat();
-    void toggleBumpMapping();
 };
 
 #endif /* defined(__CGP_Ex3__Renderable__) */

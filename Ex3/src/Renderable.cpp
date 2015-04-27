@@ -20,8 +20,9 @@
 Renderable::Renderable(std::string shaderProgram,
                        std::string vertexShaderFilename,
                        std::string fragmentShaderFilename,
-                       vec3 positionVec, vec3 scaleVec) :
-_vao(0), _vbo(0), _ibo(0), _world(1.0f), _bumpMappingOn(false)
+                       vec3 position, vec3 rotation, vec3 scale) :
+SceneNode(position, rotation, scale),
+_vao(0), _vbo(0), _ibo(0), _world(1.0f)
 {
     programManager::sharedInstance()
     .createProgram(shaderProgram,
@@ -73,13 +74,12 @@ _vao(0), _vbo(0), _ibo(0), _world(1.0f), _bumpMappingOn(false)
         _viewProjectionUniform  = glGetUniformLocation(_shaderProgram, "PV");
         _textureUniform  = glGetUniformLocation(_shaderProgram, "textureSampler");
         _bumpUniform  = glGetUniformLocation(_shaderProgram, "bumpSampler");
-        _bumpMappingOnUniform = glGetUniformLocation(_shaderProgram, "bumpMappingOn");
     }
     
     // Set up world translation
     {
-        _world = _world * translate(mat4(1.0f), positionVec);
-        _world = _world * scale(mat4(1.0f), scaleVec);
+//        _world = _world * translate(mat4(1.0f), positionVec);
+//        _world = _world * scale(mat4(1.0f), scaleVec);
     }
 }
 
@@ -93,7 +93,7 @@ Renderable::~Renderable()
 /**
  * Tell OpenGL to draw
  */
-void Renderable::draw()
+void Renderable::render()
 {
     // Set the program to be used in subsequent lines:
     glUseProgram(_shaderProgram);
@@ -103,13 +103,12 @@ void Renderable::draw()
     // Pass the uniform variables
     {
         // w,vp matrices
-        glUniformMatrix4fv(_worldUniform, 1, GL_FALSE, value_ptr(_world));
+        glUniformMatrix4fv(_worldUniform, 1, GL_FALSE, value_ptr(_worldTransform));
         glUniformMatrix4fv(_viewProjectionUniform, 1, GL_FALSE,
                            value_ptr(Camera::Instance().getViewProjection()));
         
         glUniform1i(_textureUniform, 0);
         glUniform1i(_bumpUniform, 1);
-        glUniform1i(_bumpMappingOnUniform, _bumpMappingOn);
     }
     
     // Draw using the state stored in the Vertex Array object:
@@ -136,9 +135,4 @@ void Renderable::customBindings()
 mat4 Renderable::getWorldMat()
 {
     return _world;
-}
-
-void Renderable::toggleBumpMapping()
-{
-    _bumpMappingOn = !_bumpMappingOn;
 }

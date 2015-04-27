@@ -30,7 +30,7 @@ public:
 
 // Personal
 public:
-    Ship(vec3 positionVec, vec3 scaleVec);
+    Ship(vec3 position, vec3 rotation, vec3 scale);
     virtual ~Ship();
     
     void drawGlow();
