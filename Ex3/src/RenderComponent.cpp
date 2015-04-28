@@ -69,7 +69,7 @@ RenderComponent::~RenderComponent()
     }
     
     for (auto kv : _uniforms) {
-        delete kv->second;
+        delete kv.second;
     }
 }
 
