@@ -16,8 +16,20 @@ World::World() :
 SceneNode(vec3(0.0f), vec3(0.0f, 1.0f, 0.0f), vec3(1.0f)),
 _startPosition(0.0f)
 {
-    Ship *ship = new Ship(vec3(0.0f, 2.0f, -4.0f), vec3(0.0f, 1.0f, 0.0f), vec3(4.0f, 4.0f, 8.0f));
+    Ship *ship = new Ship(vec3(0.0f, 0.0f, 4.0f), vec3(0.0f, 1.0f, 0.0f), vec3(1.0f, 1.5f, 4.0f));
     addChild(ship);
+    
+    Ship *secondaryShip = new Ship(vec3(-1.0f, 0.0f, 1.0f), vec3(1.0f, 1.0f, 0.0f), vec3(1.0f));
+    addChild(secondaryShip);
+    
+    // Camera
+    _camera = new Camera(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
+    Camera::setMainCamera(_camera);
+    addChild(_camera);
+    
+    // Controllers
+    _cameraFollow = new CameraFollow(_camera, ship);
+    _controller = new Controller(ship, _startPosition);
 }
 
 World::~World()
@@ -29,20 +41,15 @@ World::~World()
  */
 void World::update(float dt)
 {
+    _controller->update(dt);
+    _cameraFollow->update(dt);
 }
 
 /**
- * Render all objects in the world
+ * Render
  */
 void World::render()
 {
-    
-//    // Pass lighting infor to ship
-//    _ship->setLightPos(vec3(0.0f));
-//    _ship->setLightDir(vec3(0.0f));
-//    
-//    // And draw
-//    _ship->draw();
 }
 
 /**

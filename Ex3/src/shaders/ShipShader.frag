@@ -23,5 +23,6 @@ void main()
 //    vec3 diffuseComponent = max(diffuseCoefficient * dot(lVector, normal), 0);
 //
 //    outColor = vec4(diffuseComponent, 1.0f);
-    outColor = vec4(1.0f);
+    outColor = clamp(myWorldPosition, 0.0f, 1.0f);
+//    outColor = vec4(1.0f);
 }

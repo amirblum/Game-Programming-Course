@@ -13,8 +13,8 @@
 #define __CGP_Ex3__Controller__
 
 
+#include "Ship.h"
 #include "Camera.h"
-#include "World.h"
 
 #include <GL/glew.h>
 // GLM headers
@@ -23,20 +23,18 @@
 using namespace glm;
 
 class Controller {
-    Camera *_myCamera;
-    World *_world;
-    
-public:
-    Controller(Camera *camera, World *world);
-    ~Controller();
-    
-    void update(float dt);
-    
 private:
+    Ship *_ship;
     // Private functions
     void move(vec3 direction);
     void strafe(vec3 direction);
     void turn(float angle);
+    
+public:
+    Controller(Ship *ship, vec3 startPosition);
+    ~Controller();
+    
+    void update(float dt);
 };
 
 #endif /* defined(__CGP_Ex3__Controller__) */

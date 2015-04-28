@@ -11,24 +11,8 @@
 
 #include <iostream>
 
-#define PLAYER_HEIGHT (2.0f)
-#define PLAYER_CROUCH_HEIGHT (0.5f)
-
-#define LIGHT_OFFSET_X (-0.5f)
-#define LIGHT_OFFSET_Y (0.0f)
-#define LIGHT_OFFSET_Z (0.0f)
-
-#define AVERAGE_LIGHT_FLICKER_TIME (3.0f)
-#define RANGE_LIGHT_FLICKER_TIME (2.0f)
-#define JUMP_SCARE_TIME (7.0f)
-
-#define MOVE_SPEED (0.02f)
-#define STRAFE_SPEED (0.2f)
-
-#define BOB_SPEED (0.01f)
-#define BOB_MAX (0.1f)
-
-#define MOVE_BOOST (2.5);
+#define MOVE_SPEED (0.3f)
+#define MOVE_BOOST (2.5)
 
 #define TURN_ANGLE (10.0f)
 #define LEAN_ANGLE (5.0f)
@@ -36,15 +20,11 @@
 /**
  * Constructor. Sets camera to the desired initial position.
  */
-Controller::Controller(Camera *camera, World *world) :
-_myCamera(camera),
-_world(world)
+Controller::Controller(Ship *ship, vec3 startPosition) :
+_ship(ship)
 {
-    vec3 startPosition = world->getStartPosition();
-    vec3 cameraPosition = vec3(startPosition.x, startPosition.y + PLAYER_HEIGHT, startPosition.z);
-    
-    // Set camera to middle of ship
-    _myCamera->setPos(cameraPosition);
+    // Set ship to starting position
+    _ship->setPosition(startPosition);
 }
 
 /**
@@ -57,12 +37,12 @@ void Controller::update(float dt)
     // Moving
     if (input.isPressed(KEY_FORWARD))
     {
-        vec3 movementVec = _myCamera->getDir() * MOVE_SPEED;
+        vec3 movementVec = _ship->getRotation() * MOVE_SPEED;
         move(movementVec * dt);
     }
     else if (input.isPressed(KEY_BACKWARD))
     {
-        vec3 movementVec = -_myCamera->getDir() * MOVE_SPEED;
+        vec3 movementVec = -_ship->getRotation() * MOVE_SPEED;
         move(movementVec * dt);
     }
     
@@ -81,11 +61,11 @@ void Controller::update(float dt)
     // Strafing
     if (input.isPressed(KEY_STRAFE_LEFT))
     {
-        move(-cross(_myCamera->getDir(), _myCamera->getUp()) * MOVE_SPEED * dt);
+        move(-cross(_ship->getRotation(), Camera::MainCamera()->getUp()) * MOVE_SPEED * dt);
     }
     else if (input.isPressed(KEY_STRAFE_RIGHT))
     {
-        move(cross(_myCamera->getDir(), _myCamera->getUp()) * MOVE_SPEED * dt);
+        move(cross(_ship->getRotation(), Camera::MainCamera()->getUp()) * MOVE_SPEED * dt);
     }
 }
 
@@ -100,12 +80,11 @@ void Controller::move(vec3 direction)
         direction *= MOVE_BOOST;
     }
     
-    vec3 newPos = _myCamera->getPos() + direction;
-    newPos.y = PLAYER_HEIGHT;
+    vec3 newPos = _ship->getPosition() + direction;
     
     
     // Set position
-    _myCamera->setPos(newPos);
+    _ship->setPosition(newPos);
 }
 
 /**
@@ -119,9 +98,9 @@ void Controller::strafe(vec3 direction)
         direction *= MOVE_BOOST;
     }
     
-    vec3 newCameraPos = _myCamera->getPos() + direction;
+    vec3 newCameraPos = _ship->getPosition() + direction;
     
-    _myCamera->setPos(newCameraPos);
+    _ship->setPosition(newCameraPos);
 }
 
 /**
@@ -137,8 +116,8 @@ void Controller::turn(float angle)
     
     // Probably not the prettiest, but use a glm rotation matrix to rotate
     // to the desired direction
-    vec4 newDir(_myCamera->getDir(), 1.0f);
-    newDir = rotate(mat4(1.0f), angle, _myCamera->getUp()) * newDir;
-    _myCamera->setDir(normalize(vec3(newDir.x, newDir.y, newDir.z)));
+    vec4 newDir(_ship->getRotation(), 1.0f);
+    newDir = rotate(mat4(1.0f), angle, Camera::MainCamera()->getUp()) * newDir;
+    _ship->setRotation(normalize(vec3(newDir.x, newDir.y, newDir.z)));
 }
 

@@ -7,31 +7,40 @@
 //
 
 #include "Camera.h"
+#include <iostream>
 
-Camera::Camera() :
-_dir(0.0f, 0.0f, -1.0f),
-_pos(0.0f, 1.0f, 5.0f),
-_up(0.0f, 1.0f, 0.0f),
-_view(lookAt(_pos, _pos + _dir, _up)),
+Camera::Camera(vec3 position, vec3 direction, vec3 up) :
+SceneNode(position, vec3(0.0f, 1.0f, 0.0f), vec3(1.0f)),
+_direction(direction),
+_up(up),
+_view(lookAt(position, position + _direction, _up)),
 _projection(perspective(45.0f, 1.0f, 0.1f, 1000.0f)),
 _viewProjection(_projection * _view)
 {
 }
 
-/**
- * Get position
- */
-vec3 Camera::getPos()
+Camera::~Camera(){}
+
+static Camera *mainCamera;
+Camera* Camera::MainCamera()
 {
-    return _pos;
+    if (mainCamera == NULL) {
+        std::cout << "Trying to access Camera::MainCamera() before it was set. Please set it first!" << std::endl;
+    }
+    return mainCamera;
+}
+
+void Camera::setMainCamera(Camera *camera)
+{
+    mainCamera = camera;
 }
 
 /**
  * Get the looking direction
  */
-vec3 Camera::getDir()
+vec3 Camera::getDirection()
 {
-    return _dir;
+    return _direction;
 }
 
 /**
@@ -45,18 +54,9 @@ vec3 Camera::getUp()
 /**
  * Set direction
  */
-void Camera::setDir(vec3 dir)
+void Camera::setDirection(vec3 direction)
 {
-    _dir = dir;
-    updateViewProjection();
-}
-
-/**
- * Set position
- */
-void Camera::setPos(vec3 pos)
-{
-    _pos = pos;
+    _direction = direction;
     updateViewProjection();
 }
 
@@ -74,7 +74,7 @@ void Camera::setUp(vec3 up)
  */
 void Camera::updateViewProjection()
 {
-    _view = lookAt(_pos, _pos + _dir, _up);
+    _view = lookAt(_position, _position + _direction, _up);
     // No need to update the projection every time
     _viewProjection = _projection * _view;
 }

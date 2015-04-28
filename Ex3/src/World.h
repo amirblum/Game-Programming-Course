@@ -20,10 +20,15 @@
 using namespace glm;
 
 #include "SceneNode.h"
+#include "Controller.h"
+#include "CameraFollow.h"
 
 class World : public SceneNode {
 private:
     vec3 _startPosition;
+    Camera *_camera;
+    Controller *_controller;
+    CameraFollow *_cameraFollow;
     
 public:
     World();

@@ -146,7 +146,6 @@ int main(int argc, char* argv[])
     
     // Set up game
     _world = new World();
-    _controller = new Controller(&Camera::Instance(), _world);
 
     // Set clear color to black:
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -169,7 +168,6 @@ void display(void)
     // Update the game state
     float dt = (float)deltaTime / 100.0f;
     _world->recursiveUpdate(dt);
-    _controller->update(dt);
     
     // Drawing time
     
@@ -198,7 +196,7 @@ void windowResize(int w, int h)
     glViewport(0, 0, w, h);
     
     // set the perspective of the camera
-    Camera::Instance().resize(w, h);
+    Camera::MainCamera()->resize(w, h);
     
     // Refresh the display //
     glutPostRedisplay();

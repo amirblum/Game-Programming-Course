@@ -8,38 +8,41 @@
 #ifndef __ex3__Ship__
 #define __ex3__Ship__
 
-#include "Renderable.h"
+#include "SceneNode.h"
+#include "RenderComponent.h"
 
 #include <vector>
 
 #define GRID_ELEMENT_SIZE (1.0f)
 
-class Ship : public Renderable {
+class Ship : public SceneNode {
 private:
-    // Info
+    RenderComponent _renderComponent;
+//    // Light info
+//    vec3 _lightPos, _lightDir;
+//    
+//    // Custom uniform variables
+//    GLuint _lightPosUniform, _lightDirUniform;
     
-    // Light info
-    vec3 _lightPos, _lightDir;
-    
-    // Custom uniform variables
-    GLuint _lightPosUniform, _lightDirUniform;
-    
-// Overriding
-public:
-    void customBindings();
+//// Overriding
+//public:
+//    void customBindings();
 
 // Personal
 public:
     Ship(vec3 position, vec3 rotation, vec3 scale);
     virtual ~Ship();
     
-    void drawGlow();
+//    void drawGlow();
+//    
+//    // Getters
+//    
+//    // Setters
+//    void setLightPos(vec3 lightPos);
+//    void setLightDir(vec3 lightDir);
     
-    // Getters
-    
-    // Setters
-    void setLightPos(vec3 lightPos);
-    void setLightDir(vec3 lightDir);
+    virtual void update(float dt);
+    virtual void render();
 };
 
 #endif /* defined(__ex3__Ship__) */

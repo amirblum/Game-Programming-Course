@@ -24,35 +24,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
+#include "SceneNode.h"
 #include "InputManager.h"
 
-class Camera {
-
-public:
-    // Singleton implementation
-    static Camera& Instance() {
-        static Camera instance;
-        
-        return instance;
-    }
-    
-    // Getters
-    vec3 getPos();
-    vec3 getDir();
-    vec3 getUp();
-    mat4 getViewProjection();
-    
-    // Setters
-    void setDir(vec3 dir);
-    void setPos(vec3 pos);
-    void setUp(vec3 up);
-    
-    // Aspect ratio
-    void resize(int screenWidth, int screenHeight);
-
+class Camera : public SceneNode {
 private:
-    vec3 _pos;
-    vec3 _dir;
+    vec3 _direction;
     vec3 _up;
     
     mat4 _view;
@@ -60,12 +37,33 @@ private:
     mat4 _viewProjection;
     
     // Singleton private initialization
-    Camera();
-    Camera(Camera const&);
-    void operator=(Camera const&);
+//    Camera();
+//    Camera(Camera const&);
+//    void operator=(Camera const&);
     
     // Update state
     void updateViewProjection();
+    
+public:
+    // Main camera implementation
+    static Camera* MainCamera();
+    static void setMainCamera(Camera *camera);
+    
+    // Constructor
+    Camera(vec3 position, vec3 direction, vec3 up);
+    virtual ~Camera();
+    
+    // Getters
+    vec3 getDirection();
+    vec3 getUp();
+    mat4 getViewProjection();
+    
+    // Setters
+    void setDirection(vec3 direction);
+    void setUp(vec3 up);
+    
+    // Aspect ratio
+    void resize(int screenWidth, int screenHeight);
 };
 
 #endif /* defined(__CGP_Ex3__Camera__) */

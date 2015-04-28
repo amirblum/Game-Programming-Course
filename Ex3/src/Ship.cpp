@@ -7,20 +7,21 @@
 
 #include "ShaderIO.h"
 #include "Ship.h"
-#include "Camera.h"
+//#include "Camera.h"
 
 #include <iostream>
 //#include "stb_image.h"
-#include "bimage.h"
+//#include "bimage.h"
 
-static const std::string WALL_TEXTURE = "assets/wallTexture-squashed.bmp";
+static const std::string SHIP_TEXTURE = "assets/wallTexture-squashed.bmp";
 static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
 
 /**
  * Ship constructor
  */
 Ship::Ship(vec3 position, vec3 rotation, vec3 scale) :
-Renderable("ship", "ShipShader.vert", "ShipShader.frag", position, rotation, scale)
+SceneNode(position, rotation, scale),
+_renderComponent("ship", "ShipShader.vert", "ShipShader.frag")
 {
     // Initialize ship
     static const GLfloat vertices[] = {
@@ -41,10 +42,9 @@ Renderable("ship", "ShipShader.vert", "ShipShader.frag", position, rotation, sca
 
 
     // Push VBO
-    glBindVertexArray(_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glBindVertexArray(0);
+    std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
+    _renderComponent.setVBO(verticesVector);
+    
     
     static const GLubyte indices[] = {
         0, 1, 2,
@@ -57,91 +57,14 @@ Renderable("ship", "ShipShader.vert", "ShipShader.frag", position, rotation, sca
         0, 2, 6
     };
     
-    _nElementIndices = sizeof(indices) / sizeof(GLubyte);
+    std::vector<GLubyte> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLubyte)));
+    _renderComponent.setIBO(indicesVector);
     
-    // Push IBO
-    glBindVertexArray(_vao);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-    glBindVertexArray(0);
-    
-    // Create ship texture
+    // Create ship textures
     {
-        // Load wall image
-//        int wallImageWidth, wallImageHeight, wallImageChannels;
-//        unsigned char *wallImageData = stbi_load(WALL_TEXTURE.c_str(), &wallImageWidth, &wallImageHeight, &wallImageChannels, 0);
-        BImage shipMap;
-        if (!shipMap.readImage(WALL_TEXTURE.c_str())) {
-            std::cout << "Failed to read ship texture" << std::endl;
-            exit(1);
-        }
-        
-        // "Bind" the newly created texture : all future texture functions will modify this texture
-        glActiveTexture(GL_TEXTURE0);
-        
-        // Cubemap texture
-        glBindTexture(GL_TEXTURE_2D, _tex);
-        
-        // Give the image to OpenGL (one for each face)
-        glTexImage2D(GL_TEXTURE_2D, 0,
-                     GL_RGBA,
-                     shipMap.width(), shipMap.height(),
-                     0,
-                     GL_RGB, GL_UNSIGNED_BYTE,
-                     shipMap.getImageData());
-        
-        // Format cube map texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        
-        // Load the bump map
-        BImage shipBumpMap;
-        if (!shipBumpMap.readImage(SHIP_BUMP.c_str())) {
-            std::cout << "Failed to read ship texture bump" << std::endl;
-            exit(1);
-        }
-        
-        glActiveTexture(GL_TEXTURE1);
-        
-        glBindTexture(GL_TEXTURE_2D, _bump); // Bind texture before setting its properties
-        
-        // Give the image to OpenGL (one for each face)
-        glTexImage2D(GL_TEXTURE_2D, 0,
-                     GL_RGBA,
-                     shipBumpMap.width(), shipBumpMap.height(),
-                     0,
-                     GL_RGB, GL_UNSIGNED_BYTE,
-                     shipBumpMap.getImageData());
-        
-        
-        // Format cube map texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        _renderComponent.addTexture(SHIP_TEXTURE, GL_TEXTURE_2D);
+        _renderComponent.addTexture(SHIP_BUMP, GL_TEXTURE_2D);
     }
-    
-    // Set custom uniform variables
-    {
-        _lightPosUniform = glGetUniformLocation(_shaderProgram, "lightPos");
-        _lightDirUniform = glGetUniformLocation(_shaderProgram, "lightDir");
-    }
-}
-
-void Ship::customBindings()
-{
-    // Custom uniform variables
-    glUniform3fv(_lightPosUniform, 1, value_ptr(_lightPos));
-    glUniform3fv(_lightDirUniform, 1, value_ptr(_lightDir));
-    
-    // Texture
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _tex);
-    
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _bump);
 }
 
 /**
@@ -151,18 +74,12 @@ Ship::~Ship()
 {
 }
 
-/**
- * Sets the light position
- */
-void Ship::setLightPos(vec3 lightPos)
+void Ship::update(float dt)
 {
-    _lightPos = lightPos;
+    
 }
 
-/**
- * Sets the light direction
- */
-void Ship::setLightDir(vec3 lightDir)
+void Ship::render()
 {
-    _lightDir = lightDir;
+    _renderComponent.render(_worldTransform);
 }

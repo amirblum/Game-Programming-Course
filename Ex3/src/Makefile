@@ -20,7 +20,7 @@ SRCS	=  	main.cpp		\
 		ShaderIO.cpp	\
         Camera.cpp  \
         InputManager.cpp    \
-        Renderable.cpp  \
+        RenderComponent.cpp  \
         Controller.cpp	\
 		PPBuffer.cpp	\
 		bimage.cpp \
@@ -32,7 +32,7 @@ HDRS	=  	World.h	\
             ShaderIO.h	\
             Camera.h  \
             InputManager.h    \
-            Renderable.h  \
+            RenderComponent.h  \
             Controller.h	\
 			PPBuffer.h	\
 			bimage.h
