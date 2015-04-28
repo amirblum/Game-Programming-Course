@@ -10,6 +10,7 @@
 
 #include "SceneNode.h"
 #include "RenderComponent.h"
+#include "PhysicsComponent.h"
 
 #include <vector>
 
@@ -17,32 +18,27 @@
 
 class Ship : public SceneNode {
 private:
+    // Components
     RenderComponent _renderComponent;
-//    // Light info
-//    vec3 _lightPos, _lightDir;
-//    
-//    // Custom uniform variables
-//    GLuint _lightPosUniform, _lightDirUniform;
+    PhysicsComponent _physicsComponent;
     
-//// Overriding
-//public:
-//    void customBindings();
-
-// Personal
+    // Convenient info
+    vec3 _forward;
+    vec3 _up;
 public:
-    Ship(vec3 position, vec3 rotation, vec3 scale);
+    Ship(vec3 position, quat rotation, vec3 scale);
     virtual ~Ship();
-    
-//    void drawGlow();
-//    
-//    // Getters
-//    
-//    // Setters
-//    void setLightPos(vec3 lightPos);
-//    void setLightDir(vec3 lightDir);
     
     virtual void update(float dt);
     virtual void render();
+    
+    void accelerate(float force);
+    void tilt(float angle);
+    void twist(float angle);
+    
+    // Getters
+    vec3 getForward();
+    vec3 getUp();
 };
 
 #endif /* defined(__ex3__Ship__) */

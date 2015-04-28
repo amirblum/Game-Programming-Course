@@ -10,26 +10,26 @@
 
 #include "World.h"
 #include "Ship.h"
+#include "DummyObject.h"
 #include "InputManager.h"
 
 World::World() :
-SceneNode(vec3(0.0f), vec3(0.0f, 1.0f, 0.0f), vec3(1.0f)),
+SceneNode(vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f)),
 _startPosition(0.0f)
 {
-    Ship *ship = new Ship(vec3(0.0f, 0.0f, 4.0f), vec3(0.0f, 1.0f, 0.0f), vec3(1.0f, 1.5f, 4.0f));
+    Ship *ship = new Ship(vec3(0.0f, 0.0f, 0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.5f, 4.0f));
     addChild(ship);
     
-    Ship *secondaryShip = new Ship(vec3(-1.0f, 0.0f, 1.0f), vec3(1.0f, 1.0f, 0.0f), vec3(1.0f));
-    addChild(secondaryShip);
+    DummyObject *dummy = new DummyObject(vec3(-1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(1.0f));
+    addChild(dummy);
     
     // Camera
     _camera = new Camera(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
     Camera::setMainCamera(_camera);
     addChild(_camera);
     
-    // Controllers
+    // Scripts
     _cameraFollow = new CameraFollow(_camera, ship);
-    _controller = new Controller(ship, _startPosition);
 }
 
 World::~World()
@@ -41,7 +41,6 @@ World::~World()
  */
 void World::update(float dt)
 {
-    _controller->update(dt);
     _cameraFollow->update(dt);
 }
 

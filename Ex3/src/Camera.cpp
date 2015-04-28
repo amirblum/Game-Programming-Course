@@ -10,7 +10,7 @@
 #include <iostream>
 
 Camera::Camera(vec3 position, vec3 direction, vec3 up) :
-SceneNode(position, vec3(0.0f, 1.0f, 0.0f), vec3(1.0f)),
+SceneNode(position, quat(vec3(0.0f)), vec3(1.0f)),
 _direction(direction),
 _up(up),
 _view(lookAt(position, position + _direction, _up)),

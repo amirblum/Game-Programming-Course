@@ -17,18 +17,13 @@
 using namespace glm;
 
 // Key definitions
-#define KEY_FORWARD ('w')
-#define KEY_BACKWARD ('s')
-#define KEY_STRAFE_LEFT ('a')
-#define KEY_STRAFE_RIGHT ('d')
-#define KEY_TURN_LEFT ('q')
-#define KEY_TURN_RIGHT ('e')
-#define KEY_FLICKER ('f')
-#define KEY_BUMP_TOGGLE ('b')
-#define KEY_GLOW_TOGGLE ('g')
-#define KEY_LIGHTEN ('-')
-#define KEY_DARKEN1 ('=')
-#define KEY_DARKEN2 ('+')
+#define KEY_ACTION (' ')
+#define KEY_UP ('w')
+#define KEY_DOWN ('s')
+#define KEY_LEFT ('a')
+#define KEY_RIGHT ('d')
+#define KEY_LEFT_MOD ('q')
+#define KEY_RIGHT_MOD ('e')
 
 class InputManager {
 public:

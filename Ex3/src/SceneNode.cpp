@@ -8,7 +8,7 @@
 
 #include "SceneNode.h"
 
-SceneNode::SceneNode(vec3 position, vec3 rotation, vec3 scale) :
+SceneNode::SceneNode(vec3 position, quat rotation, vec3 scale) :
 _childNodes(0), _parentNode(NULL),
 _position(position), _rotation(rotation), _scale(scale),
 _localTransform(1.0f), _worldTransform(1.0f)
@@ -40,7 +40,7 @@ vec3 SceneNode::getPosition() const
     return _position;
 }
 
-vec3 SceneNode::getRotation() const
+quat SceneNode::getRotation() const
 {
     return _rotation;
 }
@@ -66,7 +66,7 @@ void SceneNode::setPosition(vec3 position)
     rebuildTransforms(true);
 }
 
-void SceneNode::setRotation(vec3 rotation)
+void SceneNode::setRotation(quat rotation)
 {
     _rotation = rotation;
     rebuildTransforms(true);
@@ -84,16 +84,18 @@ void SceneNode::rebuildTransforms(bool localChanged)
     if (localChanged) {
         _localTransform = mat4(1.0f);
         
-        _localTransform = scale(_localTransform, _scale);
+        _localTransform = scale(mat4(1.0f), _scale) * _localTransform;
         
-        vec3 up(0.0f, 1.0f, 0.0f);
-        if (_rotation != up) {
-            float rotationAmount = acos(dot(_rotation, up));
-            vec3 rotationAxis = cross(_rotation, up);
-            _localTransform = rotate(_localTransform, rotationAmount, rotationAxis);
-        }
+//        vec3 up(0.0f, 1.0f, 0.0f);
+//        if (_rotation != up) {
+//            float rotationAmount = acos(dot(_rotation, up));
+//            vec3 rotationAxis = normalize(cross(up, _rotation));
+//            _localTransform = rotate(_localTransform, rotationAmount, rotationAxis);
+//        }
         
-        _localTransform = translate(_localTransform, _position);
+        _localTransform = mat4_cast(_rotation) * _localTransform;
+        
+        _localTransform = translate(mat4(1.0f), _position) * _localTransform;
     }
     
     // Rebuild world transform

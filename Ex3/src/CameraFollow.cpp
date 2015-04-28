@@ -17,5 +17,8 @@ CameraFollow::~CameraFollow(){};
 
 void CameraFollow::update(float dt)
 {
-    
+    vec3 shipPosition = _ship->getPosition();
+    vec3 cameraPosition = shipPosition - _ship->getForward() * 5.0f;
+    _camera->setPosition(cameraPosition);
+    _camera->setDirection(_ship->getForward());
 }

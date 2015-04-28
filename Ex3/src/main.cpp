@@ -24,6 +24,7 @@
 #include <AL/alut.h>
 
 // GLM headers
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp> // for glm::value_ptr
@@ -31,7 +32,6 @@
 using namespace glm;
 
 #include "World.h"
-#include "Controller.h"
 
 #include "ShaderIO.h"
 #include "PPBuffer.h"
@@ -80,7 +80,6 @@ void motion(int x, int y) ;
 
 // Game-related objects
 World *_world;
-Controller *_controller;
 
 /** main function */
 int main(int argc, char* argv[])
