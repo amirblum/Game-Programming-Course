@@ -23,6 +23,8 @@ void PhysicsComponent::update(float dt)
     _velocity.x = min(_velocity.x, _maxVelocity);
     _velocity.y = min(_velocity.y, _maxVelocity);
     _velocity.z = min(_velocity.z, _maxVelocity);
+    
+    _acceleration = vec3(0.0f);
 }
 
 void PhysicsComponent::applyForce(vec3 force)

@@ -14,8 +14,8 @@
 static const std::string SHIP_TEXTURE = "assets/wallTexture-squashed.bmp";
 static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
 
-#define TURN_SPEED (2.5f)
-#define ACCELERATION_FORCE (0.1f)
+#define TURN_SPEED (pi<float>() / 2)
+#define ACCELERATION_FORCE (0.001f)
 
 /**
  * Ship constructor

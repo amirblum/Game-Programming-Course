@@ -165,7 +165,7 @@ void display(void)
     oldTimeSinceStart = timeSinceStart;
     
     // Update the game state
-    float dt = (float)deltaTime / 100.0f;
+    float dt = (float)deltaTime / 10.0f;
     _world->recursiveUpdate(dt);
     
     // Drawing time
