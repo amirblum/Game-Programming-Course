@@ -27,6 +27,7 @@ private:
     // Convenient info
     vec3 _forward;
     vec3 _right;
+    
 public:
     Ship(vec3 position, quat rotation, vec3 scale);
     virtual ~Ship();

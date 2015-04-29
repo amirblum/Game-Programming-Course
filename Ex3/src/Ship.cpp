@@ -16,6 +16,10 @@ static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
 
 #define TURN_SPEED (pi<float>() / 2)
 #define ACCELERATION_FORCE (0.001f)
+#define DAMPENING_FORCE    (0.0001f)
+#define MAX_ACCELERATION (0.1)
+#define MAX_VELOCITY (0.1)
+#define EPS (0.0001)
 
 /**
  * Ship constructor
@@ -23,7 +27,7 @@ static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
 Ship::Ship(vec3 position, quat rotation, vec3 scale) :
 SceneNode(position, rotation, scale),
 _renderComponent("ship", "ShipShader.vert", "ShipShader.frag"),
-_physicsComponent(0.1, 0.1),
+_physicsComponent(MAX_VELOCITY, MAX_ACCELERATION, DAMPENING_FORCE),
 _forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
 {
     // Initialize ship
@@ -79,12 +83,6 @@ Ship::~Ship()
 
 void Ship::update(float dt)
 {
-//    std::cout << "Forward: (";
-//    std::cout << _forward.x << "," << _forward.y << "," << _forward.z;
-//    std::cout << ") Right: (";
-//    std::cout << _right.x << "," << _right.y << "," << _right.z;
-//    std::cout << ")" << std::endl;
-    
     InputManager &input = InputManager::Instance();
     
     // Accelerating
@@ -112,11 +110,12 @@ void Ship::update(float dt)
         twist(TURN_SPEED * dt);
     }
     
-    // Position in space
+    // Update physics
     _physicsComponent.update(dt);
     
-    vec3 newPosition = _position + _physicsComponent.getVelocity() * dt;
-    setPosition(newPosition);
+    // Update position
+    vec3 velocity = _physicsComponent.getVelocity();
+    setPosition(_position + velocity * dt);
 }
 
 /**

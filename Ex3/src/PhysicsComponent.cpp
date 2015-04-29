@@ -9,8 +9,14 @@
 #include "PhysicsComponent.h"
 #include <glm/gtx/rotate_vector.hpp>
 
-PhysicsComponent::PhysicsComponent(float maxVelocity, float maxAcceleration) :
-_velocity(0.0f), _acceleration(0.0f), _maxVelocity(maxVelocity), _maxAcceleration(maxAcceleration)
+#define EPS (0.0001f)
+
+PhysicsComponent::PhysicsComponent(float maxVelocity,
+                                   float maxAcceleration,
+                                   float dampeningSpeed) :
+_velocity(0.0f), _acceleration(0.0f),
+_maxVelocity(maxVelocity), _maxAcceleration(maxAcceleration),
+_dampeningSpeed(dampeningSpeed)
 {
 }
 
@@ -20,9 +26,14 @@ void PhysicsComponent::update(float dt)
 {
     _velocity += _acceleration;
     
-    _velocity.x = min(_velocity.x, _maxVelocity);
-    _velocity.y = min(_velocity.y, _maxVelocity);
-    _velocity.z = min(_velocity.z, _maxVelocity);
+    if (length(_velocity) > _dampeningSpeed && _acceleration != vec3(0.0f)) {
+        vec3 dampening = normalize(_velocity) * _dampeningSpeed;
+        _velocity -= dampening;
+    }
+
+    _velocity.x = clamp(_velocity.x, -_maxVelocity, _maxVelocity);
+    _velocity.y = clamp(_velocity.y, -_maxVelocity, _maxVelocity);
+    _velocity.z = clamp(_velocity.z, -_maxVelocity, _maxVelocity);
     
     _acceleration = vec3(0.0f);
 }
@@ -40,4 +51,10 @@ void PhysicsComponent::applyForce(vec3 force)
 vec3 PhysicsComponent::getVelocity()
 {
     return _velocity;
+}
+
+void PhysicsComponent::stopMoving()
+{
+    _acceleration = vec3(0.0f);
+    _velocity = vec3(0.0f);
 }
