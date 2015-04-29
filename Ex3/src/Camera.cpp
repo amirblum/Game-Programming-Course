@@ -10,7 +10,7 @@
 #include <iostream>
 
 Camera::Camera(vec3 position, vec3 direction, vec3 up) :
-SceneNode(position, quat(vec3(0.0f)), vec3(1.0f)),
+_position(position),
 _direction(direction),
 _up(up),
 _view(lookAt(position, position + _direction, _up)),
@@ -36,6 +36,14 @@ void Camera::setMainCamera(Camera *camera)
 }
 
 /**
+ * Get the position
+ */
+vec3 Camera::getPosition()
+{
+    return _position;
+}
+
+/**
  * Get the looking direction
  */
 vec3 Camera::getDirection()
@@ -49,6 +57,15 @@ vec3 Camera::getDirection()
 vec3 Camera::getUp()
 {
     return _up;
+}
+
+/**
+ * Set position
+ */
+void Camera::setPosition(vec3 position)
+{
+    _position = position;
+    updateViewProjection();
 }
 
 /**

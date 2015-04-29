@@ -2,6 +2,8 @@
 //  Ship.h
 //  cg-projects
 //
+//  The main character of our game
+//
 //  Created by HUJI Computer Graphics course staff, 2013.
 //
 
@@ -24,7 +26,7 @@ private:
     
     // Convenient info
     vec3 _forward;
-    vec3 _up;
+    vec3 _right;
 public:
     Ship(vec3 position, quat rotation, vec3 scale);
     virtual ~Ship();
@@ -38,7 +40,7 @@ public:
     
     // Getters
     vec3 getForward();
-    vec3 getUp();
+    vec3 getRight();
 };
 
 #endif /* defined(__ex3__Ship__) */

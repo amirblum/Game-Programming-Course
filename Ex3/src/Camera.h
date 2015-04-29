@@ -2,8 +2,8 @@
 //  Camera.h
 //  CGP-Ex3
 //
-//  Camera singleton. Doesn't do much on it's own, but is easily accesible in
-//  the rest of the project.
+//  Camera class. Doesn't do much on it's own, but is easily accesible in
+//  the rest of the project via ability to set "MainCamera" singleton-ish.
 //
 //  Created by Amir Blum on 3/10/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
@@ -27,19 +27,15 @@ using namespace glm;
 #include "SceneNode.h"
 #include "InputManager.h"
 
-class Camera : public SceneNode {
+class Camera {
 private:
+    vec3 _position;
     vec3 _direction;
     vec3 _up;
     
     mat4 _view;
     mat4 _projection;
     mat4 _viewProjection;
-    
-    // Singleton private initialization
-//    Camera();
-//    Camera(Camera const&);
-//    void operator=(Camera const&);
     
     // Update state
     void updateViewProjection();
@@ -54,11 +50,13 @@ public:
     virtual ~Camera();
     
     // Getters
+    vec3 getPosition();
     vec3 getDirection();
     vec3 getUp();
     mat4 getViewProjection();
     
     // Setters
+    void setPosition(vec3 position);
     void setDirection(vec3 direction);
     void setUp(vec3 up);
     

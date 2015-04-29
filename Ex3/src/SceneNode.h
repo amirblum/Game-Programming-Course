@@ -2,6 +2,8 @@
 //  SceneNode.h
 //  CGP-Ex3
 //
+//  A node of the scene graph. Updates/renders all children in the graph
+//
 //  Created by Amir Blum on 4/27/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
@@ -42,6 +44,7 @@ public:
     void addChild(SceneNode *newChild);
     void setParent(SceneNode *parentNode);
     
+    // Getters
     vec3 getPosition() const;
     quat getRotation() const;
     vec3 getScale() const;
@@ -49,10 +52,12 @@ public:
     mat4 getLocalTransform() const;
     mat4 getWorldTransform() const;
     
+    // Setters
     void setPosition(vec3 position);
     void setRotation(quat rotation);
     void setScale(vec3 scale);
     
+    // Recursive actions
     void recursiveUpdate(float dt);
     void recursiveRender();
     virtual void update(float dt);

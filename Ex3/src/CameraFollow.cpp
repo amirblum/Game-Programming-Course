@@ -8,6 +8,8 @@
 
 #include "CameraFollow.h"
 
+#define CAMERA_DISTANCE (7.5f)
+
 CameraFollow::CameraFollow(Camera *camera, Ship *ship) :
 _camera(camera), _ship(ship)
 {
@@ -18,7 +20,10 @@ CameraFollow::~CameraFollow(){};
 void CameraFollow::update(float dt)
 {
     vec3 shipPosition = _ship->getPosition();
-    vec3 cameraPosition = shipPosition - _ship->getForward() * 5.0f;
+    vec3 cameraPosition = shipPosition - _ship->getForward() * CAMERA_DISTANCE;
+    vec3 shipUp = cross(_ship->getForward(), _ship->getRight());
+    
     _camera->setPosition(cameraPosition);
     _camera->setDirection(_ship->getForward());
+    _camera->setUp(shipUp);
 }

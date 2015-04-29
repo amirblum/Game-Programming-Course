@@ -26,7 +26,6 @@ _startPosition(0.0f)
     // Camera
     _camera = new Camera(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
     Camera::setMainCamera(_camera);
-    addChild(_camera);
     
     // Scripts
     _cameraFollow = new CameraFollow(_camera, ship);
@@ -42,13 +41,6 @@ World::~World()
 void World::update(float dt)
 {
     _cameraFollow->update(dt);
-}
-
-/**
- * Render
- */
-void World::render()
-{
 }
 
 /**

@@ -2,6 +2,8 @@
 //  CameraFollow.h
 //  CGP-Ex3
 //
+//  Script to force the camera to follow the ship
+//
 //  Created by Amir Blum on 4/27/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //

@@ -24,7 +24,7 @@ Ship::Ship(vec3 position, quat rotation, vec3 scale) :
 SceneNode(position, rotation, scale),
 _renderComponent("ship", "ShipShader.vert", "ShipShader.frag"),
 _physicsComponent(0.1, 0.1),
-_forward(rotation * FORWARD_VECTOR), _up(rotation * UP_VECTOR)
+_forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
 {
     // Initialize ship
     static const GLfloat vertices[] = {
@@ -79,11 +79,17 @@ Ship::~Ship()
 
 void Ship::update(float dt)
 {
+//    std::cout << "Forward: (";
+//    std::cout << _forward.x << "," << _forward.y << "," << _forward.z;
+//    std::cout << ") Right: (";
+//    std::cout << _right.x << "," << _right.y << "," << _right.z;
+//    std::cout << ")" << std::endl;
+    
     InputManager &input = InputManager::Instance();
     
     // Accelerating
     if (input.isPressed(KEY_ACTION)) {
-        accelerate(ACCELERATION_FORCE * dt);
+        accelerate(ACCELERATION_FORCE);
     }
     
     // Tilting
@@ -113,40 +119,56 @@ void Ship::update(float dt)
     setPosition(newPosition);
 }
 
+/**
+ * Render the ship
+ */
 void Ship::render()
 {
     _renderComponent.render(_worldTransform);
 }
 
+/**
+ * Accelerate in the _forward direction
+ */
 void Ship::accelerate(float force)
 {
     _physicsComponent.applyForce(_forward * force);
 }
 
+/**
+ * Tilt ship up/down
+ */
 void Ship::tilt(float angle)
 {
-    vec3 xAxis = normalize(cross(_up, _forward));
-    setRotation(rotate(_rotation, angle, xAxis));
+    setRotation(rotate(_rotation, angle, RIGHT_VECTOR));
     
+    // No need to recompute right vector, as it didn't change.
     _forward = _rotation * FORWARD_VECTOR;
-    _up = _rotation * UP_VECTOR;
-    
 }
 
+/**
+ * Twist ship right/left
+ */
 void Ship::twist(float angle)
 {
-    setRotation(rotate(_rotation, angle, _forward));
+    setRotation(rotate(_rotation, angle, FORWARD_VECTOR));
     
     // No need to recompute forward vector, as it didn't change.
-    _up = _rotation * UP_VECTOR;
+    _right = _rotation * RIGHT_VECTOR;
 }
 
+/**
+ * Return the forwar-facing vector
+ */
 vec3 Ship::getForward()
 {
     return _forward;
 }
 
-vec3 Ship::getUp()
+/**
+ * Return the right-facing vector
+ */
+vec3 Ship::getRight()
 {
-    return _up;
+    return _right;
 }

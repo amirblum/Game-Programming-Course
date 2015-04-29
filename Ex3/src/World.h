@@ -2,6 +2,8 @@
 //  World.h
 //  CGP-Ex3
 //
+//  Root node of the scene graph. Creates the nodes/initializes scripts
+//
 //  Created by Amir Blum on 4/5/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
@@ -32,7 +34,6 @@ public:
     World();
     virtual ~World();
     virtual void update(float dt);
-    virtual void render();
     
     // Getters
     vec3 getStartPosition() const;

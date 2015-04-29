@@ -2,6 +2,8 @@
 //  PhysicsComponent.h
 //  CGP-Ex3
 //
+//  Component for representing physics in the world
+//
 //  Created by Amir Blum on 4/28/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
