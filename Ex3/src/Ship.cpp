@@ -2,7 +2,8 @@
 //  Ship.cpp
 //  cg-projects
 //
-//  Created by HUJI Computer Graphics course staff, 2013.
+//  Created by Amir Blum on 3/10/15.
+//  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
 
 #include "ShaderIO.h"
@@ -26,7 +27,7 @@ static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
  */
 Ship::Ship(vec3 position, quat rotation, vec3 scale) :
 SceneNode(position, rotation, scale),
-_renderComponent("ship", "ShipShader.vert", "ShipShader.frag"),
+_renderComponent("ShipShader"),
 _physicsComponent(MAX_VELOCITY, MAX_ACCELERATION, DAMPENING_FORCE),
 _forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
 {
@@ -51,7 +52,6 @@ _forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
     // Push VBO
     std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
     _renderComponent.setVBO(verticesVector);
-    
     
     static const GLubyte indices[] = {
         0, 1, 2,

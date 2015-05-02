@@ -38,7 +38,9 @@ protected:
     void rebuildTransforms(bool localChanged);
     
 public:
-    SceneNode(vec3 position, quat rotation, vec3 scale);
+    SceneNode(vec3 position = vec3(0.0f),
+              quat rotation = quat(vec3(0.0f)),
+              vec3 scale = vec3(1.0f));
     virtual ~SceneNode();
     
     void addChild(SceneNode *newChild);

@@ -68,10 +68,8 @@ typedef UniformVariableDerived<mat4, UNIFORM_MAT4> UniformVariableMat4;
 class RenderComponent {
 private:
     // Buffer handlers
-    GLuint _vao, _vbo, _ibo, _tex, _bump;
-    
-    // Attribute handle:
-    GLint _posAttrib;
+    GLuint _vao, _vbo, _ibo;
+    std::vector<GLuint> _supportVBOs;
     
     // Shader program ID
     GLuint _shaderProgram;
@@ -82,29 +80,55 @@ private:
     void sendTexture(TextureComponent *textureComponent);
     
     // Uniform handles:
-    GLint _worldUniform, _viewProjectionUniform,
-    _textureUniform, _bumpUniform;
     std::unordered_map<std::string, UniformVariable*> _uniforms;
     void sendUniform(UniformVariable *uniform);
     
     // Number of elements
     size_t _nElementIndices;
     
-    virtual void customBindings();
-    
 public:
-    RenderComponent(std::string shaderProgram,
-               std::string vertexShaderFilename,
-               std::string fragmentShaderFilename);
+    RenderComponent(std::string shaderProgram);
     virtual ~RenderComponent();
     
     void render(mat4 worldView);
+    void render(mat4 worldView, int numInstances);
     
+    void setVBO(std::vector<vec4> vertices);
     void setVBO(std::vector<GLfloat> vertices);
     void setIBO(std::vector<GLubyte> indices);
+    
+    GLuint createSupportVBO(GLenum type, int size, std::string name, int divisor);
     void addTexture(std::string textureFile, GLenum textureType);
+
+    /**
+     * Damnits.. I hate including implementations in header files but it's a must
+     * when using cool template functions apparently...
+     */
+    template <class T>
+    void updateSupportVBO(GLuint vbo, std::vector<T> attributes)
+    {
+        glBindVertexArray(_vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, attributes.size() * sizeof(T), &attributes[0], GL_DYNAMIC_DRAW);
+    }
+    
     template <class T, UniformType type>
-    void setUniform(std::string name, T value);
+    void setUniform(std::string name, T value)
+    {
+        UniformVariableDerived<T, type> *uniform;
+        auto uniformIterator = _uniforms.find(name);
+        if (uniformIterator == _uniforms.end()) {
+            // Create the uniform the first time
+            uniform = new UniformVariableDerived<T, type>();
+            uniform->handle = glGetUniformLocation(_shaderProgram, name.c_str());
+            _uniforms[name] = uniform;
+            std::cout << "Created handle " << uniform->handle << " for variable " << name << std::endl;
+        } else {
+            uniform = dynamic_cast<UniformVariableDerived<T, type>*>(uniformIterator->second);
+        }
+        
+        uniform->value = value;
+    }
 };
 
 #endif /* defined(__CGP_Ex3__RenderComponent__) */

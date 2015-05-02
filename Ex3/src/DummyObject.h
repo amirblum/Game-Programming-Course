@@ -2,7 +2,8 @@
 //  DummyObject.h
 //  cg-projects
 //
-//  Created by HUJI Computer Graphics course staff, 2013.
+//  Created by Amir Blum on 3/10/15.
+//  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
 
 #ifndef __ex3__DummyObject__

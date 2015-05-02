@@ -17,23 +17,25 @@
 
 
 #define SHADERS_DIR "shaders/"
+#define VERTEX_EXT ".vert"
+#define FRAGMENT_EXT ".frag"
 
-RenderComponent::RenderComponent(std::string shaderProgram,
-                       std::string vertexShaderFilename,
-                       std::string fragmentShaderFilename) :
-_vao(0), _vbo(0), _ibo(0), _textureCount(0), _textures(), _uniforms()
+RenderComponent::RenderComponent(std::string shaderProgram) :
+_vao(0), _vbo(0), _ibo(0),
+_supportVBOs(),
+_textureCount(0), _textures(), _uniforms(),
+_nElementIndices(0)
 {
     programManager::sharedInstance()
     .createProgram(shaderProgram,
-                   (SHADERS_DIR + vertexShaderFilename).c_str(),
-                   (SHADERS_DIR + fragmentShaderFilename).c_str());
+                   (SHADERS_DIR + shaderProgram + VERTEX_EXT).c_str(),
+                   (SHADERS_DIR + shaderProgram + FRAGMENT_EXT).c_str());
     
     _shaderProgram = programManager::sharedInstance().programWithID(shaderProgram);
     
     // Initialize VBO and transfer it to OpenGL
     {
         // Create and bind the object's Vertex Array Object:
-        //        std::cout << "Generating VBO" << std::endl;
         glGenVertexArrays(1, &_vao);
         glBindVertexArray(_vao);
         
@@ -43,10 +45,10 @@ _vao(0), _vbo(0), _ibo(0), _textureCount(0), _textures(), _uniforms()
         
         // Tell OpenGL that there is vertex data in this buffer object and what form that vertex data takes:
         // Obtain attribute handles:
-        _posAttrib = glGetAttribLocation(_shaderProgram, "position");
-        glEnableVertexAttribArray(_posAttrib);
+        GLint posAttrib = glGetAttribLocation(_shaderProgram, "position");
+        glEnableVertexAttribArray(posAttrib);
         glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-        glVertexAttribPointer(_posAttrib, // attribute handle
+        glVertexAttribPointer(posAttrib, // attribute handle
                               4,          // number of scalars per vertex
                               GL_FLOAT,   // scalar type
                               GL_FALSE,
@@ -60,6 +62,8 @@ _vao(0), _vbo(0), _ibo(0), _textureCount(0), _textures(), _uniforms()
 
 RenderComponent::~RenderComponent()
 {
+    std::cout << "Deconstructing render component" << std::endl;
+    
     if (_vao != 0) glDeleteVertexArrays(1, &_vao);
     if (_vbo != 0) glDeleteBuffers(1, &_vbo);
     if (_ibo != 0) glDeleteBuffers(1, &_ibo);
@@ -74,9 +78,17 @@ RenderComponent::~RenderComponent()
 }
 
 /**
- * Tell OpenGL to draw
+ * Render the object. Default to instanced = false
  */
 void RenderComponent::render(mat4 worldTransform)
+{
+    render(worldTransform, 1);
+}
+
+/**
+ * Tell OpenGL to draw
+ */
+void RenderComponent::render(mat4 worldTransform, int numInstances)
 {
     // Set the program to be used in subsequent lines:
     glUseProgram(_shaderProgram);
@@ -96,29 +108,22 @@ void RenderComponent::render(mat4 worldTransform)
     for (auto texture : _textures) {
         sendTexture(texture);
     }
-//    {
-//        // w,vp matrices
-//        glUniformMatrix4fv(_worldUniform, 1, GL_FALSE, value_ptr(worldTransform));
-//        glUniformMatrix4fv(_viewProjectionUniform, 1, GL_FALSE,
-//                           value_ptr(Camera::MainCamera()->getViewProjection()));
-//        
-//        glUniform1i(_textureUniform, 0);
-//        glUniform1i(_bumpUniform, 1);
-//    }
     
     // Draw using the state stored in the Vertex Array object:
     {
-        customBindings();
-        
         glBindVertexArray(_vao);
         
-        glDrawElements(GL_TRIANGLES, _nElementIndices, GL_UNSIGNED_BYTE, (GLvoid*)0);
+        if (numInstances > 1) {
+            glDrawElementsInstanced(GL_TRIANGLES, _nElementIndices, GL_UNSIGNED_BYTE, (GLvoid*)0, numInstances);
+        } else {
+            glDrawElements(GL_TRIANGLES, _nElementIndices, GL_UNSIGNED_BYTE, (GLvoid*)0);
+        }
         
         // Unbind the Vertex Array object
         glBindVertexArray(0);
     }
     
-    // Cleanup, not strictly necessary
+    // Cleanup
     glUseProgram(0);
 }
 
@@ -180,9 +185,12 @@ void RenderComponent::sendTexture(TextureComponent *textureComponent)
     glBindTexture(textureComponent->type, textureComponent->texture);
 }
 
-/** Empty customBindings by default */
-void RenderComponent::customBindings()
+void RenderComponent::setVBO(std::vector<vec4> vertices)
 {
+    glBindVertexArray(_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vec4), &vertices[0], GL_STATIC_DRAW);
+    glBindVertexArray(0);
 }
 
 void RenderComponent::setVBO(std::vector<GLfloat> vertices)
@@ -195,14 +203,39 @@ void RenderComponent::setVBO(std::vector<GLfloat> vertices)
 
 void RenderComponent::setIBO(std::vector<GLubyte> indices)
 {
+    glBindVertexArray(_vao);
     
     // Push IBO
-    glBindVertexArray(_vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLubyte), &indices[0], GL_STATIC_DRAW);
     glBindVertexArray(0);
     
     _nElementIndices = indices.size();
+    
+    glBindVertexArray(0);
+}
+
+GLuint RenderComponent::createSupportVBO(GLenum type, int size, std::string name, int divisor)
+{
+    glBindVertexArray(_vao);
+    GLint attribLocation = glGetAttribLocation(_shaderProgram, name.c_str());
+    
+    GLuint supportVBO;
+    glGenBuffers(1, &supportVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, supportVBO);
+    glEnableVertexAttribArray(attribLocation);
+    glVertexAttribPointer(attribLocation, // attribute handle
+                          size,          // number of scalars per vertex
+                          type,         // scalar type
+                          GL_FALSE,
+                          0,
+                          (GLvoid*)0);
+    glVertexAttribDivisor(attribLocation, divisor);
+    
+    glBindVertexArray(0);
+    
+    _supportVBOs.push_back(supportVBO);
+    return supportVBO;
 }
 
 void RenderComponent::addTexture(std::string textureFile, GLenum textureType)
@@ -247,21 +280,4 @@ void RenderComponent::addTexture(std::string textureFile, GLenum textureType)
     _textures.push_back(newTexture);
     
     glBindTexture(textureType, 0);
-}
-
-template <class T, UniformType type>
-void RenderComponent::setUniform(std::string name, T value)
-{
-    UniformVariableDerived<T, type> *uniform;
-    auto uniformIterator = _uniforms.find(name);
-    if (uniformIterator == _uniforms.end()) {
-        // Create the uniform the first time
-        uniform = new UniformVariableDerived<T, type>();
-        uniform->handle = glGetUniformLocation(_shaderProgram, name.c_str());
-        _uniforms[name] = uniform;
-    } else {
-        uniform = dynamic_cast<UniformVariableDerived<T, type>*>(uniformIterator->second);
-    }
-    
-    uniform->value = value;
 }

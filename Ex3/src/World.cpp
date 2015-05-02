@@ -11,18 +11,29 @@
 #include "World.h"
 #include "Ship.h"
 #include "DummyObject.h"
+#include "AsteroidParticleSystem.h"
 #include "InputManager.h"
 
 World::World() :
-SceneNode(vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f)),
+SceneNode(),
 _startPosition(0.0f)
 {
+//    GLenum error;
+//    error = glGetError();
+//    while (error != GL_NO_ERROR) {
+//        std::cout << "1. " << gluErrorString(error) << std::endl;
+//        error = glGetError();
+//    }
+
     Ship *ship = new Ship(vec3(0.0f, 0.0f, 0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.5f, 4.0f));
     addChild(ship);
     
     DummyObject *dummy = new DummyObject(vec3(-1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(1.0f));
     addChild(dummy);
     
+    AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(10, 2.0f, 10.0f, ship);
+    addChild(asteroids);
+        
     // Camera
     _camera = new Camera(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
     Camera::setMainCamera(_camera);

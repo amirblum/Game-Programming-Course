@@ -140,18 +140,23 @@ GLuint programManager::createProgram(std::string program_id,
 									 const char* vertex_shader_filename,
 									 const char* fragment_shader_filename)
 {
-	// Create a list of all the shaders that constitute our program
-	std::vector<GLuint> shaderList;
-	shaderList.push_back(ShaderIO::LoadShader(GL_VERTEX_SHADER, vertex_shader_filename));
-	shaderList.push_back(ShaderIO::LoadShader(GL_FRAGMENT_SHADER, fragment_shader_filename));
-	
-	// Link the program
-	GLuint theProgram = ShaderIO::CreateProgram(shaderList);
-	
-	// Store program handle for program id:
-	_programs[program_id] = theProgram;
-	
-	return theProgram;
+    GLuint theProgram = programWithID(program_id);
+    // Only create the program if it doesn't exist
+    if (theProgram == 0)
+    {
+        // Create a list of all the shaders that constitute our program
+        std::vector<GLuint> shaderList;
+        shaderList.push_back(ShaderIO::LoadShader(GL_VERTEX_SHADER, vertex_shader_filename));
+        shaderList.push_back(ShaderIO::LoadShader(GL_FRAGMENT_SHADER, fragment_shader_filename));
+        
+        // Link the program
+        theProgram = ShaderIO::CreateProgram(shaderList);
+        
+        // Store program handle for program id:
+        _programs[program_id] = theProgram;
+    }
+    
+    return theProgram;
 }
 
 GLuint programManager::programWithID(std::string program_id) const

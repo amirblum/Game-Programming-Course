@@ -2,7 +2,8 @@
 //  DummyObject.cpp
 //  cg-projects
 //
-//  Created by HUJI Computer Graphics course staff, 2013.
+//  Created by Amir Blum on 3/10/15.
+//  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
 
 #include "ShaderIO.h"
@@ -21,7 +22,7 @@ static const std::string DummyObject_BUMP = "assets/wallTexture-squashed-bump.bm
  */
 DummyObject::DummyObject(vec3 position, quat rotation, vec3 scale) :
 SceneNode(position, rotation, scale),
-_renderComponent("DummyObject", "ShipShader.vert", "ShipShader.frag")
+_renderComponent("ShipShader")
 {
     // Initialize DummyObject
     static const GLfloat vertices[] = {

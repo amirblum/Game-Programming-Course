@@ -107,6 +107,10 @@ int main(int argc, char* argv[])
         std::cerr << "Unable to initialize GLEW ... exiting" << std::endl;
         exit(1);
     }
+    
+    // GLEW has a "bug" where it sets a glError. According to the wiki this
+    // can be safely ignored, so we clear the error here:
+    glGetError();
 	
 #ifdef __APPLE__
     GLint sync = 1;
