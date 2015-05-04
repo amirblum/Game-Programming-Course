@@ -9,6 +9,7 @@
 //
 
 #include "AsteroidParticleSystem.h"
+#include "Camera.h"
 #include <glm/gtc/random.hpp>
 
 AsteroidParticleSystem::AsteroidParticleSystem(int maxAsteroids, float asteroidRadius, float emitRadius, Ship *ship) :
@@ -16,8 +17,8 @@ ParticleSystem(maxAsteroids, "AsteroidShader", vec3(1.0f, 0.0f, 1.0f), quat(vec3
 _asteroidRadius(asteroidRadius),
 _emitRadius(emitRadius),
 _ship(ship),
-_positionAttribute(maxAsteroids, _renderComponent, "particleCenter"),
-_physicsComponents(maxAsteroids)
+_positions(maxAsteroids, _renderComponent, "particleCenter"),
+_physics(maxAsteroids)
 {
     // Set up geometry
     static const GLfloat vertices[] = {
@@ -40,15 +41,10 @@ _physicsComponents(maxAsteroids)
     _renderComponent->setIBO(indicesVector);
     
     // Add particle attributes
-    addAttribute(&_positionAttribute);
-    addShaderAttribute(&_positionAttribute);
+    addAttribute(&_positions);
+    addShaderAttribute(&_positions);
     
-    // Set-up physics components
-    for (int i = 0; i < maxAsteroids; ++i) {
-        _physicsComponents[i] = new PhysicsComponent(0.5f, 0.1f, 0.0f);
-        vec3 direction = sphericalRand(1.0f);
-        _physicsComponents[i]->applyForce(direction * 8.0f);
-    }
+    addAttribute(&_physics);
     
     // Emit all the asteroids
     for (int i = 0; i < maxAsteroids; ++i) {
@@ -66,9 +62,6 @@ _physicsComponents(maxAsteroids)
 
 AsteroidParticleSystem::~AsteroidParticleSystem()
 {
-    for (PhysicsComponent *physics: _physicsComponents) {
-        delete physics;
-    }
 }
 
 void AsteroidParticleSystem::emit()
@@ -103,20 +96,38 @@ void AsteroidParticleSystem::emit()
             newPosition = -newPosition;
         }
         
-        _positionAttribute[particleID] = newPosition;
+        _positions[particleID] = newPosition;
+    }
+    
+    // Physics attribute
+    {
+        _physics[particleID] = new PhysicsComponent(0.5f, 0.1f, 0.0f);
+        vec3 direction = sphericalRand(1.0f);
+        _physics[particleID]->applyForce(direction * 8.0f);
     }
 }
 
 void AsteroidParticleSystem::updateParticle(int particleID, float dt)
 {
-    _physicsComponents[particleID]->update(dt);
-    _positionAttribute[particleID] += _physicsComponents[particleID]->getVelocity();
+    _physics[particleID]->update(dt);
+    _positions[particleID] += _physics[particleID]->getVelocity();
     
     // Check death
-    vec3 newPosition = _positionAttribute[particleID];
+    vec3 newPosition = _positions[particleID];
     if (length(_ship->getPosition() - newPosition) > _emitRadius &&
         dot(newPosition, _ship->getForward()) < 0) {
         killParticle(particleID);
         emit();
     }
+}
+
+void AsteroidParticleSystem::renderGeneral()
+{
+    Camera *camera = Camera::MainCamera();
+    
+    vec3 cameraUp = camera->getUp();
+    _renderComponent->setUniform<vec3, UNIFORM_VEC3>("cameraUp", cameraUp);
+    
+    vec3 cameraRight = cross(camera->getDirection(), cameraUp);
+    _renderComponent->setUniform<vec3, UNIFORM_VEC3>("cameraRight", cameraRight);
 }

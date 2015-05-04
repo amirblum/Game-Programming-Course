@@ -73,14 +73,14 @@ public:
 /**
  * The generic implementations of particle attributes
  */
-template <class T, GLenum oglType>
+template <class T, int size, GLenum oglType>
 class ShaderAttributeDerived : public ParticleAttributeDerived<T>, public ShaderAttribute {
 public:
     ShaderAttributeDerived(int maxParticles, RenderComponent *renderer, std::string variableName) :
     ParticleAttributeDerived<T>(maxParticles),
     ShaderAttribute(renderer)
     {
-        _attributeVBO = _renderer->createSupportVBO(oglType, ParticleAttribute::_maxParticles, variableName, 1);
+        _attributeVBO = _renderer->createSupportVBO(oglType, size, variableName, 1);
     }
     
     virtual ~ShaderAttributeDerived() {}
@@ -119,8 +119,10 @@ public:
     virtual void emit() = 0;
     
     virtual void update(float dt);
+    virtual void updateGeneral(float dt);
     virtual void updateParticle(int particleID, float dt) = 0;
     virtual void render();
+    virtual void renderGeneral();
 };
 
 #endif /* defined(__CGP_Ex3__ParticleSystem__) */

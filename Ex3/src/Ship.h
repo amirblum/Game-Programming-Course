@@ -22,8 +22,8 @@
 class Ship : public SceneNode {
 private:
     // Components
-    RenderComponent _renderComponent;
-    PhysicsComponent _physicsComponent;
+    RenderComponent *_renderComponent;
+    PhysicsComponent *_physicsComponent;
     
     // Convenient info
     vec3 _forward;

@@ -22,6 +22,18 @@ _dampeningSpeed(dampeningSpeed)
 
 PhysicsComponent::~PhysicsComponent(){}
 
+vec3 normalizePower(vec3 force, float maxPower)
+{
+    vec3 ret = force;
+
+    float power = length(force);
+    if (power > maxPower) {
+        ret = normalize(ret) * maxPower;
+    }
+    
+    return ret;
+}
+
 void PhysicsComponent::update(float dt)
 {
     _velocity += _acceleration;
@@ -31,9 +43,7 @@ void PhysicsComponent::update(float dt)
         _velocity -= dampening;
     }
 
-    _velocity.x = clamp(_velocity.x, -_maxVelocity, _maxVelocity);
-    _velocity.y = clamp(_velocity.y, -_maxVelocity, _maxVelocity);
-    _velocity.z = clamp(_velocity.z, -_maxVelocity, _maxVelocity);
+    _velocity = normalizePower(_velocity, _maxVelocity);
     
     _acceleration = vec3(0.0f);
 }
@@ -43,9 +53,7 @@ void PhysicsComponent::applyForce(vec3 force)
     // Update acceleration
     _acceleration += force;
     
-    _acceleration.x = min(_acceleration.x, _maxAcceleration);
-    _acceleration.y = min(_acceleration.y, _maxAcceleration);
-    _acceleration.z = min(_acceleration.z, _maxAcceleration);
+    _acceleration = normalizePower(_acceleration, _maxAcceleration);
 }
 
 vec3 PhysicsComponent::getVelocity()

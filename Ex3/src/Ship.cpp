@@ -27,10 +27,12 @@ static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
  */
 Ship::Ship(vec3 position, quat rotation, vec3 scale) :
 SceneNode(position, rotation, scale),
-_renderComponent("ShipShader"),
-_physicsComponent(MAX_VELOCITY, MAX_ACCELERATION, DAMPENING_FORCE),
 _forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
 {
+    // Initialize components
+    _renderComponent = new RenderComponent("ShipShader");
+    _physicsComponent = new PhysicsComponent(MAX_VELOCITY, MAX_ACCELERATION, DAMPENING_FORCE);
+    
     // Initialize ship
     static const GLfloat vertices[] = {
         // Left wall
@@ -51,7 +53,7 @@ _forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
 
     // Push VBO
     std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
-    _renderComponent.setVBO(verticesVector);
+    _renderComponent->setVBO(verticesVector);
     
     static const GLubyte indices[] = {
         0, 1, 2,
@@ -65,12 +67,12 @@ _forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
     };
     
     std::vector<GLubyte> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLubyte)));
-    _renderComponent.setIBO(indicesVector);
+    _renderComponent->setIBO(indicesVector);
     
     // Create ship textures
     {
-        _renderComponent.addTexture(SHIP_TEXTURE, GL_TEXTURE_2D);
-        _renderComponent.addTexture(SHIP_BUMP, GL_TEXTURE_2D);
+        _renderComponent->addTexture(SHIP_TEXTURE, GL_TEXTURE_2D);
+        _renderComponent->addTexture(SHIP_BUMP, GL_TEXTURE_2D);
     }
 }
 
@@ -79,6 +81,8 @@ _forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
  */
 Ship::~Ship()
 {
+    delete _renderComponent;
+    delete _physicsComponent;
 }
 
 void Ship::update(float dt)
@@ -111,10 +115,10 @@ void Ship::update(float dt)
     }
     
     // Update physics
-    _physicsComponent.update(dt);
+    _physicsComponent->update(dt);
     
     // Update position
-    vec3 velocity = _physicsComponent.getVelocity();
+    vec3 velocity = _physicsComponent->getVelocity();
     setPosition(_position + velocity * dt);
 }
 
@@ -123,7 +127,7 @@ void Ship::update(float dt)
  */
 void Ship::render()
 {
-    _renderComponent.render(_worldTransform);
+    _renderComponent->render(_worldTransform);
 }
 
 /**
@@ -131,7 +135,7 @@ void Ship::render()
  */
 void Ship::accelerate(float force)
 {
-    _physicsComponent.applyForce(_forward * force);
+    _physicsComponent->applyForce(_forward * force);
 }
 
 /**

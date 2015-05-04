@@ -65,10 +65,20 @@ void ParticleSystem::update(float dt)
     for (int i = 0; i < _aliveParticles; ++i) {
         updateParticle(i, dt);
     }
+    
+    updateGeneral(dt);
 }
+
+/**
+ * Default implementation for update general. May be overridden
+ * by a particle system implementation to update the system
+ */
+void ParticleSystem::updateGeneral(float dt) {}
 
 void ParticleSystem::render()
 {
+    renderGeneral();
+    
     if (_aliveParticles > 0) {
         for (ShaderAttribute *attribute : _shaderAttributes) {
             attribute->pushData();
@@ -77,3 +87,10 @@ void ParticleSystem::render()
         _renderComponent->render(_worldTransform, _aliveParticles);
     }
 }
+
+/**
+ * Default implementation for render general. May be overridden
+ * by a particle system implementation to perform general render
+ * duties (such as pushing uniform variables)
+ */
+void ParticleSystem::renderGeneral() {}

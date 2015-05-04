@@ -15,7 +15,8 @@
 #include "PhysicsComponent.h"
 #include "Ship.h"
 
-typedef ShaderAttributeDerived<vec3, GL_FLOAT> PositionAttribute;
+typedef ShaderAttributeDerived<vec3, 3, GL_FLOAT> PositionAttribute;
+typedef ParticleAttributeDerived<PhysicsComponent*> PhysicsAttribute;
 
 class AsteroidParticleSystem : public ParticleSystem {
 private:
@@ -23,14 +24,15 @@ private:
     float _emitRadius;
     Ship *_ship;
     
-    PositionAttribute _positionAttribute;
-    std::vector<PhysicsComponent*> _physicsComponents;
+    PositionAttribute _positions;
+    PhysicsAttribute _physics;
 public:
     AsteroidParticleSystem(int maxAsteroids, float asteroidRadius, float radius, Ship *ship);
     virtual ~AsteroidParticleSystem();
     
     virtual void emit();
     virtual void updateParticle(int particleID, float dt);
+    virtual void renderGeneral();
 };
 
 #endif /* defined(__CGP_Ex3__AsteroidParticleSystem__) */
