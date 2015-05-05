@@ -63,8 +63,8 @@ _renderComponent("ShipShader")
     
     // Create DummyObject textures
     {
-        _renderComponent.addTexture(DummyObject_TEXTURE, GL_TEXTURE_2D);
-        _renderComponent.addTexture(DummyObject_BUMP, GL_TEXTURE_2D);
+        _renderComponent.add2DTexture(DummyObject_TEXTURE);
+        _renderComponent.add2DTexture(DummyObject_BUMP);
     }
 }
 

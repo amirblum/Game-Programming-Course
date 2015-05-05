@@ -27,7 +27,6 @@ using namespace glm;
 class World : public SceneNode {
 private:
     vec3 _startPosition;
-    Camera *_camera;
     CameraFollow *_cameraFollow;
     
 public:

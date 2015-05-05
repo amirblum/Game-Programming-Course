@@ -14,14 +14,18 @@
 #include <stdio.h>
 #include "Camera.h"
 #include "Ship.h"
+#include "SkyBox.h"
 
 class CameraFollow {
 private:
     Camera *_camera;
     Ship *_ship;
     
+    // Also, handle skyboxiness here
+    SkyBox *_skybox;
+    
 public:
-    CameraFollow(Camera *camera, Ship *ship);
+    CameraFollow(Camera *camera, Ship *ship, SkyBox *skybox);
     virtual ~CameraFollow();
     
     void update(float dt);

@@ -26,11 +26,10 @@ static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
  * Ship constructor
  */
 Ship::Ship(vec3 position, quat rotation, vec3 scale) :
-SceneNode(position, rotation, scale),
+RenderableSceneNode("ShipShader", position, rotation, scale),
 _forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
 {
     // Initialize components
-    _renderComponent = new RenderComponent("ShipShader");
     _physicsComponent = new PhysicsComponent(MAX_VELOCITY, MAX_ACCELERATION, DAMPENING_FORCE);
     
     // Initialize ship
@@ -71,8 +70,19 @@ _forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
     
     // Create ship textures
     {
-        _renderComponent->addTexture(SHIP_TEXTURE, GL_TEXTURE_2D);
-        _renderComponent->addTexture(SHIP_BUMP, GL_TEXTURE_2D);
+        _renderComponent->add2DTexture(SHIP_TEXTURE);
+        _renderComponent->add2DTexture(SHIP_BUMP);
+    }
+    
+    // Construct healthbar
+    {
+        vec3 healthPosition = position + vec3(0.0f, 1.0f, 0.0f);
+        quat healthRotation = quat(vec3(0.0f));
+        vec3 healthScale = vec3(1.0f, 0.1f, 1.0f);
+        _healthBar = new HealthBar(5, healthPosition, healthRotation, healthScale);
+        addChild(_healthBar);
+        
+        _healthBar->setCurrentUnits(3);
     }
 }
 
@@ -81,8 +91,8 @@ _forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
  */
 Ship::~Ship()
 {
-    delete _renderComponent;
     delete _physicsComponent;
+    delete _healthBar;
 }
 
 void Ship::update(float dt)
@@ -120,14 +130,6 @@ void Ship::update(float dt)
     // Update position
     vec3 velocity = _physicsComponent->getVelocity();
     setPosition(_position + velocity * dt);
-}
-
-/**
- * Render the ship
- */
-void Ship::render()
-{
-    _renderComponent->render(_worldTransform);
 }
 
 /**

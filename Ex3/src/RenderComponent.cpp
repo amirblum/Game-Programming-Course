@@ -14,6 +14,8 @@
 
 #include "Camera.h"
 #include "SOIL2/SOIL2.h"
+#include <TargetConditionals.h>
+
 
 
 #define SHADERS_DIR "shaders/"
@@ -172,7 +174,7 @@ void RenderComponent::sendUniform(UniformVariable *uniform)
             glUniformMatrix4fv(uniformm4->handle, 1, GL_FALSE, value_ptr(uniformm4->value));
             break;
         }
-        
+            
         default:
             break;
     }
@@ -180,8 +182,8 @@ void RenderComponent::sendUniform(UniformVariable *uniform)
 
 void RenderComponent::sendTexture(TextureComponent *textureComponent)
 {
-    glUniform1i(textureComponent->samplerUniform, textureComponent->textureNumber);
-    glActiveTexture(textureComponent->textureNumber);
+//    glUniform1i(textureComponent->samplerUniform, textureComponent->textureNumber);
+//    glActiveTexture(textureComponent->textureNumber);
     glBindTexture(textureComponent->type, textureComponent->texture);
 }
 
@@ -238,7 +240,7 @@ GLuint RenderComponent::createSupportVBO(GLenum type, int size, std::string name
     return supportVBO;
 }
 
-void RenderComponent::addTexture(std::string textureFile, GLenum textureType)
+void RenderComponent::add2DTexture(std::string textureFile)
 {
     if (_textureCount >= 32) {
         std::cout << "ERROR: Cannot bind more than 32 textures at a time" << std::endl;
@@ -246,54 +248,64 @@ void RenderComponent::addTexture(std::string textureFile, GLenum textureType)
     }
     
     TextureComponent *newTexture = new TextureComponent();
-    
-//    BImage textureMap;
-//    if (!textureMap.readImage(textureFile.c_str())) {
-//        std::cout << "Failed to read texture: " << textureFile << std::endl;
-//        exit(1);
-//    }
-    
-    
-//    int imageWidth, imageHeight, imageBits;
-//    unsigned char *imageData = stbi_load(textureFile.c_str(), &imageWidth, &imageHeight, &imageBits, 0);
+    newTexture->type = GL_TEXTURE_2D;
     
     // Get the texture number. This is implementation specific and is BAD. Whatever.
     newTexture->textureNumber = GL_TEXTURE0 + _textureCount++;
     glActiveTexture(newTexture->textureNumber);
     
     newTexture->texture = SOIL_load_OGL_texture(textureFile.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
+    if (newTexture->texture == 0) {
+        std::cout << "Error loading texture " << textureFile << std::endl;
+        std::cout << "Reason: " << SOIL_last_result() << std::endl;
+        delete newTexture;
+        return;
+    }
     
     char sampleName[17];
     sprintf(sampleName, "textureSampler%u", _textureCount);
     newTexture->samplerUniform = glGetUniformLocation(_shaderProgram, sampleName);
     
     _textures.push_back(newTexture);
+}
+
+void RenderComponent::addCubeTexture(std::string cubeLF,
+                                     std::string cubeFT,
+                                     std::string cubeRT,
+                                     std::string cubeBK,
+                                     std::string cubeUP,
+                                     std::string cubeDN)
+{
+    if (_textureCount >= 32) {
+        std::cout << "ERROR: Cannot bind more than 32 textures at a time" << std::endl;
+        return;
+    }
     
-//    // Get the texture number. This is implementation specific and is BAD. Whatever.
-//    newTexture->textureNumber = GL_TEXTURE0 + _textureCount++;
-//    char sampleName[17];
-//    sprintf(sampleName, "textureSampler%u", _textureCount);
-//    newTexture->samplerUniform = glGetUniformLocation(_shaderProgram, sampleName);
-//    // "Bind" the newly created texture : all future texture functions will modify this texture
-//    glActiveTexture(newTexture->textureNumber);
-//    glGenTextures(1, &(newTexture->texture));
-//    glBindTexture(GL_TEXTURE_2D, newTexture->texture);
-//    
-//    // Give the image to OpenGL
-//    glTexImage2D(textureType, 0,
-//                 GL_RGBA,
-//                 imageWidth, imageHeight,
-//                 0,
-//                 GL_RGB, GL_UNSIGNED_BYTE,
-//                 imageData);
-//    
-//    // Format texture
-//    glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//    glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//    
-//    _textures.push_back(newTexture);
-//    
-//    glBindTexture(textureType, 0);
+    TextureComponent *newTexture = new TextureComponent();
+    newTexture->type = GL_TEXTURE_CUBE_MAP;
+    
+    // Get the texture number. This is implementation specific and is BAD. Whatever.
+    newTexture->textureNumber = GL_TEXTURE0 + _textureCount++;
+    glActiveTexture(newTexture->textureNumber);
+    
+    newTexture->texture = SOIL_load_OGL_cubemap(cubeRT.c_str(),
+                                                cubeLF.c_str(),
+                                                cubeUP.c_str(),
+                                                cubeDN.c_str(),
+                                                cubeFT.c_str(),
+                                                cubeBK.c_str(),
+                                                SOIL_LOAD_AUTO,
+                                                SOIL_CREATE_NEW_ID, 0);
+    if (newTexture->texture == 0) {
+        std::cout << "Error loading cube texture " << cubeLF << " (and it's other sides)" << std::endl;
+        std::cout << "Reason: " << SOIL_last_result() << std::endl;
+        delete newTexture;
+        return;
+    }
+    
+    char sampleName[17];
+    sprintf(sampleName, "cubeSampler%u", _textureCount);
+    newTexture->samplerUniform = glGetUniformLocation(_shaderProgram, sampleName);
+    
+    _textures.push_back(newTexture);
 }

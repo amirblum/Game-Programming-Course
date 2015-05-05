@@ -14,8 +14,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
-#include "SceneNode.h"
-#include "RenderComponent.h"
+#include "RenderableSceneNode.h"
 
 /**
  * A list of attributes
@@ -94,7 +93,7 @@ public:
 /**
  * The particle system class. Handles lists of particle attributes
  */
-class ParticleSystem : public SceneNode {
+class ParticleSystem : public RenderableSceneNode {
 private:
     std::vector<ParticleAttribute*> _allParticleAttributes;
     std::vector<ShaderAttribute*> _shaderAttributes;
@@ -102,7 +101,6 @@ private:
     
 protected:
     size_t _maxParticles;
-    RenderComponent *_renderComponent;
     void addAttribute(ParticleAttribute *attribute);
     void addShaderAttribute(ShaderAttribute *attribute);
     
@@ -122,7 +120,6 @@ public:
     virtual void updateGeneral(float dt);
     virtual void updateParticle(int particleID, float dt) = 0;
     virtual void render();
-    virtual void renderGeneral();
 };
 
 #endif /* defined(__CGP_Ex3__ParticleSystem__) */

@@ -45,7 +45,7 @@ _physics(maxAsteroids)
         _renderComponent->setIBO(indicesVector);
         
         // Texture
-        _renderComponent->addTexture(ASTEROID_IMAGE, GL_TEXTURE_2D);
+        _renderComponent->add2DTexture(ASTEROID_IMAGE);
     }
     
     
@@ -131,7 +131,7 @@ void AsteroidParticleSystem::updateParticle(int particleID, float dt)
     }
 }
 
-void AsteroidParticleSystem::renderGeneral()
+void AsteroidParticleSystem::updateUniforms()
 {
     Camera *camera = Camera::MainCamera();
     

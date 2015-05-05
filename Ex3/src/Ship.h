@@ -11,30 +11,32 @@
 #ifndef __ex3__Ship__
 #define __ex3__Ship__
 
-#include "SceneNode.h"
-#include "RenderComponent.h"
+#include "RenderableSceneNode.h"
 #include "PhysicsComponent.h"
+#include "HealthBar.h"
+#include "SkyBox.h"
 
 #include <vector>
 
 #define GRID_ELEMENT_SIZE (1.0f)
 
-class Ship : public SceneNode {
+class Ship : public RenderableSceneNode {
 private:
     // Components
-    RenderComponent *_renderComponent;
     PhysicsComponent *_physicsComponent;
     
     // Convenient info
     vec3 _forward;
     vec3 _right;
     
+    // Children
+    HealthBar *_healthBar;
+    
 public:
     Ship(vec3 position, quat rotation, vec3 scale);
     virtual ~Ship();
     
     virtual void update(float dt);
-    virtual void render();
     
     void accelerate(float force);
     void tilt(float angle);

@@ -24,7 +24,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-#include "SceneNode.h"
 #include "InputManager.h"
 
 class Camera {

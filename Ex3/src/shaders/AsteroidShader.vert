@@ -9,7 +9,6 @@ uniform mat4 PV;
 uniform vec3 cameraRight;
 uniform vec3 cameraUp;
 
-out vec3 myWorldPosition;
 out vec2 texcoords;
 
 void main()
@@ -21,9 +20,6 @@ void main()
     vec3 myLocalPosition = particleCenter;
     myLocalPosition += cameraRight * position.x * 2.0f;
     myLocalPosition += cameraUp * position.y * 2.0f;
-
-    vec4 myLocalPositionAffine = vec4(myLocalPosition, 1.0f);
     
-    myWorldPosition = (W * myLocalPositionAffine).xyz;
-    gl_Position = PV * W * myLocalPositionAffine;
+    gl_Position = PV * W * vec4(myLocalPosition, 1.0f);
 }

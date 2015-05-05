@@ -33,13 +33,17 @@ _startPosition(0.0f)
     
     AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(10000, 2.0f, 1000.0f, ship);
     addChild(asteroids);
+    
+    // Skybox
+    SkyBox *skybox = new SkyBox();
+    addChild(skybox);
         
     // Camera
-    _camera = new Camera(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
-    Camera::setMainCamera(_camera);
+    Camera *camera = new Camera(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
+    Camera::setMainCamera(camera);
     
     // Scripts
-    _cameraFollow = new CameraFollow(_camera, ship);
+    _cameraFollow = new CameraFollow(camera, ship, skybox);
 }
 
 World::~World()

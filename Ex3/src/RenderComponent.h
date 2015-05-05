@@ -98,7 +98,13 @@ public:
     void setIBO(std::vector<GLubyte> indices);
     
     GLuint createSupportVBO(GLenum type, int size, std::string name, int divisor);
-    void addTexture(std::string textureFile, GLenum textureType);
+    void add2DTexture(std::string textureFile);
+    void addCubeTexture(std::string cubeLF,
+                        std::string cubeFT,
+                        std::string cubeRT,
+                        std::string cubeBK,
+                        std::string cubeUP,
+                        std::string cubeDN);
 
     /**
      * Damnits.. I hate including implementations in header files but it's a must

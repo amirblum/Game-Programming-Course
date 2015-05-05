@@ -32,7 +32,7 @@ public:
     
     virtual void emit();
     virtual void updateParticle(int particleID, float dt);
-    virtual void renderGeneral();
+    virtual void updateUniforms();
 };
 
 #endif /* defined(__CGP_Ex3__AsteroidParticleSystem__) */

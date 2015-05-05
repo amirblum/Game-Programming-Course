@@ -10,22 +10,17 @@
 
 ParticleSystem::ParticleSystem(int maxParticles, std::string shaderProgram,
                                vec3 position, quat rotation, vec3 scale) :
-SceneNode(position, rotation, scale),
+RenderableSceneNode(shaderProgram, position, rotation, scale),
 _maxParticles(maxParticles),
 _allParticleAttributes(),
 _shaderAttributes(),
-_aliveParticles(0)
-{
-    _renderComponent = new RenderComponent(shaderProgram);
-}
+_aliveParticles(0) {}
 
 ParticleSystem::~ParticleSystem()
 {
     for (ParticleAttribute *attribute : _allParticleAttributes) {
         delete attribute;
     }
-    
-    delete _renderComponent;
 }
 
 void ParticleSystem::addAttribute(ParticleAttribute *attribute)
@@ -77,7 +72,7 @@ void ParticleSystem::updateGeneral(float dt) {}
 
 void ParticleSystem::render()
 {
-    renderGeneral();
+    updateUniforms();
     
     if (_aliveParticles > 0) {
         for (ShaderAttribute *attribute : _shaderAttributes) {
@@ -87,10 +82,3 @@ void ParticleSystem::render()
         _renderComponent->render(_worldTransform, _aliveParticles);
     }
 }
-
-/**
- * Default implementation for render general. May be overridden
- * by a particle system implementation to perform general render
- * duties (such as pushing uniform variables)
- */
-void ParticleSystem::renderGeneral() {}
