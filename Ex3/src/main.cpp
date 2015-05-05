@@ -116,6 +116,11 @@ int main(int argc, char* argv[])
     GLint sync = 1;
     CGLSetParameter(CGLGetCurrentContext(), kCGLCPSwapInterval, &sync);
 #endif
+    
+    // Enable opengl drawing features
+    glEnable(GL_DEPTH_TEST);
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
     // Set callback functions:
     glutDisplayFunc(display) ;

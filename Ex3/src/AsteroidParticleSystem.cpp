@@ -12,6 +12,8 @@
 #include "Camera.h"
 #include <glm/gtc/random.hpp>
 
+static const std::string ASTEROID_IMAGE = "assets/asteroid1.png";
+
 AsteroidParticleSystem::AsteroidParticleSystem(int maxAsteroids, float asteroidRadius, float emitRadius, Ship *ship) :
 ParticleSystem(maxAsteroids, "AsteroidShader", vec3(1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(2.0f)),
 _asteroidRadius(asteroidRadius),
@@ -20,25 +22,32 @@ _ship(ship),
 _positions(maxAsteroids, _renderComponent, "particleCenter"),
 _physics(maxAsteroids)
 {
-    // Set up geometry
-    static const GLfloat vertices[] = {
-        -0.5f, -0.5f, 0.0f, 1.0f,
-        -0.5f, 0.5f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.0f, 1.0f,
-        0.5f, 0.5f, 0.0f, 1.0f
-    };
+    // Render-related
+    {
+        // VBO
+        static const GLfloat vertices[] = {
+            -0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, 0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, 0.5f, 0.0f, 1.0f
+        };
+        
+        std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
+        _renderComponent->setVBO(verticesVector);
+        
+        // IBO
+        static const GLubyte indices[] = {
+            2, 1, 0,
+            2, 3, 1
+        };
+        
+        std::vector<GLubyte> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLubyte)));
+        _renderComponent->setIBO(indicesVector);
+        
+        // Texture
+        _renderComponent->addTexture(ASTEROID_IMAGE, GL_TEXTURE_2D);
+    }
     
-    // Push VBO
-    std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
-    _renderComponent->setVBO(verticesVector);
-    
-    static const GLubyte indices[] = {
-        2, 1, 0,
-        2, 3, 1
-    };
-    
-    std::vector<GLubyte> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLubyte)));
-    _renderComponent->setIBO(indicesVector);
     
     // Add particle attributes
     addAttribute(&_positions);
@@ -109,6 +118,7 @@ void AsteroidParticleSystem::emit()
 
 void AsteroidParticleSystem::updateParticle(int particleID, float dt)
 {
+//    return;
     _physics[particleID]->update(dt);
     _positions[particleID] += _physics[particleID]->getVelocity();
     

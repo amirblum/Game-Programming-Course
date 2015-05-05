@@ -15,7 +15,7 @@ out vec2 texcoords;
 void main()
 {
     // Start with base position
-    texcoords = position.xy;
+    texcoords = position.xy + vec2(0.5f);
     
     // Set the world position
     vec3 myLocalPosition = particleCenter;

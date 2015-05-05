@@ -13,7 +13,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "Camera.h"
-#include "bimage.h"
+#include "SOIL2/SOIL2.h"
 
 
 #define SHADERS_DIR "shaders/"
@@ -247,37 +247,53 @@ void RenderComponent::addTexture(std::string textureFile, GLenum textureType)
     
     TextureComponent *newTexture = new TextureComponent();
     
-    BImage textureMap;
-    if (!textureMap.readImage(textureFile.c_str())) {
-        std::cout << "Failed to read texture: " << textureFile << std::endl;
-        exit(1);
-    }
+//    BImage textureMap;
+//    if (!textureMap.readImage(textureFile.c_str())) {
+//        std::cout << "Failed to read texture: " << textureFile << std::endl;
+//        exit(1);
+//    }
+    
+    
+//    int imageWidth, imageHeight, imageBits;
+//    unsigned char *imageData = stbi_load(textureFile.c_str(), &imageWidth, &imageHeight, &imageBits, 0);
     
     // Get the texture number. This is implementation specific and is BAD. Whatever.
     newTexture->textureNumber = GL_TEXTURE0 + _textureCount++;
+    glActiveTexture(newTexture->textureNumber);
+    
+    newTexture->texture = SOIL_load_OGL_texture(textureFile.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
+    
     char sampleName[17];
     sprintf(sampleName, "textureSampler%u", _textureCount);
     newTexture->samplerUniform = glGetUniformLocation(_shaderProgram, sampleName);
-    // "Bind" the newly created texture : all future texture functions will modify this texture
-    glActiveTexture(newTexture->textureNumber);
-    glGenTextures(1, &(newTexture->texture));
-    glBindTexture(GL_TEXTURE_2D, newTexture->texture);
-    
-    // Give the image to OpenGL
-    glTexImage2D(textureType, 0,
-                 GL_RGBA,
-                 textureMap.width(), textureMap.height(),
-                 0,
-                 GL_RGB, GL_UNSIGNED_BYTE,
-                 textureMap.getImageData());
-    
-    // Format texture
-    glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
     _textures.push_back(newTexture);
     
-    glBindTexture(textureType, 0);
+//    // Get the texture number. This is implementation specific and is BAD. Whatever.
+//    newTexture->textureNumber = GL_TEXTURE0 + _textureCount++;
+//    char sampleName[17];
+//    sprintf(sampleName, "textureSampler%u", _textureCount);
+//    newTexture->samplerUniform = glGetUniformLocation(_shaderProgram, sampleName);
+//    // "Bind" the newly created texture : all future texture functions will modify this texture
+//    glActiveTexture(newTexture->textureNumber);
+//    glGenTextures(1, &(newTexture->texture));
+//    glBindTexture(GL_TEXTURE_2D, newTexture->texture);
+//    
+//    // Give the image to OpenGL
+//    glTexImage2D(textureType, 0,
+//                 GL_RGBA,
+//                 imageWidth, imageHeight,
+//                 0,
+//                 GL_RGB, GL_UNSIGNED_BYTE,
+//                 imageData);
+//    
+//    // Format texture
+//    glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//    glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//    glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//    
+//    _textures.push_back(newTexture);
+//    
+//    glBindTexture(textureType, 0);
 }

@@ -1,7 +1,7 @@
 #version 330
 
 // Texture
-uniform sampler2D textureSampler;
+uniform sampler2D textureSampler0;
 uniform sampler2D bumpSampler;
 
 // Light
@@ -23,5 +23,6 @@ void main()
 //    vec3 diffuseComponent = max(diffuseCoefficient * dot(lVector, normal), 0);
 //
 //    outColor = vec4(diffuseComponent, 1.0f);
-    outColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+//    outColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    outColor = texture(textureSampler0, texcoords);
 }
