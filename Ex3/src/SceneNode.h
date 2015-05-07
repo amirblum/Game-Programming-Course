@@ -51,6 +51,10 @@ public:
     quat getRotation() const;
     vec3 getScale() const;
     
+    vec3 getWorldPosition() const;
+    quat getWorldRotation() const;
+    vec3 getWorldScale() const;
+    
     mat4 getLocalTransform() const;
     mat4 getWorldTransform() const;
     

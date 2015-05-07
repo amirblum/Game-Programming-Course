@@ -28,6 +28,9 @@ using namespace glm;
 
 class Camera {
 private:
+    float _frustumAngle;
+    float _nearPlane, _farPlane;
+    
     vec3 _position;
     vec3 _direction;
     vec3 _up;
@@ -49,6 +52,9 @@ public:
     virtual ~Camera();
     
     // Getters
+    float getFrustumAngle();
+    float getNearPlane();
+    float getFarPlane();
     vec3 getPosition();
     vec3 getDirection();
     vec3 getUp();

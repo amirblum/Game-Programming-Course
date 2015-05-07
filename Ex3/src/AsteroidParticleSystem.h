@@ -17,15 +17,19 @@
 
 typedef ShaderAttributeDerived<vec3, 3, GL_FLOAT> PositionAttribute;
 typedef ParticleAttributeDerived<PhysicsComponent*> PhysicsAttribute;
+typedef ParticleAttributeDerived<bool> CollisionAttribute;
 
 class AsteroidParticleSystem : public ParticleSystem {
 private:
     float _asteroidRadius;
-    float _emitRadius;
+    float _emitMaxRadius, _emitMinRadius;
     Ship *_ship;
     
     PositionAttribute _positions;
     PhysicsAttribute _physics;
+    CollisionAttribute _collided;
+    
+    bool particleInView(vec3 particlePosition);
 public:
     AsteroidParticleSystem(int maxAsteroids, float asteroidRadius, float radius, Ship *ship);
     virtual ~AsteroidParticleSystem();

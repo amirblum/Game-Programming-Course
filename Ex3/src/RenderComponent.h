@@ -128,7 +128,6 @@ public:
             uniform = new UniformVariableDerived<T, type>();
             uniform->handle = glGetUniformLocation(_shaderProgram, name.c_str());
             _uniforms[name] = uniform;
-            std::cout << "Created handle " << uniform->handle << " for variable " << name << std::endl;
         } else {
             uniform = dynamic_cast<UniformVariableDerived<T, type>*>(uniformIterator->second);
         }

@@ -23,11 +23,9 @@ private:
     vec3 _acceleration;
     
     float _maxVelocity;
-    float _maxAcceleration;
-    float _dampeningSpeed;
     
 public:
-    PhysicsComponent(float maxVelocity, float maxAcceleration, float dampening);
+    PhysicsComponent(float maxVelocity);
     virtual ~PhysicsComponent();
     
     // Getters
@@ -36,7 +34,7 @@ public:
     // State changers
     void update(float dt);
     void applyForce(vec3 force);
-    void stopMoving();
+    bool isMoving();
 };
 
 #endif /* defined(__CGP_Ex3__PhysicsComponent__) */

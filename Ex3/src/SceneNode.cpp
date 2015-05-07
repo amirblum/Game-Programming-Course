@@ -72,6 +72,33 @@ vec3 SceneNode::getScale() const
 }
 
 /**
+ * Get world position
+ */
+vec3 SceneNode::getWorldPosition() const
+{
+    vec4 affinePosition = vec4(vec3(0.0f), 1.0f);
+    vec4 worldPosition = _worldTransform * affinePosition;
+    return vec3(worldPosition);
+}
+
+/**
+ * Get world rotation
+ */
+quat SceneNode::getWorldRotation() const
+{
+    return toQuat(_worldTransform);
+}
+
+/**
+ * Get world scale
+ */
+vec3 SceneNode::getWorldScale() const
+{
+    vec4 worldScale = _worldTransform * vec4(1.0f);
+    return vec3(worldScale);
+}
+
+/**
  * Get local transformation
  */
 mat4 SceneNode::getLocalTransform() const

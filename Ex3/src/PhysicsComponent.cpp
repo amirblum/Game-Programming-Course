@@ -11,12 +11,9 @@
 
 #define EPS (0.0001f)
 
-PhysicsComponent::PhysicsComponent(float maxVelocity,
-                                   float maxAcceleration,
-                                   float dampeningSpeed) :
+PhysicsComponent::PhysicsComponent(float maxVelocity) :
 _velocity(0.0f), _acceleration(0.0f),
-_maxVelocity(maxVelocity), _maxAcceleration(maxAcceleration),
-_dampeningSpeed(dampeningSpeed)
+_maxVelocity(maxVelocity)
 {
 }
 
@@ -29,6 +26,8 @@ vec3 normalizePower(vec3 force, float maxPower)
     float power = length(force);
     if (power > maxPower) {
         ret = normalize(ret) * maxPower;
+    } else if (power < EPS) {
+        ret = vec3(0.0f);
     }
     
     return ret;
@@ -37,11 +36,6 @@ vec3 normalizePower(vec3 force, float maxPower)
 void PhysicsComponent::update(float dt)
 {
     _velocity += _acceleration;
-    
-    if (length(_velocity) > _dampeningSpeed && _acceleration != vec3(0.0f)) {
-        vec3 dampening = normalize(_velocity) * _dampeningSpeed;
-        _velocity -= dampening;
-    }
 
     _velocity = normalizePower(_velocity, _maxVelocity);
     
@@ -52,8 +46,6 @@ void PhysicsComponent::applyForce(vec3 force)
 {
     // Update acceleration
     _acceleration += force;
-    
-    _acceleration = normalizePower(_acceleration, _maxAcceleration);
 }
 
 vec3 PhysicsComponent::getVelocity()
@@ -61,8 +53,7 @@ vec3 PhysicsComponent::getVelocity()
     return _velocity;
 }
 
-void PhysicsComponent::stopMoving()
+bool PhysicsComponent::isMoving()
 {
-    _acceleration = vec3(0.0f);
-    _velocity = vec3(0.0f);
+    return length(_velocity) != 0;
 }

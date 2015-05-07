@@ -58,9 +58,19 @@ public:
     
     virtual ~ParticleAttributeDerived() {}
     
-    virtual T& operator[](int i)
+//    T& operator[](unsigned int i)
+//    {
+//        return _values[i];
+//    }
+    
+    T getValue(unsigned int i)
     {
         return _values[i];
+    }
+    
+    void setValue(unsigned int i, T newValue)
+    {
+        _values[i] = newValue;
     }
     
     virtual void moveParticle(int fromID, int toID)

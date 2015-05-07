@@ -16,21 +16,20 @@ static const std::string SHIP_TEXTURE = "assets/wallTexture-squashed.bmp";
 static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
 
 #define TURN_SPEED (pi<float>() / 2)
-#define ACCELERATION_FORCE (0.001f)
-#define DAMPENING_FORCE    (0.0001f)
-#define MAX_ACCELERATION (0.1)
-#define MAX_VELOCITY (0.1)
-#define EPS (0.0001)
+#define ACCELERATION_FORCE (0.003f)
+#define DAMPENING_SPEED    (0.01f)
+#define MAX_VELOCITY (3.0f)
 
 /**
  * Ship constructor
  */
-Ship::Ship(vec3 position, quat rotation, vec3 scale) :
+Ship::Ship(vec3 position, quat rotation, vec3 scale, float radius) :
 RenderableSceneNode("ShipShader", position, rotation, scale),
-_forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
+_forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR),
+_radius(radius)
 {
     // Initialize components
-    _physicsComponent = new PhysicsComponent(MAX_VELOCITY, MAX_ACCELERATION, DAMPENING_FORCE);
+    _physicsComponent = new PhysicsComponent(MAX_VELOCITY);
     
     // Initialize ship
     static const GLfloat vertices[] = {
@@ -81,8 +80,6 @@ _forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR)
         vec3 healthScale = vec3(1.0f, 0.1f, 1.0f);
         _healthBar = new HealthBar(5, healthPosition, healthRotation, healthScale);
         addChild(_healthBar);
-        
-        _healthBar->setCurrentUnits(3);
     }
 }
 
@@ -101,7 +98,9 @@ void Ship::update(float dt)
     
     // Accelerating
     if (input.isPressed(KEY_ACTION)) {
-        accelerate(ACCELERATION_FORCE);
+        _physicsComponent->applyForce(_forward * ACCELERATION_FORCE);
+    } else if (_physicsComponent->isMoving()) {
+        _physicsComponent->applyForce(-_physicsComponent->getVelocity() * DAMPENING_SPEED);
     }
     
     // Tilting
@@ -162,6 +161,20 @@ void Ship::twist(float angle)
     _right = _rotation * RIGHT_VECTOR;
 }
 
+void Ship::collide()
+{
+//    std::cout << "Hit!" << std::endl;
+    int health = _healthBar->getCurrentUnits();
+    int newHealth = health - 1;
+    
+    if (newHealth >= 0) {
+        _healthBar->setCurrentUnits(newHealth);
+        if (newHealth == 0) {
+            std::cout << "Game Over!" << std::endl;
+        }
+    }
+}
+
 /**
  * Return the forwar-facing vector
  */
@@ -176,4 +189,9 @@ vec3 Ship::getForward()
 vec3 Ship::getRight()
 {
     return _right;
+}
+
+float Ship::getRadius()
+{
+    return _radius;
 }

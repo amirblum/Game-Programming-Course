@@ -106,16 +106,16 @@ void Controller::update(float dt)
     }
     
     // Turning (a debug move :) )
-    if (input.isPressed(KEY_TURN_LEFT))
-    {
-        float angle = TURN_ANGLE;
-        turn(angle * dt);
-    }
-    else if (input.isPressed(KEY_TURN_RIGHT))
-    {
-        float angle = -TURN_ANGLE;
-        turn(angle * dt);
-    }
+//    if (input.isPressed(KEY_TURN_LEFT))
+//    {
+//        float angle = TURN_ANGLE;
+//        turn(angle * dt);
+//    }
+//    else if (input.isPressed(KEY_TURN_RIGHT))
+//    {
+//        float angle = -TURN_ANGLE;
+//        turn(angle * dt);
+//    }
     
     // Strafing
     if (input.isPressed(KEY_STRAFE_LEFT))

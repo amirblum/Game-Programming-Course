@@ -12,15 +12,18 @@
 #include "Camera.h"
 #include <glm/gtc/random.hpp>
 
+#define ASTEROID_MAX_VELOCITY (0.05f)
+
 static const std::string ASTEROID_IMAGE = "assets/asteroid1.png";
 
 AsteroidParticleSystem::AsteroidParticleSystem(int maxAsteroids, float asteroidRadius, float emitRadius, Ship *ship) :
-ParticleSystem(maxAsteroids, "AsteroidShader", vec3(1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(2.0f)),
+ParticleSystem(maxAsteroids, "AsteroidShader"),
 _asteroidRadius(asteroidRadius),
-_emitRadius(emitRadius),
+_emitMaxRadius(emitRadius), _emitMinRadius(0),
 _ship(ship),
 _positions(maxAsteroids, _renderComponent, "particleCenter"),
-_physics(maxAsteroids)
+_physics(maxAsteroids),
+_collided(maxAsteroids)
 {
     // Render-related
     {
@@ -54,17 +57,13 @@ _physics(maxAsteroids)
     addShaderAttribute(&_positions);
     
     addAttribute(&_physics);
+    addAttribute(&_collided);
+    
+    // Emit min-radius
+    _emitMinRadius = glm::length(Camera::MainCamera()->getPosition() - _ship->getPosition()) * 2.0f;
     
     // Emit all the asteroids
     for (int i = 0; i < maxAsteroids; ++i) {
-//        // Create random vector on unit sphere
-//        vec3 newPosition = sphericalRand(1.0f);
-//        
-//        // Make it's length be between [0,_emitRadius]
-//        float length = ((float)rand() / RAND_MAX) * (_emitRadius);
-//        newPosition *= length;
-//        
-//        _positionAttribute[i] = newPosition;
         emit();
     }
 }
@@ -73,62 +72,90 @@ AsteroidParticleSystem::~AsteroidParticleSystem()
 {
 }
 
+bool AsteroidParticleSystem::particleInView(vec3 particlePosition)
+{
+    Camera *camera = Camera::MainCamera();
+    float cosAngle = dot(normalize(particlePosition), camera->getDirection());
+    float particleAngle = acos(cosAngle);
+    
+    return particleAngle < radians(camera->getFrustumAngle());
+}
+
 void AsteroidParticleSystem::emit()
 {
-//    // Create random direction
-//    float azimuth = ((float)rand() / RAND_MAX) * 2 * pi<float>();
-//    vec2 xy = vec2(cos(azimuth), sin(azimuth));
-//    float z = (2 * ((float)rand() / RAND_MAX)) - 1; // z is in the range [-1,1]
-//    vec2 planar = xy * sqrt(1 - z * z);
-//    vec3 newPosition(planar, z);
-//    // (I think newPosition is already normalized, but the math is a tad shakey.
-//    // This is just in case)
-//    newPosition = normalize(newPosition);
-//    
     // Create a particle
     int particleID = createNewParticle();
     if (particleID == -1) {
         return;
     }
     
-    // Position attribute
+    // Position
+    vec3 randomPosition;
+    float distance;
+    vec3 newPosition;
     {
         // Create random vector on unit sphere
-        vec3 newPosition = sphericalRand(1.0f);
+        randomPosition = sphericalRand(1.0f);
         
-        // Make it's length be between [0,_emitRadius]
-        float length = ((float)rand() / RAND_MAX) * (_emitRadius);
-        newPosition *= length;
+        // Decide it's length
+        distance = ((float)rand() / RAND_MAX) * (_emitMaxRadius - _emitMinRadius) + _emitMinRadius;
         
-        // Make sure it's behind the ship
-        if (dot(newPosition, _ship->getForward()) > 0) {
-            newPosition = -newPosition;
-        }
-        
-        _positions[particleID] = newPosition;
+        // Make it relative to the camera and set it
+        newPosition = Camera::MainCamera()->getPosition() + randomPosition * distance;
     }
     
-    // Physics attribute
+    // Physics
+    PhysicsComponent *newPhysics;
     {
-        _physics[particleID] = new PhysicsComponent(0.5f, 0.1f, 0.0f);
-        vec3 direction = sphericalRand(1.0f);
-        _physics[particleID]->applyForce(direction * 8.0f);
+        vec3 randomDirection = sphericalRand(1.0f);
+        vec3 initialForce = randomDirection * 8.0f;
+        
+        bool closeToShip = distance < _emitMinRadius * 3.0f;
+        bool headingTowardsShip = dot(randomPosition, randomDirection) < -0.8;
+        if (closeToShip && headingTowardsShip) {
+            initialForce = -initialForce;
+        }
+        
+        newPhysics = new PhysicsComponent(ASTEROID_MAX_VELOCITY);
+        newPhysics->applyForce(initialForce);
     }
+    
+    _positions.setValue(particleID, newPosition);
+    _physics.setValue(particleID, newPhysics);
 }
 
 void AsteroidParticleSystem::updateParticle(int particleID, float dt)
 {
-//    return;
-    _physics[particleID]->update(dt);
-    _positions[particleID] += _physics[particleID]->getVelocity();
+    // Update position
+    vec3 currentPosition = _positions.getValue(particleID);
+    vec3 updatedPosition = currentPosition;
+    PhysicsComponent *physics = _physics.getValue(particleID);
+    
+    physics->update(dt);
+    updatedPosition += physics->getVelocity();
     
     // Check death
-    vec3 newPosition = _positions[particleID];
-    if (length(_ship->getPosition() - newPosition) > _emitRadius &&
-        dot(newPosition, _ship->getForward()) < 0) {
-        killParticle(particleID);
-        emit();
+    vec3 shipWorldPosition = _ship->getWorldPosition();
+    vec3 relativePosition = updatedPosition - shipWorldPosition;
+    if (length(relativePosition) > _emitMaxRadius) {
+        // Pop-through to other side of field
+        vec3 newRelativePosition = -relativePosition;
+        updatedPosition = shipWorldPosition + newRelativePosition;
     }
+    
+    // Check collision
+    if (length(relativePosition) < (_asteroidRadius + _ship->getRadius())) {
+        bool collided = _collided.getValue(particleID);
+        if (!collided) {
+            _ship->collide();
+            _collided.setValue(particleID, true);
+        }
+    } else {
+        _collided.setValue(particleID, false);
+    }
+        
+    // Update particle
+    _positions.setValue(particleID, updatedPosition);
 }
 
 void AsteroidParticleSystem::updateUniforms()
