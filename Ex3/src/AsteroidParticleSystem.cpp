@@ -10,18 +10,22 @@
 
 #include "AsteroidParticleSystem.h"
 #include "Camera.h"
+#include "Utils.h"
 #include <glm/gtc/random.hpp>
 
 #define ASTEROID_MAX_VELOCITY (0.05f)
+#define ASTEROID_MIN_SIZE (2.0f)
+#define ASTEROID_MAX_SIZE (10.0f)
 
 static const std::string ASTEROID_IMAGE = "assets/asteroid1.png";
 
 AsteroidParticleSystem::AsteroidParticleSystem(int maxAsteroids, float asteroidRadius, float emitRadius, Ship *ship) :
-ParticleSystem(maxAsteroids, "AsteroidShader"),
+ParticleSystem(maxAsteroids, "ParticleShader"),
 _asteroidRadius(asteroidRadius),
 _emitMaxRadius(emitRadius), _emitMinRadius(0),
 _ship(ship),
 _positions(maxAsteroids, _renderComponent, "particleCenter"),
+_sizes(maxAsteroids, _renderComponent, "particleSize"),
 _physics(maxAsteroids),
 _collided(maxAsteroids)
 {
@@ -53,11 +57,16 @@ _collided(maxAsteroids)
     
     
     // Add particle attributes
-    addAttribute(&_positions);
-    addShaderAttribute(&_positions);
-    
-    addAttribute(&_physics);
-    addAttribute(&_collided);
+    {
+        addAttribute(&_positions);
+        addShaderAttribute(&_positions);
+        
+        addAttribute(&_sizes);
+        addShaderAttribute(&_sizes);
+        
+        addAttribute(&_physics);
+        addAttribute(&_collided);
+    }
     
     // Emit min-radius
     _emitMinRadius = glm::length(Camera::MainCamera()->getPosition() - _ship->getPosition()) * 2.0f;
@@ -98,10 +107,16 @@ void AsteroidParticleSystem::emit()
         randomPosition = sphericalRand(1.0f);
         
         // Decide it's length
-        distance = ((float)rand() / RAND_MAX) * (_emitMaxRadius - _emitMinRadius) + _emitMinRadius;
+        distance = randomRange(_emitMinRadius, _emitMaxRadius);
         
         // Make it relative to the camera and set it
         newPosition = Camera::MainCamera()->getPosition() + randomPosition * distance;
+    }
+    
+    // Size
+    float size;
+    {
+        size = randomRange(ASTEROID_MIN_SIZE, ASTEROID_MAX_SIZE);
     }
     
     // Physics
@@ -121,6 +136,7 @@ void AsteroidParticleSystem::emit()
     }
     
     _positions.setValue(particleID, newPosition);
+    _sizes.setValue(particleID, size);
     _physics.setValue(particleID, newPhysics);
 }
 

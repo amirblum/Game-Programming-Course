@@ -2,6 +2,7 @@
 
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec3 particleCenter;
+layout(location = 2) in float particleSize;
 
 uniform mat4 W;
 uniform mat4 PV;
@@ -18,8 +19,8 @@ void main()
     
     // Set the world position
     vec3 myLocalPosition = particleCenter;
-    myLocalPosition += cameraRight * position.x * 2.0f;
-    myLocalPosition += cameraUp * position.y * 2.0f;
+    myLocalPosition += cameraRight * position.x * particleSize;
+    myLocalPosition += cameraUp * position.y * particleSize;
     
     gl_Position = PV * W * vec4(myLocalPosition, 1.0f);
 }
