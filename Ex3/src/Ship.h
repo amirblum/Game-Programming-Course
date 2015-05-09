@@ -28,6 +28,8 @@ private:
     PhysicsComponent *_physicsComponent;
     
     // Convenient info
+    quat _directionalRoatation;
+    quat _rotationOffset;
     vec3 _forward;
     vec3 _right;
     float _radius;

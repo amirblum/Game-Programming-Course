@@ -81,11 +81,14 @@ void Mesh::initMesh(unsigned int index, const aiMesh* mesh)
     }
 
     for (unsigned int i = 0 ; i < mesh->mNumFaces ; i++) {
-        const aiFace& Face = mesh->mFaces[i];
-        assert(Face.mNumIndices == 3);
-        indices.push_back(Face.mIndices[0]);
-        indices.push_back(Face.mIndices[1]);
-        indices.push_back(Face.mIndices[2]);
+        const aiFace& face = mesh->mFaces[i];
+//        assert(face.mNumIndices == 3);
+        if (face.mNumIndices != 3) {
+            continue;
+        }
+        indices.push_back(face.mIndices[0]);
+        indices.push_back(face.mIndices[1]);
+        indices.push_back(face.mIndices[2]);
     }
     
     if (_textures.size() > mesh->mMaterialIndex && _textures[mesh->mMaterialIndex]) {

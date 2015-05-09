@@ -14,9 +14,9 @@
 
 //static const std::string SHIP_TEXTURE = "assets/wallTexture-squashed.bmp";
 //static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
-static const std::string SHIP_MESH = "assets/bunny_5k.off";
+static const std::string SHIP_MESH = "assets/vipermk2.lwo";
 
-#define TURN_SPEED (pi<float>() / 2)
+#define TURN_SPEED (pi<float>() / 2.0f)
 #define ACCELERATION_FORCE (0.003f)
 #define DAMPENING_SPEED    (0.01f)
 #define MAX_VELOCITY (3.0f)
@@ -26,7 +26,9 @@ static const std::string SHIP_MESH = "assets/bunny_5k.off";
  */
 Ship::Ship(vec3 position, quat rotation, vec3 scale, float radius) :
 SceneNode(position, rotation, scale),
-_forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR),
+_directionalRoatation(vec3(0.0f)),
+_rotationOffset(rotation),
+_forward(FORWARD_VECTOR), _right(RIGHT_VECTOR),
 _radius(radius)
 {
     // Initialize mesh
@@ -153,10 +155,11 @@ void Ship::accelerate(float force)
  */
 void Ship::tilt(float angle)
 {
-    setRotation(rotate(_rotation, angle, RIGHT_VECTOR));
+    setRotation(rotate(_rotation, angle, _rotationOffset * RIGHT_VECTOR));
+    _directionalRoatation = rotate(_directionalRoatation, angle, RIGHT_VECTOR);
     
     // No need to recompute right vector, as it didn't change.
-    _forward = _rotation * FORWARD_VECTOR;
+    _forward = _directionalRoatation * FORWARD_VECTOR;
 }
 
 /**
@@ -164,10 +167,11 @@ void Ship::tilt(float angle)
  */
 void Ship::twist(float angle)
 {
-    setRotation(rotate(_rotation, angle, FORWARD_VECTOR));
+    setRotation(rotate(_rotation, angle, _rotationOffset * FORWARD_VECTOR));
+    _directionalRoatation = rotate(_directionalRoatation, angle, FORWARD_VECTOR);
     
     // No need to recompute forward vector, as it didn't change.
-    _right = _rotation * RIGHT_VECTOR;
+    _right = _directionalRoatation * RIGHT_VECTOR;
 }
 
 void Ship::collide()

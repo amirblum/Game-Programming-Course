@@ -24,5 +24,5 @@ void main()
 //
 //    outColor = vec4(diffuseComponent, 1.0f);
 //    outColor = clamp(myWorldPosition, 0.0f, 1.0f);
-    outColor = vec4(1.0f);
+    outColor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
 }
