@@ -12,8 +12,9 @@
 
 #include <iostream>
 
-static const std::string SHIP_TEXTURE = "assets/wallTexture-squashed.bmp";
-static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
+//static const std::string SHIP_TEXTURE = "assets/wallTexture-squashed.bmp";
+//static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
+static const std::string SHIP_MESH = "assets/bunny_5k.off";
 
 #define TURN_SPEED (pi<float>() / 2)
 #define ACCELERATION_FORCE (0.003f)
@@ -24,54 +25,57 @@ static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
  * Ship constructor
  */
 Ship::Ship(vec3 position, quat rotation, vec3 scale, float radius) :
-RenderableSceneNode("ShipShader", position, rotation, scale),
+SceneNode(position, rotation, scale),
 _forward(rotation * FORWARD_VECTOR), _right(rotation * RIGHT_VECTOR),
 _radius(radius)
 {
+    // Initialize mesh
+    _mesh = new Mesh(SHIP_MESH);
+    
     // Initialize components
     _physicsComponent = new PhysicsComponent(MAX_VELOCITY);
     
-    // Initialize ship
-    static const GLfloat vertices[] = {
-        // Left wall
-        -0.5f, -0.5f, 0.5f, 1.0f,
-        -0.5f, 0.5f, 0.5f, 1.0f,
-        
-        -0.5f, -0.5f, -0.5f, 1.0f,
-        -0.5f, 0.5f, -0.5f, 1.0f,
-        
-        // Right wall
-        0.5f, -0.5f, 0.5f, 1.0f,
-        0.5f, 0.5f, 0.5f, 1.0f,
-        
-        0.5f, -0.5f, -0.5f, 1.0f,
-        0.5f, 0.5f, -0.5f, 1.0f
-    };
-
-
-    // Push VBO
-    std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
-    _renderComponent->setVBO(verticesVector);
-    
-    static const GLubyte indices[] = {
-        0, 1, 2,
-        1, 3, 2,
-        1, 5, 3,
-        3, 7, 5,
-        5, 4, 7,
-        4, 6, 7,
-        4, 0, 6,
-        0, 2, 6
-    };
-    
-    std::vector<GLubyte> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLubyte)));
-    _renderComponent->setIBO(indicesVector);
-    
-    // Create ship textures
-    {
-        _renderComponent->add2DTexture(SHIP_TEXTURE);
-        _renderComponent->add2DTexture(SHIP_BUMP);
-    }
+//    // Initialize ship
+//    static const GLfloat vertices[] = {
+//        // Left wall
+//        -0.5f, -0.5f, 0.5f, 1.0f,
+//        -0.5f, 0.5f, 0.5f, 1.0f,
+//        
+//        -0.5f, -0.5f, -0.5f, 1.0f,
+//        -0.5f, 0.5f, -0.5f, 1.0f,
+//        
+//        // Right wall
+//        0.5f, -0.5f, 0.5f, 1.0f,
+//        0.5f, 0.5f, 0.5f, 1.0f,
+//        
+//        0.5f, -0.5f, -0.5f, 1.0f,
+//        0.5f, 0.5f, -0.5f, 1.0f
+//    };
+//
+//
+//    // Push VBO
+//    std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
+//    _renderComponent->setVBO(verticesVector);
+//    
+//    static const GLuint indices[] = {
+//        0, 1, 2,
+//        1, 3, 2,
+//        1, 5, 3,
+//        3, 7, 5,
+//        5, 4, 7,
+//        4, 6, 7,
+//        4, 0, 6,
+//        0, 2, 6
+//    };
+//    
+//    std::vector<GLuint> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLuint)));
+//    _renderComponent->setIBO(indicesVector);
+//    
+//    // Create ship textures
+//    {
+//        _renderComponent->addTexture(TextureComponent::create2DTexture(SHIP_TEXTURE));
+//        _renderComponent->addTexture(TextureComponent::create2DTexture(SHIP_BUMP));
+//    }
     
     // Construct healthbar
     {
@@ -90,6 +94,11 @@ Ship::~Ship()
 {
     delete _physicsComponent;
     delete _healthBar;
+}
+
+void Ship::render()
+{
+    _mesh->render(_worldTransform);
 }
 
 void Ship::update(float dt)

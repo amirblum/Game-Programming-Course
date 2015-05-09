@@ -12,9 +12,6 @@
 
 #include <iostream>
 
-static const std::string DummyObject_TEXTURE = "assets/wallTexture-squashed.bmp";
-static const std::string DummyObject_BUMP = "assets/wallTexture-squashed-bump.bmp";
-
 #define TURN_SPEED (0.3f)
 
 /**
@@ -47,7 +44,7 @@ _renderComponent("ShipShader")
     _renderComponent.setVBO(verticesVector);
     
     
-    static const GLubyte indices[] = {
+    static const GLuint indices[] = {
         0, 1, 2,
         1, 3, 2,
         1, 5, 3,
@@ -58,14 +55,8 @@ _renderComponent("ShipShader")
         0, 2, 6
     };
     
-    std::vector<GLubyte> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLubyte)));
+    std::vector<GLuint> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLuint)));
     _renderComponent.setIBO(indicesVector);
-    
-    // Create DummyObject textures
-    {
-        _renderComponent.add2DTexture(DummyObject_TEXTURE);
-        _renderComponent.add2DTexture(DummyObject_BUMP);
-    }
 }
 
 /**

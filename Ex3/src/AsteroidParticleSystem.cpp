@@ -43,16 +43,16 @@ _collided(maxAsteroids)
         _renderComponent->setVBO(verticesVector);
         
         // IBO
-        static const GLubyte indices[] = {
+        static const GLuint indices[] = {
             2, 1, 0,
             2, 3, 1
         };
         
-        std::vector<GLubyte> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLubyte)));
+        std::vector<GLuint> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLuint)));
         _renderComponent->setIBO(indicesVector);
         
         // Texture
-        _renderComponent->add2DTexture(ASTEROID_IMAGE);
+        _renderComponent->addTexture(TextureComponent::create2DTexture(ASTEROID_IMAGE));
     }
     
     

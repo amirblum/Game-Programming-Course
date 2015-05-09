@@ -28,7 +28,7 @@ _startPosition(0.0f)
     Camera *camera = new Camera(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
     Camera::setMainCamera(camera);
     
-    Ship *ship = new Ship(vec3(0.0f, 0.0f, 0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.5f, 4.0f), /*radius*/1.0f);
+    Ship *ship = new Ship(vec3(0.0f, 0.0f, 0.0f), quat(vec3(0.0f)), vec3(10.0f, 10.0f, 10.0f), /*radius*/1.0f);
     addChild(ship);
     
     DummyObject *dummy = new DummyObject(vec3(-1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(1.0f));

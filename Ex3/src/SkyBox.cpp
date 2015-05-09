@@ -36,7 +36,7 @@ RenderableSceneNode("SkyBoxShader", vec3(0.0f), quat(vec3(0.0f)), vec3(20.0f))
     };
     
     // Indices
-    const GLubyte indices[] = {
+    const GLuint indices[] = {
         // Left
         0, 1, 2,
         1, 3, 2,
@@ -67,12 +67,12 @@ RenderableSceneNode("SkyBoxShader", vec3(0.0f), quat(vec3(0.0f)), vec3(20.0f))
     _renderComponent->setVBO(verticesVector);
     
     // Push IBO
-    std::vector<GLubyte> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLubyte)));
+    std::vector<GLuint> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLuint)));
     _renderComponent->setIBO(indicesVector);
     
     // Add textures
     {
-        _renderComponent->addCubeTexture(skyboxLF, skyboxFT, skyboxRT, skyboxBK, skyboxUP, skyboxDN);
+        _renderComponent->addTexture(TextureComponent::createCubeTexture(skyboxLF, skyboxFT, skyboxRT, skyboxBK, skyboxUP, skyboxDN));
     }
 }
 

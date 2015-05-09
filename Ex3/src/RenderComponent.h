@@ -27,11 +27,24 @@ using namespace glm;
 
 #include "SceneNode.h"
 
-struct TextureComponent {
-    GLuint texture;
-    int textureNumber;
-    GLenum type;
-    GLint samplerUniform;
+class TextureComponent {
+private:
+    GLenum _type;
+    GLuint _textureNum;
+//    int _textureNumber;
+//    GLint samplerUniform;
+    TextureComponent();
+    TextureComponent(GLenum type, GLuint textureNum);
+public:
+    static TextureComponent* create2DTexture(std::string filename);
+    static TextureComponent* createCubeTexture(std::string cubeLF,
+                                               std::string cubeFT,
+                                               std::string cubeRT,
+                                               std::string cubeBK,
+                                               std::string cubeUP,
+                                               std::string cubeDN);
+    virtual ~TextureComponent();
+    void bind();
 };
 
 enum UniformType {
@@ -75,16 +88,16 @@ private:
     GLuint _shaderProgram;
     
     // Textures
-    unsigned int _textureCount;
+//    unsigned int _textureCount;
     std::vector<TextureComponent*> _textures;
-    void sendTexture(TextureComponent *textureComponent);
+//    void sendTexture(TextureComponent *textureComponent);
     
     // Uniform handles:
     std::unordered_map<std::string, UniformVariable*> _uniforms;
     void sendUniform(UniformVariable *uniform);
     
     // Number of elements
-    size_t _nElementIndices;
+    unsigned int _numIndices;
     
 public:
     RenderComponent(std::string shaderProgram);
@@ -95,16 +108,19 @@ public:
     
     void setVBO(std::vector<vec4> vertices);
     void setVBO(std::vector<GLfloat> vertices);
-    void setIBO(std::vector<GLubyte> indices);
+    void setIBO(std::vector<GLuint> indices);
     
     GLuint createSupportVBO(GLenum type, int size, std::string name, int divisor);
-    void add2DTexture(std::string textureFile);
-    void addCubeTexture(std::string cubeLF,
-                        std::string cubeFT,
-                        std::string cubeRT,
-                        std::string cubeBK,
-                        std::string cubeUP,
-                        std::string cubeDN);
+    
+    void addTexture(TextureComponent *textureComponent);
+    
+//    void add2DTexture(std::string textureFile);
+//    void addCubeTexture(std::string cubeLF,
+//                        std::string cubeFT,
+//                        std::string cubeRT,
+//                        std::string cubeBK,
+//                        std::string cubeUP,
+//                        std::string cubeDN);
 
     /**
      * Damnits.. I hate including implementations in header files but it's a must

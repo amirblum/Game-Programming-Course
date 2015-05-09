@@ -27,7 +27,7 @@ _maxUnits(maxUnits), _currentUnits(maxUnits)
         1, 3, 2
     };
     
-    std::vector<GLubyte> indicesVec(indices, indices + (sizeof(indices) / sizeof(GLubyte)));
+    std::vector<GLuint> indicesVec(indices, indices + (sizeof(indices) / sizeof(GLuint)));
     _renderComponent->setIBO(indicesVec);
 }
 

@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
 #endif
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutInitWindowPosition(WINDOW_POS_X, WINDOW_POS_Y);
-    glutCreateWindow("CGP Ex 2");
+    glutCreateWindow("CGP Ex 3");
 	
     // Initialize GLEW
     glewExperimental = GL_TRUE;

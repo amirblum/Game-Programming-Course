@@ -11,7 +11,8 @@
 #ifndef __ex3__Ship__
 #define __ex3__Ship__
 
-#include "RenderableSceneNode.h"
+#include "SceneNode.h"
+#include "Mesh.h"
 #include "PhysicsComponent.h"
 #include "HealthBar.h"
 #include "SkyBox.h"
@@ -20,9 +21,10 @@
 
 #define GRID_ELEMENT_SIZE (1.0f)
 
-class Ship : public RenderableSceneNode {
+class Ship : public SceneNode {
 private:
     // Components
+    Mesh *_mesh;
     PhysicsComponent *_physicsComponent;
     
     // Convenient info
@@ -41,6 +43,7 @@ public:
     Ship(vec3 position, quat rotation, vec3 scale, float radius);
     virtual ~Ship();
     
+    virtual void render();
     virtual void update(float dt);
     
     void collide();
