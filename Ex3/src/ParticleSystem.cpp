@@ -72,13 +72,13 @@ void ParticleSystem::updateGeneral(float dt) {}
 
 void ParticleSystem::render()
 {
-    updateUniforms();
-    
     if (_aliveParticles > 0) {
         for (ShaderAttribute *attribute : _shaderAttributes) {
             attribute->pushData();
         }
         
+        preRender();
         _renderComponent->render(_worldTransform, _aliveParticles);
+        postRender();
     }
 }

@@ -21,9 +21,10 @@ RenderableSceneNode::~RenderableSceneNode()
 
 void RenderableSceneNode::render()
 {
-    updateUniforms();
-    
+    preRender();
     _renderComponent->render(_worldTransform);
+    postRender();
 }
 
-void RenderableSceneNode::updateUniforms() {}
+void RenderableSceneNode::preRender() {}
+void RenderableSceneNode::postRender() {}

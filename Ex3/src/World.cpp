@@ -37,7 +37,7 @@ _startPosition(0.0f)
     AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(10000, 1.0f, 500.0f, ship);
     addChild(asteroids);
     
-    // Skybox
+    // Skybox (draw last to save on fragments that already have info in them)
     SkyBox *skybox = new SkyBox();
     addChild(skybox);
     

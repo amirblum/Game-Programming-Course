@@ -120,8 +120,10 @@ int main(int argc, char* argv[])
     // Enable opengl drawing features
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//    glEnable(GL_BLEND);
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//    glEnable(GL_ALPHA_TEST);
+//    glAlphaFunc(GL_GREATER, 0);
 		
     // Set callback functions:
     glutDisplayFunc(display) ;
@@ -156,7 +158,7 @@ int main(int argc, char* argv[])
     _world = new World();
 
     // Set clear color to black:
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		
     // Start events/drawing loop
     glutMainLoop();

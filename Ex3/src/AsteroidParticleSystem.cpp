@@ -158,7 +158,7 @@ void AsteroidParticleSystem::updateParticle(int particleID, float dt)
     _positions.setValue(particleID, updatedPosition);
 }
 
-void AsteroidParticleSystem::updateUniforms()
+void AsteroidParticleSystem::preRender()
 {
     Camera *camera = Camera::MainCamera();
     

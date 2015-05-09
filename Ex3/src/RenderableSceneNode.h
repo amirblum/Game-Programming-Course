@@ -25,7 +25,8 @@ public:
     virtual ~RenderableSceneNode();
     
     virtual void render();
-    virtual void updateUniforms();
+    virtual void preRender();
+    virtual void postRender();
 };
 
 #endif /* defined(__CGP_Ex3__RenderableSceneNode__) */
