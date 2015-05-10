@@ -14,35 +14,43 @@ TAR = amirblum_cgp_ex3.tgz
 # list of all the sources files
 SRCS	=  	main.cpp		\
 		World.cpp		\
-		Ship.cpp 	\
-        Flashlight.cpp  \
-        Monster.cpp     \
-		ShaderIO.cpp	\
         Camera.cpp  \
+		CameraFollow.cpp \
         InputManager.cpp    \
+		ParticleSystem.cpp \
+		AsteroidParticleSystem.cpp \
+		Mesh.cpp \
+		SceneNode.cpp \
+		RenderableSceneNode.cpp \
+		Ship.cpp 	\
+		HealthBar.cpp \
+		DummyObject.cpp \
+		SkyBox.cpp \
         RenderComponent.cpp  \
-        Controller.cpp	\
-		PPBuffer.cpp	\
-		bimage.cpp \
+		PhysicsComponent.cpp \
+		ShaderIO.cpp	
 
-HDRS	=  	World.h	\
-            Ship.h 	\
-            Flashlight.h  \
-            Monster.h     \
-            ShaderIO.h	\
-            Camera.h  \
-            InputManager.h    \
-            RenderComponent.h  \
-            Controller.h	\
-			PPBuffer.h	\
-			bimage.h
+HDRS	=  	\
+		World.h		\
+        Camera.h  \
+		CameraFollow.h \
+        InputManager.h    \
+		ParticleSystem.h \
+		AsteroidParticleSystem.h \
+		Mesh.h \
+		SceneNode.h \
+		RenderableSceneNode.h \
+		Ship.h 	\
+		HealthBar.h \
+		DummyObject.h \
+		SkyBox.h \
+        RenderComponent.h  \
+		PhysicsComponent.h \
+		ShaderIO.h	\
+		Utils.h
 
 # compiler
 CC	= g++
-
-INCLUDE = -I/usr/include -I/usr/X11R6/include -I/cs/course/current/cg/include
-
-OBJS = $(subst .cpp,.o,$(SRCS)) 		#substituting .cc -> .o
 
 # in order to run in debug mode use the command "make DBG=1"
 ifdef DBG
@@ -53,7 +61,8 @@ ifdef DBG
 		-DDEBUG	\
 		-O0		\
 		-g3		\
-		-Wno-deprecated
+		-Wno-deprecated \
+		-std=c++11	
 					
 						
 else
@@ -61,7 +70,8 @@ else
 	CFLAGS = 		\
 		-Wall		\
 		-DNDEBUG    \
-		-O2
+		-O2			\
+		-std=c++11
 				 
 endif
 
@@ -70,21 +80,17 @@ endif
 LD	= $(CC)
 LDFLAGS	=
 
+# Include Headers
+INCLUDE = -I/usr/include -I./include
+
+# each lib should add with -l flag
+LIBS =  -L/usr/lib -L./lib -lm -lGLEW -lglut -lGL -lGLU -lopenal -l:libalut.so.0 -ldl -lsoil2 -lassimp
 
 # the name of the lib to create 
 APP = cgp_ex3
 
-# each lib should add with -l flag
-LIBS =  -L/usr/lib -lm -lGLEW -lglut -lGL -lGLU -lopenal -l:libalut.so.0 -ldl -L/usr/X11R6/lib
-
-
 # rule to change the suffix of the sources files
 OBJS	= ${SRCS:.cpp=.o}
-
-# clear out all suffixes
-.SUFFIXES:
-# list only those we use
-.SUFFIXES: .o .cpp
 
 # define a suffix rule for .c -> .o
 .cpp.o :
@@ -96,13 +102,13 @@ OBJS	= ${SRCS:.cpp=.o}
 all : $(APP)
 
 $(APP) : $(OBJS)
-	$(LD)  $(OBJS) $(LIBS) -o $(APP)
+	$(LD)  $(OBJS) $(LIBS) -o $(APP) $(LDFLAGS)
 
 $(OBJS) : $(SRCS)
 
 
 tar:
-	tar czvf $(TAR) Makefile $(SRCS) $(HDRS) assets/ shaders/ README
+	tar czvf $(TAR) Makefile $(SRCS) $(HDRS) assets/ shaders/ include/ README
 	
 
 .PHONY:

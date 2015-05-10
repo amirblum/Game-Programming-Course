@@ -12,8 +12,6 @@
 
 #include <iostream>
 
-//static const std::string SHIP_TEXTURE = "assets/wallTexture-squashed.bmp";
-//static const std::string SHIP_BUMP = "assets/wallTexture-squashed-bump.bmp";
 static const std::string SHIP_MESH = "assets/vipermk2.lwo";
 
 #define TURN_SPEED (pi<float>() / 2.0f)
@@ -33,7 +31,7 @@ _radius(radius)
     // Initialize mesh
     {
         vec3 meshPosition = vec3(0.0f);
-        quat meshRotation = rotate(quat(vec3(0.0f)), 90, vec3(0.0f, 1.0f, 0.0f));
+        quat meshRotation = rotate(quat(vec3(0.0f)), 90.0f, vec3(0.0f, 1.0f, 0.0f));
         vec3 meshScale = vec3(1.0f);
         _mesh = new Mesh(SHIP_MESH, meshPosition, meshRotation, meshScale);
         addChild(_mesh);

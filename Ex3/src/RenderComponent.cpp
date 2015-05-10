@@ -13,8 +13,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "Camera.h"
-#include "SOIL2/SOIL2.h"
-#include <TargetConditionals.h>
+#include <SOIL2/SOIL2.h>
 
 #define SHADERS_DIR "shaders/"
 #define VERTEX_EXT ".vert"
