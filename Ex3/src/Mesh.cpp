@@ -26,7 +26,8 @@ Mesh::MeshEntry::~MeshEntry()
 {
 }
 
-Mesh::Mesh(std::string filename) :
+Mesh::Mesh(std::string filename, vec3 position, quat rotation, vec3 scale) :
+SceneNode(position, rotation, scale),
 _entries(), _textures()
 {
     Assimp::Importer importer;
@@ -129,10 +130,10 @@ void Mesh::initMaterials(const aiScene* scene, std::string filename)
     }
 }
 
-void Mesh::render(mat4 worldTransform)
+void Mesh::render()
 {
     for (MeshEntry *entry : _entries) {
-        entry->render(worldTransform);
+        entry->render(_worldTransform);
     }
     
 //    glEnableVertexAttribArray(0);

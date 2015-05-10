@@ -20,73 +20,36 @@ static const std::string SHIP_MESH = "assets/vipermk2.lwo";
 #define ACCELERATION_FORCE (0.003f)
 #define DAMPENING_SPEED    (0.01f)
 #define MAX_VELOCITY (3.0f)
+#define MAX_HEALTH (5)
 
 /**
  * Ship constructor
  */
 Ship::Ship(vec3 position, quat rotation, vec3 scale, float radius) :
 SceneNode(position, rotation, scale),
-_directionalRoatation(vec3(0.0f)),
-_rotationOffset(rotation),
 _forward(FORWARD_VECTOR), _right(RIGHT_VECTOR),
 _radius(radius)
 {
     // Initialize mesh
-    _mesh = new Mesh(SHIP_MESH);
-    
-    // Initialize components
-    _physicsComponent = new PhysicsComponent(MAX_VELOCITY);
-    
-//    // Initialize ship
-//    static const GLfloat vertices[] = {
-//        // Left wall
-//        -0.5f, -0.5f, 0.5f, 1.0f,
-//        -0.5f, 0.5f, 0.5f, 1.0f,
-//        
-//        -0.5f, -0.5f, -0.5f, 1.0f,
-//        -0.5f, 0.5f, -0.5f, 1.0f,
-//        
-//        // Right wall
-//        0.5f, -0.5f, 0.5f, 1.0f,
-//        0.5f, 0.5f, 0.5f, 1.0f,
-//        
-//        0.5f, -0.5f, -0.5f, 1.0f,
-//        0.5f, 0.5f, -0.5f, 1.0f
-//    };
-//
-//
-//    // Push VBO
-//    std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
-//    _renderComponent->setVBO(verticesVector);
-//    
-//    static const GLuint indices[] = {
-//        0, 1, 2,
-//        1, 3, 2,
-//        1, 5, 3,
-//        3, 7, 5,
-//        5, 4, 7,
-//        4, 6, 7,
-//        4, 0, 6,
-//        0, 2, 6
-//    };
-//    
-//    std::vector<GLuint> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLuint)));
-//    _renderComponent->setIBO(indicesVector);
-//    
-//    // Create ship textures
-//    {
-//        _renderComponent->addTexture(TextureComponent::create2DTexture(SHIP_TEXTURE));
-//        _renderComponent->addTexture(TextureComponent::create2DTexture(SHIP_BUMP));
-//    }
+    {
+        vec3 meshPosition = vec3(0.0f);
+        quat meshRotation = rotate(quat(vec3(0.0f)), 90, vec3(0.0f, 1.0f, 0.0f));
+        vec3 meshScale = vec3(1.0f);
+        _mesh = new Mesh(SHIP_MESH, meshPosition, meshRotation, meshScale);
+        addChild(_mesh);
+    }
     
     // Construct healthbar
     {
-        vec3 healthPosition = position + vec3(0.0f, 1.0f, 0.0f);
+        vec3 healthPosition = vec3(0.0f, 1.0f, 0.0f);
         quat healthRotation = quat(vec3(0.0f));
         vec3 healthScale = vec3(1.0f, 0.1f, 1.0f);
-        _healthBar = new HealthBar(5, healthPosition, healthRotation, healthScale);
+        _healthBar = new HealthBar(MAX_HEALTH, healthPosition, healthRotation, healthScale);
         addChild(_healthBar);
     }
+    
+    // Initialize components
+    _physicsComponent = new PhysicsComponent(MAX_VELOCITY);
 }
 
 /**
@@ -100,7 +63,6 @@ Ship::~Ship()
 
 void Ship::render()
 {
-    _mesh->render(_worldTransform);
 }
 
 void Ship::update(float dt)
@@ -155,11 +117,10 @@ void Ship::accelerate(float force)
  */
 void Ship::tilt(float angle)
 {
-    setRotation(rotate(_rotation, angle, _rotationOffset * RIGHT_VECTOR));
-    _directionalRoatation = rotate(_directionalRoatation, angle, RIGHT_VECTOR);
+    setRotation(rotate(_rotation, angle, RIGHT_VECTOR));
     
     // No need to recompute right vector, as it didn't change.
-    _forward = _directionalRoatation * FORWARD_VECTOR;
+    _forward = _rotation * FORWARD_VECTOR;
 }
 
 /**
@@ -167,11 +128,10 @@ void Ship::tilt(float angle)
  */
 void Ship::twist(float angle)
 {
-    setRotation(rotate(_rotation, angle, _rotationOffset * FORWARD_VECTOR));
-    _directionalRoatation = rotate(_directionalRoatation, angle, FORWARD_VECTOR);
+    setRotation(rotate(_rotation, angle, FORWARD_VECTOR));
     
     // No need to recompute forward vector, as it didn't change.
-    _right = _directionalRoatation * RIGHT_VECTOR;
+    _right = _rotation * RIGHT_VECTOR;
 }
 
 void Ship::collide()

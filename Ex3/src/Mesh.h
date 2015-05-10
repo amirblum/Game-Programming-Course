@@ -25,6 +25,7 @@ using namespace glm;
 #include <assimp/scene.h>       // Output data structure
 #include <assimp/postprocess.h> // Post processing flags
 
+#include "SceneNode.h"
 #include "RenderComponent.h"
 
 struct Vertex {
@@ -39,7 +40,7 @@ struct Vertex {
 };
 
 
-class Mesh {
+class Mesh : public SceneNode {
 private:
     class MeshEntry : public RenderComponent {
     public:
@@ -56,10 +57,13 @@ private:
     void initMaterials(const aiScene* scene, std::string filename);
     
 public:
-    Mesh(std::string filename);
+    Mesh(std::string filename,
+         vec3 position = vec3(0.0f),
+         quat rotation = quat(vec3(0.0f)),
+         vec3 scale = vec3(1.0f));
     virtual ~Mesh();
     
-    void render(mat4 worldTransform);
+    virtual void render();
 };
 
 
