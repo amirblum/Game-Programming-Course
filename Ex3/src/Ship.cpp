@@ -94,9 +94,6 @@ void Ship::update(float dt)
         twist(TURN_SPEED * dt);
     }
     
-    // Update physics
-    _physicsComponent->update(dt);
-    
     // Update position
     vec3 velocity = _physicsComponent->getVelocity();
     setPosition(_position + velocity * dt);

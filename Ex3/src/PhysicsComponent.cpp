@@ -33,19 +33,10 @@ vec3 normalizePower(vec3 force, float maxPower)
     return ret;
 }
 
-void PhysicsComponent::update(float dt)
-{
-    _velocity += _acceleration;
-
-    _velocity = normalizePower(_velocity, _maxVelocity);
-    
-    _acceleration = vec3(0.0f);
-}
-
 void PhysicsComponent::applyForce(vec3 force)
 {
-    // Update acceleration
-    _acceleration += force;
+    _velocity += force;
+    _velocity = normalizePower(_velocity, _maxVelocity);
 }
 
 vec3 PhysicsComponent::getVelocity()

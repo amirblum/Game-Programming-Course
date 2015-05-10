@@ -32,7 +32,6 @@ public:
     vec3 getVelocity();
     
     // State changers
-    void update(float dt);
     void applyForce(vec3 force);
     bool isMoving();
 };

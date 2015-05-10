@@ -13,15 +13,15 @@
 #include "Utils.h"
 #include <glm/gtc/random.hpp>
 
-#define ASTEROID_MAX_VELOCITY (0.05f)
+#define ASTEROID_MAX_VELOCITY (0.15f)
+#define ASTEROID_MIN_VELOCITY (0.025f)
 #define ASTEROID_MIN_SIZE (2.0f)
-#define ASTEROID_MAX_SIZE (10.0f)
+#define ASTEROID_MAX_SIZE (20.0f)
 
 static const std::string ASTEROID_IMAGE = "assets/asteroid1.png";
 
-AsteroidParticleSystem::AsteroidParticleSystem(int maxAsteroids, float asteroidRadius, float emitRadius, Ship *ship) :
+AsteroidParticleSystem::AsteroidParticleSystem(int maxAsteroids, float emitRadius, Ship *ship) :
 ParticleSystem(maxAsteroids, "ParticleShader"),
-_asteroidRadius(asteroidRadius),
 _emitMaxRadius(emitRadius), _emitMinRadius(0),
 _ship(ship),
 _positions(maxAsteroids, _renderComponent, "particleCenter"),
@@ -123,7 +123,8 @@ void AsteroidParticleSystem::emit()
     PhysicsComponent *newPhysics;
     {
         vec3 randomDirection = sphericalRand(1.0f);
-        vec3 initialForce = randomDirection * 8.0f;
+        float randomSpeed = randomRange(ASTEROID_MIN_VELOCITY, ASTEROID_MAX_VELOCITY);
+        vec3 initialForce = randomDirection * randomSpeed;
         
         bool closeToShip = distance < _emitMinRadius * 3.0f;
         bool headingTowardsShip = dot(randomPosition, randomDirection) < -0.8;
@@ -135,9 +136,15 @@ void AsteroidParticleSystem::emit()
         newPhysics->applyForce(initialForce);
     }
     
+    // Random fun
+    // To avoid having most asteroids near the ship at start (due to the way
+    // the position was randomly chosen), we let the physics run a bit
+    newPosition += newPhysics->getVelocity() * 3000.0f;
+    
     _positions.setValue(particleID, newPosition);
     _sizes.setValue(particleID, size);
     _physics.setValue(particleID, newPhysics);
+    _collided.setValue(particleID, false);
 }
 
 void AsteroidParticleSystem::updateParticle(int particleID, float dt)
@@ -147,8 +154,7 @@ void AsteroidParticleSystem::updateParticle(int particleID, float dt)
     vec3 updatedPosition = currentPosition;
     PhysicsComponent *physics = _physics.getValue(particleID);
     
-    physics->update(dt);
-    updatedPosition += physics->getVelocity();
+    updatedPosition += physics->getVelocity() * dt;
     
     // Check death
     vec3 shipWorldPosition = _ship->getWorldPosition();
@@ -160,7 +166,7 @@ void AsteroidParticleSystem::updateParticle(int particleID, float dt)
     }
     
     // Check collision
-    if (length(relativePosition) < (_asteroidRadius + _ship->getRadius())) {
+    if (length(relativePosition) < (_sizes.getValue(particleID) + _ship->getRadius())) {
         bool collided = _collided.getValue(particleID);
         if (!collided) {
             _ship->collide();

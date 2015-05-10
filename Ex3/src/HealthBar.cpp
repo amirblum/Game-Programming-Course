@@ -22,7 +22,7 @@ _maxUnits(maxUnits), _currentUnits(maxUnits)
     std::vector<GLfloat> verticesVec(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
     _renderComponent->setVBO(verticesVec);
     
-    const GLubyte indices[] = {
+    const GLuint indices[] = {
         0, 1, 2,
         1, 3, 2
     };
@@ -35,7 +35,7 @@ HealthBar::~HealthBar()
 {
 }
 
-void HealthBar::updateUniforms()
+void HealthBar::preRender()
 {
     _renderComponent->setUniform<int, UNIFORM_INT>("maxUnits", _maxUnits);
     _renderComponent->setUniform<int, UNIFORM_INT>("currentUnits", _currentUnits);

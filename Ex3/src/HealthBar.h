@@ -24,7 +24,7 @@ public:
     int getCurrentUnits();
     void setCurrentUnits(int currentUnits);
     
-    virtual void updateUniforms();
+    virtual void preRender();
 };
 
 #endif /* defined(__CGP_Ex3__HealthBar__) */

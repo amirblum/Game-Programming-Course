@@ -22,7 +22,6 @@ typedef ParticleAttributeDerived<bool> CollisionAttribute;
 
 class AsteroidParticleSystem : public ParticleSystem {
 private:
-    float _asteroidRadius;
     float _emitMaxRadius, _emitMinRadius;
     Ship *_ship;
     
@@ -33,7 +32,7 @@ private:
     
     bool particleInView(vec3 particlePosition);
 public:
-    AsteroidParticleSystem(int maxAsteroids, float asteroidRadius, float radius, Ship *ship);
+    AsteroidParticleSystem(int maxAsteroids, float emitRadius, Ship *ship);
     virtual ~AsteroidParticleSystem();
     
     virtual void emit();

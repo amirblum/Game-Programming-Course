@@ -34,7 +34,7 @@ _startPosition(0.0f)
     DummyObject *dummy = new DummyObject(vec3(-1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(1.0f));
     addChild(dummy);
     
-    AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(10000, 1.0f, 500.0f, ship);
+    AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(10000, 1000.0f, ship);
     addChild(asteroids);
     
     // Skybox (draw last to save on fragments that already have info in them)
