@@ -14,7 +14,8 @@
 
 static const std::string SHIP_MESH = "assets/vipermk2.lwo";
 
-#define TURN_SPEED (pi<float>() / 2.0f)
+#define TILT_SPEED (pi<float>() / 6.0f)
+#define ROLL_SPEED (pi<float>() / 4.0f)
 #define ACCELERATION_FORCE (0.003f)
 #define DAMPENING_SPEED    (0.01f)
 #define MAX_VELOCITY (3.0f)
@@ -67,6 +68,13 @@ void Ship::update(float dt)
 {
     InputManager &input = InputManager::Instance();
     
+    // Velocity hack. Basically this retains the forward velocity even when
+    //changing directions. Not realistic physics AT ALL...but feels better XD
+    vec3 prevVelocity = _physicsComponent->getVelocity();
+    float velocityStrength = length(prevVelocity);
+    _physicsComponent->applyForce(-prevVelocity);
+    _physicsComponent->applyForce(_forward * velocityStrength);
+    
     // Accelerating
     if (input.isPressed(KEY_ACTION)) {
         _physicsComponent->applyForce(_forward * ACCELERATION_FORCE);
@@ -77,21 +85,21 @@ void Ship::update(float dt)
     // Tilting
     if (input.isPressed(KEY_UP))
     {
-        tilt(TURN_SPEED * dt);
+        tilt(TILT_SPEED * dt);
     }
     else if (input.isPressed(KEY_DOWN))
     {
-        tilt(-TURN_SPEED * dt);
+        tilt(-TILT_SPEED * dt);
     }
     
     // Twisting
     if (input.isPressed(KEY_LEFT))
     {
-        twist(-TURN_SPEED * dt);
+        twist(-ROLL_SPEED * dt);
     }
     else if (input.isPressed(KEY_RIGHT))
     {
-        twist(TURN_SPEED * dt);
+        twist(ROLL_SPEED * dt);
     }
     
     // Update position
