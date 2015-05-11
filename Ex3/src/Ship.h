@@ -45,6 +45,7 @@ private:
     void accelerate(float force);
     void tilt(float angle);
     void twist(float angle);
+    void generateExplosion(unsigned int explosionSize);
 public:
     Ship(vec3 position, quat rotation, vec3 scale, float radius);
     virtual ~Ship();
@@ -60,6 +61,9 @@ public:
     float getSpeed();
     float getMaxSpeed();
     float getRadius();
+    
+    void die();
+    bool isDead();
 };
 
 #endif /* defined(__ex3__Ship__) */

@@ -7,6 +7,7 @@
 //
 
 #include "CameraFollow.h"
+#include "GameState.h"
 
 #define CAMERA_DISTANCE (7.5f)
 #define MAX_LAG_SPEED (15.0f)
@@ -33,24 +34,33 @@ void CameraFollow::update(float dt)
     vec3 shipForward = _ship->getForward();
     vec3 shipRight = _ship->getRight();
     
-    vec3 cameraPositionTarget = shipPosition - shipForward * CAMERA_DISTANCE;
-    vec3 cameraDirectionTarget = shipForward;
+    vec3 cameraPositionTarget;
+    vec3 cameraDirectionTarget;
     vec3 cameraUpTarget = cross(shipForward, shipRight);
+    
+    if (!GameState::Instance().gameOver) {
+        cameraPositionTarget = shipPosition - shipForward * CAMERA_DISTANCE;
+        cameraDirectionTarget = shipForward;
+        
+        // Clamp distance (don't ask about the magic numbers. They just work, ok?)
+        float shipSpeed = _ship->getSpeed();
+        if (shipSpeed > MAX_LAG_SPEED) {
+            vec3 maxTarget = cameraPositionTarget + shipForward * CAMERA_DISTANCE * 10.0f;
+            
+            cameraPositionTarget = mix(cameraPositionTarget, maxTarget, (shipSpeed - MAX_LAG_SPEED) * dt * (100.0f / 1.5f) / (_ship->getMaxSpeed() - MAX_LAG_SPEED));
+        }
+    } else {
+        // View burning ship from the side
+        cameraPosition = shipPosition - shipRight * CAMERA_DISTANCE;
+        cameraPositionTarget = cameraPosition;
+        cameraDirectionTarget = shipRight;
+    }
     
     // Interpolate
     vec3 cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, FOLLOW_PERCENT);
     vec3 cameraDirectionInterpolated = mix(cameraDirection, cameraDirectionTarget, FOLLOW_PERCENT);
     vec3 cameraUpInterpolated = mix(cameraUp, cameraUpTarget, FOLLOW_PERCENT);
-    
-    // Clamp distance (don't ask about the magic numbers. They just work, ok?)
-    float shipSpeed = _ship->getSpeed();
-    if (shipSpeed > MAX_LAG_SPEED) {
-        vec3 maxTarget = cameraPositionTarget + shipForward * CAMERA_DISTANCE * 10.0f;
         
-        cameraPositionTarget = mix(cameraPositionTarget, maxTarget, (shipSpeed - MAX_LAG_SPEED) * dt * (100.0f / 1.5f) / (_ship->getMaxSpeed() - MAX_LAG_SPEED));
-        cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, FOLLOW_PERCENT);
-    }
-    
     _camera->setPosition(cameraPositionInterpolated);
     _camera->setDirection(cameraDirectionInterpolated);
     _camera->setUp(cameraUpInterpolated);

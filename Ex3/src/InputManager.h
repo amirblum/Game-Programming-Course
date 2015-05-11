@@ -25,6 +25,7 @@ using namespace glm;
 #define KEY_RIGHT ('d')
 #define KEY_LEFT_MOD ('q')
 #define KEY_RIGHT_MOD ('e')
+#define KEY_GAME_OVER ('g')
 
 class InputManager {
 public:

@@ -9,6 +9,7 @@
 #include "ShaderIO.h"
 #include "Ship.h"
 #include "InputManager.h"
+#include "GameState.h"
 
 #include <iostream>
 
@@ -80,40 +81,45 @@ void Ship::render()
 
 void Ship::update(float dt)
 {
-    InputManager &input = InputManager::Instance();
-    
-    // Velocity hack. Basically this retains the forward velocity even when
-    //changing directions. Not realistic physics AT ALL...but feels better XD
-    vec3 prevVelocity = _physicsComponent->getVelocity();
-    float velocityStrength = length(prevVelocity);
-    _physicsComponent->applyForce(-prevVelocity);
-    _physicsComponent->applyForce(_forward * velocityStrength);
-    
-    // Accelerating
-    if (input.isPressed(KEY_ACTION)) {
-        _physicsComponent->applyForce(_forward * ACCELERATION_FORCE);
+    if (!GameState::Instance().gameOver) {
+        
+        InputManager &input = InputManager::Instance();
+        
+        // Velocity hack. Basically this retains the forward velocity even when
+        //changing directions. Not realistic physics AT ALL...but feels better XD
+        vec3 prevVelocity = _physicsComponent->getVelocity();
+        float velocityStrength = length(prevVelocity);
+        _physicsComponent->applyForce(-prevVelocity);
+        _physicsComponent->applyForce(_forward * velocityStrength);
+        
+        // Accelerating
+        if (input.isPressed(KEY_ACTION)) {
+            _physicsComponent->applyForce(_forward * ACCELERATION_FORCE);
+        } else if (_physicsComponent->isMoving()) {
+            _physicsComponent->applyForce(-_physicsComponent->getVelocity() * DAMPENING_FORCE);
+        }
+        
+        // Tilting
+        if (input.isPressed(KEY_UP))
+        {
+            tilt(TILT_SPEED * dt);
+        }
+        else if (input.isPressed(KEY_DOWN))
+        {
+            tilt(-TILT_SPEED * dt);
+        }
+        
+        // Twisting
+        if (input.isPressed(KEY_LEFT))
+        {
+            twist(-ROLL_SPEED * dt);
+        }
+        else if (input.isPressed(KEY_RIGHT))
+        {
+            twist(ROLL_SPEED * dt);
+        }
     } else if (_physicsComponent->isMoving()) {
         _physicsComponent->applyForce(-_physicsComponent->getVelocity() * DAMPENING_FORCE);
-    }
-    
-    // Tilting
-    if (input.isPressed(KEY_UP))
-    {
-        tilt(TILT_SPEED * dt);
-    }
-    else if (input.isPressed(KEY_DOWN))
-    {
-        tilt(-TILT_SPEED * dt);
-    }
-    
-    // Twisting
-    if (input.isPressed(KEY_LEFT))
-    {
-        twist(-ROLL_SPEED * dt);
-    }
-    else if (input.isPressed(KEY_RIGHT))
-    {
-        twist(ROLL_SPEED * dt);
     }
     
     // Update position
@@ -171,14 +177,6 @@ void Ship::collide()
     int health = _healthBar->getCurrentUnits();
     int newHealth = health - 1;
     
-    // Explosion
-    ExplosionParticleSystem *newExplosion = new ExplosionParticleSystem(20);
-    newExplosion->toggleRotationInvariance();
-    newExplosion->toggleScaleInvariance();
-    addChild(newExplosion);
-    
-    _explosions.push_back(newExplosion);
-    
     // Sound
     alSourcePlay(_soundSrc);
     
@@ -187,8 +185,23 @@ void Ship::collide()
         _healthBar->setCurrentUnits(newHealth);
         if (newHealth == 0) {
             std::cout << "Game Over!" << std::endl;
+            die();
+        } else {
+            // Explosion
+            generateExplosion(20);
         }
     }
+    
+}
+
+void Ship::generateExplosion(unsigned int explosionSize)
+{
+    ExplosionParticleSystem *newExplosion = new ExplosionParticleSystem(explosionSize);
+    newExplosion->toggleRotationInvariance();
+    newExplosion->toggleScaleInvariance();
+    addChild(newExplosion);
+    
+    _explosions.push_back(newExplosion);
 }
 
 /**
@@ -220,4 +233,15 @@ float Ship::getMaxSpeed()
 float Ship::getRadius()
 {
     return _radius;
+}
+
+void Ship::die()
+{
+    _healthBar->setCurrentUnits(0);
+    generateExplosion(2000);
+}
+
+bool Ship::isDead()
+{
+    return _healthBar->getCurrentUnits() == 0;
 }

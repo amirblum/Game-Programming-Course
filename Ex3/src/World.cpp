@@ -13,6 +13,8 @@
 #include "DummyObject.h"
 #include "AsteroidParticleSystem.h"
 #include "InputManager.h"
+#include "GameOver.h"
+#include "GameState.h"
 
 World::World() :
 SceneNode(),
@@ -28,13 +30,13 @@ _startPosition(0.0f)
     Camera *camera = new Camera(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
     Camera::setMainCamera(camera);
     
-    Ship *ship = new Ship(vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.0f, 1.0f), /*radius*/1.0f);
-    addChild(ship);
+    _ship = new Ship(vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.0f, 1.0f), /*radius*/1.0f);
+    addChild(_ship);
     
     DummyObject *dummy = new DummyObject(vec3(-1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(1.0f));
     addChild(dummy);
     
-    AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(10000, 1000.0f, ship);
+    AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(10000, 1000.0f, _ship);
     addChild(asteroids);
     
     // Skybox (draw last to save on fragments that already have info in them)
@@ -42,7 +44,7 @@ _startPosition(0.0f)
     addChild(skybox);
     
     // Scripts
-    _cameraFollow = new CameraFollow(camera, ship, skybox);
+    _cameraFollow = new CameraFollow(camera, _ship, skybox);
 }
 
 World::~World()
@@ -54,7 +56,18 @@ World::~World()
  */
 void World::update(float dt)
 {
+    GameState &state = GameState::Instance();
     _cameraFollow->update(dt);
+    
+    if (!state.gameOver && InputManager::Instance().isPressedFirstTime(KEY_GAME_OVER)) {
+        _ship->die();
+    }
+    
+    if (!state.gameOver && _ship->isDead()) {
+        GameOver *gameOverText = new GameOver();
+        addChild(gameOverText);
+        state.gameOver = true;
+    }
 }
 
 /**
