@@ -167,6 +167,16 @@ vec3 Ship::getRight()
     return _right;
 }
 
+float Ship::getSpeed()
+{
+    return length(_physicsComponent->getVelocity());
+}
+
+float Ship::getMaxSpeed()
+{
+    return MAX_VELOCITY;
+}
+
 float Ship::getRadius()
 {
     return _radius;

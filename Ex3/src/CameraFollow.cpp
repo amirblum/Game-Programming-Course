@@ -9,12 +9,13 @@
 #include "CameraFollow.h"
 
 #define CAMERA_DISTANCE (7.5f)
-#define MAX_CAMERA_DISTANCE (10.0f)
+#define MAX_LAG_SPEED (0.2f)
 #define FOLLOW_SPEED (0.05f)
 
 CameraFollow::CameraFollow(Camera *camera, Ship *ship, SkyBox *skybox) :
 _camera(camera), _ship(ship), _skybox(skybox)
 {
+    _camera->setPosition(_ship->getPosition() - _ship->getForward() * CAMERA_DISTANCE);
 }
 
 CameraFollow::~CameraFollow()
@@ -41,10 +42,13 @@ void CameraFollow::update(float dt)
     vec3 cameraDirectionInterpolated = mix(cameraDirection, cameraDirectionTarget, FOLLOW_SPEED * dt);
     vec3 cameraUpInterpolated = mix(cameraUp, cameraUpTarget, FOLLOW_SPEED * dt);
     
-//    // Clamp distance
-//    if (length(cameraPositionInterpolated - shipPosition) > MAX_CAMERA_DISTANCE) {
-//        cameraPositionInterpolated = shipPosition - shipForward * MAX_CAMERA_DISTANCE;
-//    }
+    // Clamp distance
+    if (_ship->getSpeed() > MAX_LAG_SPEED) {
+        vec3 maxTarget = cameraPositionTarget + shipForward * CAMERA_DISTANCE * 10.0f;
+        
+        cameraPositionTarget = mix(cameraPositionTarget, maxTarget, (_ship->getSpeed() - MAX_LAG_SPEED) / (_ship->getMaxSpeed() * 1.5f));
+        cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, FOLLOW_SPEED * dt);
+    }
     
     _camera->setPosition(cameraPositionInterpolated);
     _camera->setDirection(cameraDirectionInterpolated);

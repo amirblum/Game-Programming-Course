@@ -51,6 +51,8 @@ public:
     // Getters
     vec3 getForward();
     vec3 getRight();
+    float getSpeed();
+    float getMaxSpeed();
     float getRadius();
 };
 
