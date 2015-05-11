@@ -13,6 +13,7 @@
 #include <iostream>
 
 static const std::string SHIP_MESH = "assets/vipermk2.lwo";
+static const std::string EXPLOSION_SOUND = "assets/explosion.wav";
 
 #define TILT_SPEED (pi<float>() / 4.0f)
 #define ROLL_SPEED (pi<float>() / 3.0f)
@@ -45,6 +46,19 @@ _radius(radius)
         vec3 healthScale = vec3(1.0f, 0.1f, 1.0f);
         _healthBar = new HealthBar(MAX_HEALTH, healthPosition, healthRotation, healthScale);
         addChild(_healthBar);
+    }
+    
+    // Initialize sounds (this should be moved to a sound manager later)
+    {
+        ALuint soundBuffer;
+        soundBuffer = alutCreateBufferFromFile(EXPLOSION_SOUND.c_str());
+        ALenum alutError = alutGetError();
+        if (alutError != AL_NO_ERROR) {
+            std::cout << "Error loading explosion sound: " << alutGetErrorString(alutError) << std::endl;
+        }
+        
+        alGenSources(1, &_soundSrc);
+        alSourcei(_soundSrc, AL_BUFFER, soundBuffer);
     }
     
     // Initialize components
@@ -164,6 +178,9 @@ void Ship::collide()
     addChild(newExplosion);
     
     _explosions.push_back(newExplosion);
+    
+    // Sound
+    alSourcePlay(_soundSrc);
     
     // Gameover
     if (newHealth >= 0) {

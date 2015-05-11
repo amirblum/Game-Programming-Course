@@ -11,6 +11,8 @@
 #ifndef __ex3__Ship__
 #define __ex3__Ship__
 
+#include <AL/alut.h>
+
 #include "SceneNode.h"
 #include "Mesh.h"
 #include "PhysicsComponent.h"
@@ -23,6 +25,9 @@
 
 class Ship : public SceneNode {
 private:
+    // Sound
+    ALuint _soundSrc;
+    
     // Components
     Mesh *_mesh;
     PhysicsComponent *_physicsComponent;
