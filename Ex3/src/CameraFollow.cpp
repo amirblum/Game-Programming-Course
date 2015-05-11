@@ -9,8 +9,8 @@
 #include "CameraFollow.h"
 
 #define CAMERA_DISTANCE (7.5f)
-#define MAX_LAG_SPEED (0.2f)
-#define FOLLOW_SPEED (0.05f)
+#define MAX_LAG_SPEED (15.0f)
+#define FOLLOW_PERCENT (0.05f)
 
 CameraFollow::CameraFollow(Camera *camera, Ship *ship, SkyBox *skybox) :
 _camera(camera), _ship(ship), _skybox(skybox)
@@ -38,16 +38,17 @@ void CameraFollow::update(float dt)
     vec3 cameraUpTarget = cross(shipForward, shipRight);
     
     // Interpolate
-    vec3 cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, FOLLOW_SPEED * dt);
-    vec3 cameraDirectionInterpolated = mix(cameraDirection, cameraDirectionTarget, FOLLOW_SPEED * dt);
-    vec3 cameraUpInterpolated = mix(cameraUp, cameraUpTarget, FOLLOW_SPEED * dt);
+    vec3 cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, FOLLOW_PERCENT);
+    vec3 cameraDirectionInterpolated = mix(cameraDirection, cameraDirectionTarget, FOLLOW_PERCENT);
+    vec3 cameraUpInterpolated = mix(cameraUp, cameraUpTarget, FOLLOW_PERCENT);
     
-    // Clamp distance
-    if (_ship->getSpeed() > MAX_LAG_SPEED) {
+    // Clamp distance (don't ask about the magic numbers. They just work, ok?)
+    float shipSpeed = _ship->getSpeed();
+    if (shipSpeed > MAX_LAG_SPEED) {
         vec3 maxTarget = cameraPositionTarget + shipForward * CAMERA_DISTANCE * 10.0f;
         
-        cameraPositionTarget = mix(cameraPositionTarget, maxTarget, (_ship->getSpeed() - MAX_LAG_SPEED) / (_ship->getMaxSpeed() * 1.5f));
-        cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, FOLLOW_SPEED * dt);
+        cameraPositionTarget = mix(cameraPositionTarget, maxTarget, (shipSpeed - MAX_LAG_SPEED) * dt * (100.0f / 1.5f) / (_ship->getMaxSpeed() - MAX_LAG_SPEED));
+        cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, FOLLOW_PERCENT);
     }
     
     _camera->setPosition(cameraPositionInterpolated);

@@ -7,7 +7,6 @@
 //
 
 #include "PhysicsComponent.h"
-#include <glm/gtx/rotate_vector.hpp>
 
 #define EPS (0.0001f)
 

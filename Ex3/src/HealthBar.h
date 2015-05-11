@@ -16,15 +16,14 @@
 class HealthBar : public RenderableSceneNode {
 private:
     int _maxUnits, _currentUnits;
-    
+protected:
+    virtual void preRender();
 public:
     HealthBar(int maxUnits, vec3 position, quat rotation, vec3 scale);
     virtual ~HealthBar();
     
     int getCurrentUnits();
     void setCurrentUnits(int currentUnits);
-    
-    virtual void preRender();
 };
 
 #endif /* defined(__CGP_Ex3__HealthBar__) */

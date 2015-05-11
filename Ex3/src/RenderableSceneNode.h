@@ -17,6 +17,8 @@ class RenderableSceneNode : public SceneNode {
 protected:
     RenderComponent *_renderComponent;
     
+    virtual void preRender();
+    virtual void postRender();
 public:
     RenderableSceneNode(std::string programName,
                         vec3 position = vec3(0.0f),
@@ -25,8 +27,6 @@ public:
     virtual ~RenderableSceneNode();
     
     virtual void render();
-    virtual void preRender();
-    virtual void postRender();
 };
 
 #endif /* defined(__CGP_Ex3__RenderableSceneNode__) */

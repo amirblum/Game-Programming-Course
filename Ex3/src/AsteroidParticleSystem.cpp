@@ -10,60 +10,33 @@
 
 #include "AsteroidParticleSystem.h"
 #include "Camera.h"
-#include "Utils.h"
+#include "RandUtils.h"
+
+#define GLM_FORCE_RADIANS
 #include <glm/gtc/random.hpp>
 
-#define ASTEROID_MAX_VELOCITY (0.15f)
-#define ASTEROID_MIN_VELOCITY (0.025f)
+#define ASTEROID_MAX_VELOCITY (15.0f)
+#define ASTEROID_MIN_VELOCITY (2.5f)
 #define ASTEROID_MIN_SIZE (2.0f)
 #define ASTEROID_MAX_SIZE (20.0f)
 
 static const std::string ASTEROID_IMAGE = "assets/asteroid1.png";
 
-AsteroidParticleSystem::AsteroidParticleSystem(int maxAsteroids, float emitRadius, Ship *ship) :
-ParticleSystem(maxAsteroids, "ParticleShader"),
+AsteroidParticleSystem::AsteroidParticleSystem(unsigned int maxAsteroids, float emitRadius, Ship *ship) :
+ParticleSystem(maxAsteroids),
 _emitMaxRadius(emitRadius), _emitMinRadius(0),
 _ship(ship),
-_positions(maxAsteroids, _renderComponent, "particleCenter"),
-_sizes(maxAsteroids, _renderComponent, "particleSize"),
 _physics(maxAsteroids),
 _collided(maxAsteroids)
 {
     // Render-related
     {
-        // VBO
-        static const GLfloat vertices[] = {
-            -0.5f, -0.5f, 0.0f, 1.0f,
-            -0.5f, 0.5f, 0.0f, 1.0f,
-            0.5f, -0.5f, 0.0f, 1.0f,
-            0.5f, 0.5f, 0.0f, 1.0f
-        };
-        
-        std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
-        _renderComponent->setVBO(verticesVector);
-        
-        // IBO
-        static const GLuint indices[] = {
-            2, 1, 0,
-            2, 3, 1
-        };
-        
-        std::vector<GLuint> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLuint)));
-        _renderComponent->setIBO(indicesVector);
-        
         // Texture
         _renderComponent->addTexture(TextureComponent::create2DTexture(ASTEROID_IMAGE));
     }
     
-    
     // Add particle attributes
-    {
-        addAttribute(&_positions);
-        addShaderAttribute(&_positions);
-        
-        addAttribute(&_sizes);
-        addShaderAttribute(&_sizes);
-        
+    {        
         addAttribute(&_physics);
         addAttribute(&_collided);
     }
@@ -107,7 +80,7 @@ void AsteroidParticleSystem::emit()
         randomPosition = sphericalRand(1.0f);
         
         // Decide it's length
-        distance = randomRange(_emitMinRadius, _emitMaxRadius);
+        distance = randutils::randomRange(_emitMinRadius, _emitMaxRadius);
         
         // Make it relative to the camera and set it
         newPosition = Camera::MainCamera()->getPosition() + randomPosition * distance;
@@ -116,14 +89,14 @@ void AsteroidParticleSystem::emit()
     // Size
     float size;
     {
-        size = randomRange(ASTEROID_MIN_SIZE, ASTEROID_MAX_SIZE);
+        size = randutils::randomRange(ASTEROID_MIN_SIZE, ASTEROID_MAX_SIZE);
     }
     
     // Physics
     PhysicsComponent *newPhysics;
     {
         vec3 randomDirection = sphericalRand(1.0f);
-        float randomSpeed = randomRange(ASTEROID_MIN_VELOCITY, ASTEROID_MAX_VELOCITY);
+        float randomSpeed = randutils::randomRange(ASTEROID_MIN_VELOCITY, ASTEROID_MAX_VELOCITY);
         vec3 initialForce = randomDirection * randomSpeed;
         
         bool closeToShip = distance < _emitMinRadius * 3.0f;
@@ -139,7 +112,7 @@ void AsteroidParticleSystem::emit()
     // Random fun
     // To avoid having most asteroids near the ship at start (due to the way
     // the position was randomly chosen), we let the physics run a bit
-    newPosition += newPhysics->getVelocity() * 3000.0f;
+    newPosition += newPhysics->getVelocity() * 30.0f;
     
     _positions.setValue(particleID, newPosition);
     _sizes.setValue(particleID, size);
@@ -147,7 +120,7 @@ void AsteroidParticleSystem::emit()
     _collided.setValue(particleID, false);
 }
 
-void AsteroidParticleSystem::updateParticle(int particleID, float dt)
+void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
 {
     // Update position
     vec3 currentPosition = _positions.getValue(particleID);

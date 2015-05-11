@@ -14,11 +14,11 @@
 
 static const std::string SHIP_MESH = "assets/vipermk2.lwo";
 
-#define TILT_SPEED (pi<float>() / 6.0f)
-#define ROLL_SPEED (pi<float>() / 4.0f)
-#define ACCELERATION_FORCE (0.003f)
-#define DAMPENING_SPEED    (0.01f)
-#define MAX_VELOCITY (3.0f)
+#define TILT_SPEED (pi<float>() / 4.0f)
+#define ROLL_SPEED (pi<float>() / 3.0f)
+#define ACCELERATION_FORCE (0.3f)
+#define DAMPENING_FORCE    (0.01f)
+#define MAX_VELOCITY (300.0f)
 #define MAX_HEALTH (5)
 
 /**
@@ -32,7 +32,7 @@ _radius(radius)
     // Initialize mesh
     {
         vec3 meshPosition = vec3(0.0f);
-        quat meshRotation = rotate(quat(vec3(0.0f)), 90.0f, vec3(0.0f, 1.0f, 0.0f));
+        quat meshRotation = rotate(quat(vec3(0.0f)), pi<float>()/2.0f, vec3(0.0f, 1.0f, 0.0f));
         vec3 meshScale = vec3(1.0f);
         _mesh = new Mesh(SHIP_MESH, meshPosition, meshRotation, meshScale);
         addChild(_mesh);
@@ -79,7 +79,7 @@ void Ship::update(float dt)
     if (input.isPressed(KEY_ACTION)) {
         _physicsComponent->applyForce(_forward * ACCELERATION_FORCE);
     } else if (_physicsComponent->isMoving()) {
-        _physicsComponent->applyForce(-_physicsComponent->getVelocity() * DAMPENING_SPEED);
+        _physicsComponent->applyForce(-_physicsComponent->getVelocity() * DAMPENING_FORCE);
     }
     
     // Tilting
@@ -105,6 +105,13 @@ void Ship::update(float dt)
     // Update position
     vec3 velocity = _physicsComponent->getVelocity();
     setPosition(_position + velocity * dt);
+    
+    // Update dead explosions
+    for (unsigned int i = 0; i < _explosions.size(); ++i) {
+        if (_explosions[i]->isDead()) {
+            _explosions.erase(_explosions.begin() + i);
+        }
+    }
 }
 
 /**
@@ -139,10 +146,16 @@ void Ship::twist(float angle)
 
 void Ship::collide()
 {
-//    std::cout << "Hit!" << std::endl;
+    // Health
     int health = _healthBar->getCurrentUnits();
     int newHealth = health - 1;
     
+    // Explosion
+    ExplosionParticleSystem *newExplosion = new ExplosionParticleSystem(100);
+    _explosions.push_back(newExplosion);
+    addChild(newExplosion);
+    
+    // Gameover
     if (newHealth >= 0) {
         _healthBar->setCurrentUnits(newHealth);
         if (newHealth == 0) {

@@ -58,11 +58,6 @@ public:
     
     virtual ~ParticleAttributeDerived() {}
     
-//    T& operator[](unsigned int i)
-//    {
-//        return _values[i];
-//    }
-    
     T getValue(unsigned int i)
     {
         return _values[i];
@@ -100,6 +95,10 @@ public:
     }
 };
 
+/* Some standard typedefed attributes */
+typedef ShaderAttributeDerived<vec3, 3, GL_FLOAT> PositionAttribute;
+typedef ShaderAttributeDerived<float, 1, GL_FLOAT> SizeAttribute;
+
 /**
  * The particle system class. Handles lists of particle attributes
  */
@@ -107,28 +106,33 @@ class ParticleSystem : public RenderableSceneNode {
 private:
     std::vector<ParticleAttribute*> _allParticleAttributes;
     std::vector<ShaderAttribute*> _shaderAttributes;
-    int _aliveParticles; // Doubles as the next place in the array for a particle
     
 protected:
-    size_t _maxParticles;
+    unsigned int _maxParticles;
+    unsigned int _aliveParticles; // Doubles as the next place in the array for a particle
+    
+    // Default attributes (they are part of the shader)
+    PositionAttribute _positions;
+    SizeAttribute _sizes;
+    
     void addAttribute(ParticleAttribute *attribute);
     void addShaderAttribute(ShaderAttribute *attribute);
+
+    int createNewParticle();
+    void killParticle(unsigned int particleID);
     
+    virtual void updateGeneral(float dt);
+    virtual void updateParticle(unsigned int particleID, float dt) = 0;
 public:
-    ParticleSystem(int maxParticles,
-                   std::string shaderProgram,
+    ParticleSystem(unsigned int maxParticles,
                    vec3 position = vec3(0.0f),
                    quat rotation = quat(vec3(0.0f)),
                    vec3 scale = vec3(1.0f));
     virtual ~ParticleSystem();
     
-    int createNewParticle();
-    void killParticle(int particleID);
     virtual void emit() = 0;
     
     virtual void update(float dt);
-    virtual void updateGeneral(float dt);
-    virtual void updateParticle(int particleID, float dt) = 0;
     virtual void render();
 };
 

@@ -11,6 +11,7 @@
 #ifndef __CGP_Ex3__PhysicsComponent__
 #define __CGP_Ex3__PhysicsComponent__
 
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 using namespace glm;

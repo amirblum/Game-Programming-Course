@@ -15,8 +15,6 @@
 #include "PhysicsComponent.h"
 #include "Ship.h"
 
-typedef ShaderAttributeDerived<vec3, 3, GL_FLOAT> PositionAttribute;
-typedef ShaderAttributeDerived<float, 1, GL_FLOAT> SizeAttribute;
 typedef ParticleAttributeDerived<PhysicsComponent*> PhysicsAttribute;
 typedef ParticleAttributeDerived<bool> CollisionAttribute;
 
@@ -25,19 +23,18 @@ private:
     float _emitMaxRadius, _emitMinRadius;
     Ship *_ship;
     
-    PositionAttribute _positions;
-    SizeAttribute _sizes;
     PhysicsAttribute _physics;
     CollisionAttribute _collided;
     
     bool particleInView(vec3 particlePosition);
+protected:
+    virtual void updateParticle(unsigned int particleID, float dt);
+    virtual void preRender();
 public:
-    AsteroidParticleSystem(int maxAsteroids, float emitRadius, Ship *ship);
+    AsteroidParticleSystem(unsigned int maxAsteroids, float emitRadius, Ship *ship);
     virtual ~AsteroidParticleSystem();
     
     virtual void emit();
-    virtual void updateParticle(int particleID, float dt);
-    virtual void preRender();
 };
 
 #endif /* defined(__CGP_Ex3__AsteroidParticleSystem__) */

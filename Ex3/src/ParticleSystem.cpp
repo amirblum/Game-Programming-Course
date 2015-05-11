@@ -8,13 +8,48 @@
 
 #include "ParticleSystem.h"
 
-ParticleSystem::ParticleSystem(int maxParticles, std::string shaderProgram,
+ParticleSystem::ParticleSystem(unsigned int maxParticles,
                                vec3 position, quat rotation, vec3 scale) :
-RenderableSceneNode(shaderProgram, position, rotation, scale),
+RenderableSceneNode("ParticleShader", position, rotation, scale),
 _maxParticles(maxParticles),
+_positions(maxParticles, _renderComponent, "particleCenter"),
+_sizes(maxParticles, _renderComponent, "particleSize"),
 _allParticleAttributes(),
 _shaderAttributes(),
-_aliveParticles(0) {}
+_aliveParticles(0)
+{
+    // Set up billboard
+    {
+        // VBO
+        static const GLfloat vertices[] = {
+            -0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, 0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, 0.5f, 0.0f, 1.0f
+        };
+        
+        std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
+        _renderComponent->setVBO(verticesVector);
+        
+        // IBO
+        static const GLuint indices[] = {
+            2, 1, 0,
+            2, 3, 1
+        };
+        
+        std::vector<GLuint> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLuint)));
+        _renderComponent->setIBO(indicesVector);
+    }
+    
+    // Add built-in attributes
+    {
+        addAttribute(&_positions);
+        addShaderAttribute(&_positions);
+        
+        addAttribute(&_sizes);
+        addShaderAttribute(&_sizes);
+    }
+}
 
 ParticleSystem::~ParticleSystem()
 {
@@ -46,7 +81,7 @@ int ParticleSystem::createNewParticle()
     return _aliveParticles++;
 }
 
-void ParticleSystem::killParticle(int particleID)
+void ParticleSystem::killParticle(unsigned int particleID)
 {
     _aliveParticles--;
     

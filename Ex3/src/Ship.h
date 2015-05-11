@@ -15,7 +15,7 @@
 #include "Mesh.h"
 #include "PhysicsComponent.h"
 #include "HealthBar.h"
-#include "SkyBox.h"
+#include "ExplosionParticleSystem.h"
 
 #include <vector>
 
@@ -34,6 +34,7 @@ private:
     
     // Children
     HealthBar *_healthBar;
+    std::vector<ExplosionParticleSystem*> _explosions;
     
     // Movement
     void accelerate(float force);

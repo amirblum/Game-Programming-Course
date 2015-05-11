@@ -8,6 +8,7 @@
 #ifndef __ex3__PPBuffer__
 #define __ex3__PPBuffer__
 
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp> // for glm::value_ptr

@@ -11,6 +11,7 @@
 #ifndef __CGP_Ex3__SceneNode__
 #define __CGP_Ex3__SceneNode__
 
+#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -44,6 +45,8 @@ public:
     virtual ~SceneNode();
     
     void addChild(SceneNode *newChild);
+    void removeChild(unsigned int i);
+    void removeChild(SceneNode *childToRemove);
     void setParent(SceneNode *parentNode);
     
     // Getters

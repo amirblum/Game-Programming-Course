@@ -40,6 +40,29 @@ void SceneNode::addChild(SceneNode *newChild)
 }
 
 /**
+ * Remove a child by index
+ */
+void SceneNode::removeChild(unsigned int i)
+{
+    if (i >= _childNodes.size()) {
+        return;
+    }
+    
+    _childNodes.erase(_childNodes.begin() + i);
+}
+
+/**
+ * Remove a child by value
+ */
+void SceneNode::removeChild(SceneNode *childToRemove)
+{
+    auto childIterator = std::find(_childNodes.begin(), _childNodes.end(), childToRemove);
+    if (childIterator != _childNodes.end()) {
+        _childNodes.erase(childIterator);
+    }
+}
+
+/**
  * Set this node's parent
  */
 void SceneNode::setParent(SceneNode *parentNode)
