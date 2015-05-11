@@ -123,6 +123,8 @@ protected:
     
     virtual void updateGeneral(float dt);
     virtual void updateParticle(unsigned int particleID, float dt) = 0;
+    
+    virtual void preRender();
 public:
     ParticleSystem(unsigned int maxParticles,
                    vec3 position = vec3(0.0f),

@@ -29,7 +29,6 @@ private:
     bool particleInView(vec3 particlePosition);
 protected:
     virtual void updateParticle(unsigned int particleID, float dt);
-    virtual void preRender();
 public:
     AsteroidParticleSystem(unsigned int maxAsteroids, float emitRadius, Ship *ship);
     virtual ~AsteroidParticleSystem();

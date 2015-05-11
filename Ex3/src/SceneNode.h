@@ -33,8 +33,14 @@ protected:
     SceneNode *_parentNode;
     
     // Transform-related
-    vec3 _position, _scale;
+    vec3 _position;
     quat _rotation;
+    vec3 _scale;
+    
+    bool _positionInvariant;
+    bool _rotationInvariant;
+    bool _scaleInvariant;
+    
     mat4 _localTransform, _worldTransform;
     void rebuildTransforms(bool localChanged);
     
@@ -65,6 +71,11 @@ public:
     void setPosition(vec3 position);
     void setRotation(quat rotation);
     void setScale(vec3 scale);
+    
+    // Toggles
+    void togglePositionInvariance();
+    void toggleRotationInvariance();
+    void toggleScaleInvariance();
     
     // Recursive actions
     void recursiveUpdate(float dt);

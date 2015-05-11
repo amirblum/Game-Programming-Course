@@ -7,6 +7,7 @@
 //
 
 #include "ParticleSystem.h"
+#include "Camera.h"
 
 ParticleSystem::ParticleSystem(unsigned int maxParticles,
                                vec3 position, quat rotation, vec3 scale) :
@@ -104,6 +105,17 @@ void ParticleSystem::update(float dt)
  * by a particle system implementation to update the system
  */
 void ParticleSystem::updateGeneral(float dt) {}
+
+void ParticleSystem::preRender()
+{
+    Camera *camera = Camera::MainCamera();
+    
+    vec3 cameraUp = camera->getUp();
+    _renderComponent->setUniform<vec3, UNIFORM_VEC3>("cameraUp", cameraUp);
+    
+    vec3 cameraRight = cross(camera->getDirection(), cameraUp);
+    _renderComponent->setUniform<vec3, UNIFORM_VEC3>("cameraRight", cameraRight);
+}
 
 void ParticleSystem::render()
 {

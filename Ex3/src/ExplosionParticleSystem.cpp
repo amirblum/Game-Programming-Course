@@ -11,14 +11,14 @@
 #include "ExplosionParticleSystem.h"
 #include "RandUtils.h"
 
-#define MIN_EMIT_TIME (0.01f)
+#define MIN_EMIT_TIME (0.001f)
 #define MAX_EMIT_TIME (0.03f)
-#define MIN_SIZE (0.01f)
-#define MAX_SIZE (0.1f)
+#define MIN_SIZE (0.1f)
+#define MAX_SIZE (1.0f)
 #define MIN_VELOCITY (0.02f)
 #define MAX_VELOCITY (0.1f)
-#define DAMPENING_SPEED (0.01f)
-#define SHRINK_SPEED (0.01f)
+#define DAMPENING_SPEED (0.1f)
+#define SHRINK_SPEED (1.0f)
 
 static const std::string EXPLOSION_IMAGE = "assets/fireball.png";
 
@@ -96,15 +96,16 @@ void ExplosionParticleSystem::updateParticle(unsigned int particleID, float dt)
     physics->applyForce(-velocity * DAMPENING_SPEED * dt);
     
     size -= SHRINK_SPEED * dt;
-    if (size <= 0) {
-        killParticle(particleID);
-    }
     
     _positions.setValue(particleID, position);
     _sizes.setValue(particleID, size);
+    
+    if (size <= 0) {
+        killParticle(particleID);
+    }
 }
 
 bool ExplosionParticleSystem::isDead()
 {
-    return _aliveParticles == 0;
+    return _particlesEmitted == _maxParticles && _aliveParticles == 0;
 }

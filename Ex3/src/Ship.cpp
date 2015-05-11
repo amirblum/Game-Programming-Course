@@ -106,9 +106,16 @@ void Ship::update(float dt)
     vec3 velocity = _physicsComponent->getVelocity();
     setPosition(_position + velocity * dt);
     
-    // Update dead explosions
-    for (unsigned int i = 0; i < _explosions.size(); ++i) {
-        if (_explosions[i]->isDead()) {
+    // Update explosions
+    {
+        std::vector<unsigned int> explosionsToRemove;
+        for (unsigned int i = 0; i < _explosions.size(); ++i) {
+            if (_explosions[i]->isDead()) {
+                explosionsToRemove.push_back(i);
+                removeChild(_explosions[i]);
+            }
+        }
+        for (unsigned int i : explosionsToRemove) {
             _explosions.erase(_explosions.begin() + i);
         }
     }
@@ -151,9 +158,12 @@ void Ship::collide()
     int newHealth = health - 1;
     
     // Explosion
-    ExplosionParticleSystem *newExplosion = new ExplosionParticleSystem(100);
-    _explosions.push_back(newExplosion);
+    ExplosionParticleSystem *newExplosion = new ExplosionParticleSystem(20);
+    newExplosion->toggleRotationInvariance();
+    newExplosion->toggleScaleInvariance();
     addChild(newExplosion);
+    
+    _explosions.push_back(newExplosion);
     
     // Gameover
     if (newHealth >= 0) {

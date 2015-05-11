@@ -14,6 +14,7 @@
 SceneNode::SceneNode(vec3 position, quat rotation, vec3 scale) :
 _childNodes(0), _parentNode(NULL),
 _position(position), _rotation(rotation), _scale(scale),
+_positionInvariant(false), _rotationInvariant(false), _scaleInvariant(false),
 _localTransform(1.0f), _worldTransform(1.0f)
 {
     rebuildTransforms(true);
@@ -164,6 +165,21 @@ void SceneNode::setScale(vec3 scale)
     rebuildTransforms(true);
 }
 
+void SceneNode::togglePositionInvariance()
+{
+    _positionInvariant = !_positionInvariant;
+}
+
+void SceneNode::toggleRotationInvariance()
+{
+    _rotationInvariant = !_rotationInvariant;
+}
+
+void SceneNode::toggleScaleInvariance()
+{
+    _scaleInvariant = !_scaleInvariant;
+}
+
 /**
  * Rebuild the local transform, then call rebuild on all children recursively.
  * localChanged: If this is false it means only the parent changed, so no
@@ -181,7 +197,21 @@ void SceneNode::rebuildTransforms(bool localChanged)
     
     // Rebuild world transform
     if (_parentNode) {
-        _worldTransform = _parentNode->getWorldTransform() * _localTransform;
+        if (!(_positionInvariant || _rotationInvariant || _scaleInvariant)) {
+            _worldTransform = _parentNode->getWorldTransform() * _localTransform;
+        } else {
+            mat4 parentInvariantTransform(1.0f);
+            if (!_scaleInvariant) {
+                parentInvariantTransform = scale(mat4(1.0f), _parentNode->getScale()) * parentInvariantTransform;
+            }
+            if (!_rotationInvariant) {
+                parentInvariantTransform = toMat4(_parentNode->getRotation()) * parentInvariantTransform;
+            }
+            if (!_positionInvariant) {
+                parentInvariantTransform = translate(mat4(1.0f), _parentNode->getPosition());
+            }
+            _worldTransform = parentInvariantTransform * _localTransform;
+        }
     }
     
     // Update all the kiddies

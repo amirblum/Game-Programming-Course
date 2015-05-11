@@ -139,7 +139,7 @@ void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
     }
     
     // Check collision
-    if (length(relativePosition) < (_sizes.getValue(particleID) + _ship->getRadius())) {
+    if (length(relativePosition) < (_sizes.getValue(particleID) * 0.3f + _ship->getRadius())) {
         bool collided = _collided.getValue(particleID);
         if (!collided) {
             _ship->collide();
@@ -151,15 +151,4 @@ void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
         
     // Update particle
     _positions.setValue(particleID, updatedPosition);
-}
-
-void AsteroidParticleSystem::preRender()
-{
-    Camera *camera = Camera::MainCamera();
-    
-    vec3 cameraUp = camera->getUp();
-    _renderComponent->setUniform<vec3, UNIFORM_VEC3>("cameraUp", cameraUp);
-    
-    vec3 cameraRight = cross(camera->getDirection(), cameraUp);
-    _renderComponent->setUniform<vec3, UNIFORM_VEC3>("cameraRight", cameraRight);
 }
