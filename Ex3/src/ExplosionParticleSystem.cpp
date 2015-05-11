@@ -19,6 +19,7 @@
 #define MAX_VELOCITY (0.1f)
 #define DAMPENING_SPEED (0.1f)
 #define SHRINK_SPEED (1.0f)
+#define FADE_SPEED (1.0f)
 
 static const std::string EXPLOSION_IMAGE = "assets/fireball.png";
 
@@ -89,6 +90,7 @@ void ExplosionParticleSystem::updateParticle(unsigned int particleID, float dt)
 {
     vec3 position = _positions.getValue(particleID);
     float size = _sizes.getValue(particleID);
+    float transparency = _transparency.getValue(particleID);
     PhysicsComponent *physics = _physics.getValue(particleID);
     vec3 velocity = physics->getVelocity();
     
@@ -96,11 +98,13 @@ void ExplosionParticleSystem::updateParticle(unsigned int particleID, float dt)
     physics->applyForce(-velocity * DAMPENING_SPEED * dt);
     
     size -= SHRINK_SPEED * dt;
+    transparency -= FADE_SPEED * dt;
     
     _positions.setValue(particleID, position);
     _sizes.setValue(particleID, size);
+    _transparency.setValue(particleID, transparency);
     
-    if (size <= 0) {
+    if (size <= 0 || transparency <= 0) {
         killParticle(particleID);
     }
 }
