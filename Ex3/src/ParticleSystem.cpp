@@ -15,6 +15,7 @@ RenderableSceneNode("ParticleShader", position, rotation, scale),
 _maxParticles(maxParticles),
 _positions(maxParticles, _renderComponent, "particleCenter"),
 _sizes(maxParticles, _renderComponent, "particleSize"),
+_transparency(maxParticles, _renderComponent, "transparency"), 
 _allParticleAttributes(),
 _shaderAttributes(),
 _aliveParticles(0)
@@ -49,6 +50,14 @@ _aliveParticles(0)
         
         addAttribute(&_sizes);
         addShaderAttribute(&_sizes);
+        
+        addAttribute(&_transparency);
+        addShaderAttribute(&_transparency);
+        
+        // Init transparency to opaque
+        for (unsigned int i = 0; i < _maxParticles; ++i) {
+            _transparency.setValue(i, 1.0f);
+        }
     }
 }
 

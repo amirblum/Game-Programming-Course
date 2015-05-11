@@ -19,6 +19,7 @@
 #define ASTEROID_MIN_VELOCITY (2.5f)
 #define ASTEROID_MIN_SIZE (2.0f)
 #define ASTEROID_MAX_SIZE (20.0f)
+#define TRANSPARENCY_MARGIN (100.0f)
 
 static const std::string ASTEROID_IMAGE = "assets/asteroid1.png";
 
@@ -118,6 +119,7 @@ void AsteroidParticleSystem::emit()
     _sizes.setValue(particleID, size);
     _physics.setValue(particleID, newPhysics);
     _collided.setValue(particleID, false);
+    _transparency.setValue(particleID, 1.0f);
 }
 
 void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
@@ -132,14 +134,15 @@ void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
     // Check death
     vec3 shipWorldPosition = _ship->getWorldPosition();
     vec3 relativePosition = updatedPosition - shipWorldPosition;
-    if (length(relativePosition) > _emitMaxRadius) {
+    float distanceFromShip = length(relativePosition);
+    if (distanceFromShip > _emitMaxRadius) {
         // Pop-through to other side of field
         vec3 newRelativePosition = -relativePosition;
         updatedPosition = shipWorldPosition + newRelativePosition;
     }
     
     // Check collision
-    if (length(relativePosition) < (_sizes.getValue(particleID) * 0.3f + _ship->getRadius())) {
+    if (distanceFromShip < (_sizes.getValue(particleID) * 0.3f + _ship->getRadius())) {
         bool collided = _collided.getValue(particleID);
         if (!collided) {
             _ship->collide();
@@ -148,7 +151,14 @@ void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
     } else {
         _collided.setValue(particleID, false);
     }
-        
+    
+    // Transparency
+    float transparency = 1.0f;
+    if (distanceFromShip > (_emitMaxRadius - TRANSPARENCY_MARGIN)) {
+        transparency = 1.0f - (distanceFromShip - (_emitMaxRadius - TRANSPARENCY_MARGIN)) / TRANSPARENCY_MARGIN;
+    }
+    _transparency.setValue(particleID, transparency);
+    
     // Update particle
     _positions.setValue(particleID, updatedPosition);
 }
