@@ -1,49 +1,51 @@
-# Game Programming Course Exercise 2
+# Game Programming Course Exercise 3
 
-In this project I implemented a horror-ship while utilizing shaders and post-processing effects
+In this project I implemented a 3D space shooter with an infinite asteroid field. Inspired by Battlestar Galactice :)
 
-Basic:
-------
-The basic game has you in a dark ship with a spotlight. The spotlight is directional and attenuated. The ship is endless.
+Core functionality:
+------------------
+* Endless asteroid field implemented using particle system, billboarding and instancing. The ship cannot escape the asteroid field.
+* A Spaceraft with WASD/Space tail-following camera control.
+* Collision detection with asteroids; Collision counter; Game Over after five collisions; Visual indicator of lives Left.
 
 Controls:
 ---------
-W - Move forward
-A - Move left
-S - Move backward
-D - Move right
-Mouse - Move flashlight around
+W - Tilt down
+S - Tilt up
+A - Roll left
+D - Roll right
+Space - Accelerate
 
 (Optional keys):
-B - Toggle bump mapping on/off
-G - Toggle glow on/off
--/+ - Decrease/Increase ambient lighting in ship
-0,1,2,3,4 - Change the post-processing convolution kernel (detailed below)
-F - Initiate end sequence
+g - Toggle game over
+r - Reset game
 
 Required implementations:
 -------------------------
 I implemented the following optional features as specified in the exercise description:
-* Flickering light: I implemented a light flickering system that makes the flashlight flicker randomly every few seconds. I think it's pretty scary! If you the 'f' key you might even see some special flickering...
-* Walking left/right: Pretty straightforward
-* Using mouse for light control: Yessir
-* Other kernels: The game includes the following kernels:
-    0) Identity
-    1) Gaussian blur
-    2) Sharpen
-    3) Edge detection
-    4) Emboss
-* Glow: Press 'g' to activate a glow around the light from the flashlight. The way the glow works is that first the game tells the ship to draw only the light part onto a framebuffer. This is saved in a texture. Now the normal PPBuffer is set up and the complete draw is drawn to it's framebuffer. When the PPBuffer renders we pass it the "glow" texture from before and in the PPBuffer shader it blurs that glow then adds on top of the fully rendered scene.
+* Skybox (using the wonderful SpaceScape)
+* Better ship mesh - The Viper Mk2 from the rebooted Battlestar Galactica television show.
+* Sound and music
+    - Space battle music from the Battlestar Galactica television show.
+    - Dradis ship sound (also from the show)
+    - Thruster sounds
+    - Explosion sounds
+* Better camera control - Spend WAY too long getting this just right. Just search camerafollow in the git log to see all the iterations...
+    - Thrust
+    - Inertia
+    - Camera with inertia
+* Explosions in space - Particle system on impact sends fireballs in all directions
 
 Bonus implementations:
 ----------------------
 In addition to the features requaired by the exercise, I implemented the following because I thought it looked good or felt good:
-* When moving forward the camera lumbers from left to right to simulate the motion of walking.
-* Full bump-mapping for the walls and ceiling. Can be enabled by pressing 'b'. Is disabld by default because it doesn't look so great in the distance without mip-mapping.
-* Jump scare at the end. Without spoiling too much...when you are ready, press 'f' and play a little more to see what happens. There is even a sound effect but it needs to be compiled with a library called irrKlang.
+* Particle-system thrusters - When accelerating the thrusters of the ship show a blue fire created using a particle system.
+* Opening camera sequence - To really show off the model of the ship. At the start of the game press space to sweep the camera from the front to the back of the ship. If you get impatient just press space again to begin flying.
 
 Final note/s:
 -------------
-* Please note that the floashlights origin position is not at the center of the screen but slightly off to the bottom left. This is to be able to observe cool angles on the walls. The flashlight moves with the camera left and right, but not up and down while walking.
+My true achievement during this exercise was creating the particle system. I think it is robust and efficient. It uses a structure of arrays to hold the particle attributes. This is in sync with how OpenGL holds the dividor VBO's for instancing. This way there is no need to recreate the arrays of attributes every frame but instead they can be accessed and then dumped directly to the GPU.
+The ParticleSystem base class handles these particle attributes and rendering etc. and allows deriving classes to simply implement the emit() and updateParticle(particleID, dt) functions. That's all! This allows for all sorts of different kinds of particle systems, as exemplified in the exercise. The asteroids are a system that doesn't kill or generate any new particles, while the explosions create particles ever random amount of time. The thrusters create half-circle shaped fireballs coming out of the ship.
+In short, I think it's wonderful and I hope you like it too :)
 
 Have fun!
