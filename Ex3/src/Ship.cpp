@@ -61,7 +61,7 @@ _radius(radius)
             quat thrusterRotation = quat(vec3(0.0f));
             
             // Scale
-            vec3 thrusterScale = vec3(1.0f);
+            vec3 thrusterScale = vec3(1.0f, 1.0f, 1.5f);
             
             _thrusters[i] = new ThrusterParticleSystem(20000, 0.1,
                                                        thrusterPosition,
@@ -161,7 +161,7 @@ void Ship::update(float dt)
         if (input.isPressed(KEY_ACTION)) {
             _physicsComponent->applyForce(_forward * ACCELERATION_FORCE);
             for (unsigned int i = 0; i < 3; ++i) {
-                for (unsigned int j = 0; j < 100; ++j) {
+                for (unsigned int j = 0; j < 400; ++j) {
                     _thrusters[i]->emit();
                 }
             }
