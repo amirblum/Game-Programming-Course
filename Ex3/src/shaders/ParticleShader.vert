@@ -1,9 +1,10 @@
 #version 330
 
 layout(location = 0) in vec4 position;
-layout(location = 1) in vec3 particleCenter;
-layout(location = 2) in float particleSize;
+layout(location = 1) in vec3 localPosition;
+layout(location = 2) in float size;
 layout(location = 3) in float transparency;
+layout(location = 4) in vec3 tint;
 
 uniform mat4 W;
 uniform mat4 PV;
@@ -13,6 +14,7 @@ uniform vec3 cameraUp;
 
 out vec2 texcoords;
 out float myTransparency;
+out vec3 myTint;
 
 void main()
 {
@@ -22,10 +24,13 @@ void main()
     // Transparency
     myTransparency = transparency;
     
-    // Set the world position
-    vec3 myLocalPosition = particleCenter;
-    myLocalPosition += cameraRight * position.x * particleSize;
-    myLocalPosition += cameraUp * position.y * particleSize;
+    // Tint
+    myTint = tint;
     
-    gl_Position = PV * W * vec4(myLocalPosition, 1.0f);
+    // Set the world position
+    vec4 myWorldPosition = W * vec4(localPosition, 1.0f);
+    myWorldPosition += vec4(cameraRight, 0.0f) * position.x * size;
+    myWorldPosition += vec4(cameraUp, 0.0f) * position.y * size;
+    
+    gl_Position = PV * myWorldPosition;
 }

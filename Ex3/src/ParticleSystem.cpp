@@ -13,9 +13,10 @@ ParticleSystem::ParticleSystem(unsigned int maxParticles,
                                vec3 position, quat rotation, vec3 scale) :
 RenderableSceneNode("ParticleShader", position, rotation, scale),
 _maxParticles(maxParticles),
-_positions(maxParticles, _renderComponent, "particleCenter"),
-_sizes(maxParticles, _renderComponent, "particleSize"),
-_transparency(maxParticles, _renderComponent, "transparency"), 
+_positions(maxParticles, _renderComponent, "localPosition"),
+_sizes(maxParticles, _renderComponent, "size"),
+_transparencies(maxParticles, _renderComponent, "transparency"),
+_tints(maxParticles, _renderComponent, "tint"),
 _allParticleAttributes(),
 _shaderAttributes(),
 _aliveParticles(0)
@@ -51,12 +52,16 @@ _aliveParticles(0)
         addAttribute(&_sizes);
         addShaderAttribute(&_sizes);
         
-        addAttribute(&_transparency);
-        addShaderAttribute(&_transparency);
+        addAttribute(&_transparencies);
+        addShaderAttribute(&_transparencies);
         
-        // Init transparency to opaque
+        addAttribute(&_tints);
+        addShaderAttribute(&_tints);
+        
+        // Init some attributes
         for (unsigned int i = 0; i < _maxParticles; ++i) {
-            _transparency.setValue(i, 1.0f);
+            _transparencies.setValue(i, 1.0f);
+            _tints.setValue(i, vec3(1.0f));
         }
     }
 }

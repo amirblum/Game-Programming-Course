@@ -119,7 +119,7 @@ void AsteroidParticleSystem::emit()
     _sizes.setValue(particleID, size);
     _physics.setValue(particleID, newPhysics);
     _collided.setValue(particleID, false);
-    _transparency.setValue(particleID, 1.0f);
+    _transparencies.setValue(particleID, 1.0f);
 }
 
 void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
@@ -157,7 +157,7 @@ void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
     if (distanceFromShip > (_emitMaxRadius - TRANSPARENCY_MARGIN)) {
         transparency = 1.0f - (distanceFromShip - (_emitMaxRadius - TRANSPARENCY_MARGIN)) / TRANSPARENCY_MARGIN;
     }
-    _transparency.setValue(particleID, transparency);
+    _transparencies.setValue(particleID, transparency);
     
     // Update particle
     _positions.setValue(particleID, updatedPosition);

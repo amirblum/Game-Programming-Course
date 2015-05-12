@@ -9,8 +9,8 @@
 #include "CameraFollow.h"
 #include "GameState.h"
 
-#define CAMERA_DISTANCE (7.5f)
-#define MAX_LAG_SPEED (15.0f)
+#define CAMERA_DISTANCE (4.0f)
+#define MAX_LAG_SPEED (10.0f)
 #define FOLLOW_PERCENT (0.05f)
 
 CameraFollow::CameraFollow(Camera *camera, Ship *ship, SkyBox *skybox) :

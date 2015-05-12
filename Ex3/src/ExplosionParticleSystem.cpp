@@ -84,14 +84,14 @@ void ExplosionParticleSystem::emit()
     _positions.setValue(particleID, vec3(0.0f));
     _sizes.setValue(particleID, newSize);
     _physics.setValue(particleID, newPhysics);
-    _transparency.setValue(particleID, 1.0f);
+    _transparencies.setValue(particleID, 1.0f);
 }
 
 void ExplosionParticleSystem::updateParticle(unsigned int particleID, float dt)
 {
     vec3 position = _positions.getValue(particleID);
     float size = _sizes.getValue(particleID);
-    float transparency = _transparency.getValue(particleID);
+    float transparency = _transparencies.getValue(particleID);
     PhysicsComponent *physics = _physics.getValue(particleID);
     vec3 velocity = physics->getVelocity();
     
@@ -103,7 +103,7 @@ void ExplosionParticleSystem::updateParticle(unsigned int particleID, float dt)
     
     _positions.setValue(particleID, position);
     _sizes.setValue(particleID, size);
-    _transparency.setValue(particleID, transparency);
+    _transparencies.setValue(particleID, transparency);
     
     if (size <= 0 || transparency <= 0) {
         killParticle(particleID);

@@ -15,7 +15,8 @@ SceneNode::SceneNode(vec3 position, quat rotation, vec3 scale) :
 _childNodes(0), _parentNode(NULL),
 _position(position), _rotation(rotation), _scale(scale),
 _positionInvariant(false), _rotationInvariant(false), _scaleInvariant(false),
-_localTransform(1.0f), _worldTransform(1.0f)
+_localTransform(1.0f), _worldTransform(1.0f),
+_visible(true)
 {
     rebuildTransforms(true);
 }
@@ -168,6 +169,11 @@ void SceneNode::setScale(vec3 scale)
     rebuildTransforms(true);
 }
 
+void SceneNode::setVisibility(bool visible)
+{
+    _visible = visible;
+}
+
 void SceneNode::togglePositionInvariance()
 {
     _positionInvariant = !_positionInvariant;
@@ -243,6 +249,10 @@ void SceneNode::recursiveUpdate(float dt)
  */
 void SceneNode::recursiveRender()
 {
+    if (!_visible) {
+        return;
+    }
+    
     // Render myself
     render();
     

@@ -41,6 +41,36 @@ _radius(radius)
         addChild(_mesh);
     }
     
+    // Construct thrusters
+    {
+        float thrusterPositions[] = {
+            -0.25f, -0.08f, -1.4f,
+            0.25f, -0.08f, -1.4f,
+            0.0f, 0.0775f, -1.4f
+        };
+        
+        for (unsigned int i = 0; i < 3; ++i) {
+            // Position
+            vec3 thrusterPosition;
+            thrusterPosition.x = thrusterPositions[i * 3];
+            thrusterPosition.y = thrusterPositions[i * 3 + 1];
+            thrusterPosition.z = thrusterPositions[i * 3 + 2];
+            
+            // Rotation
+            quat thrusterRotation = quat(vec3(0.0f));
+            
+            // Scale
+            vec3 thrusterScale = vec3(1.0f);
+            
+            _thrusters[i] = new ThrusterParticleSystem(20000, 0.1,
+                                                       thrusterPosition,
+                                                       thrusterRotation,
+                                                       thrusterScale);
+            
+            addChild(_thrusters[i]);
+        }
+    }
+    
     // Construct healthbar
     {
         vec3 healthPosition = vec3(0.0f, 1.0f, 0.0f);
@@ -112,6 +142,11 @@ void Ship::update(float dt)
         // Accelerating
         if (input.isPressed(KEY_ACTION)) {
             _physicsComponent->applyForce(_forward * ACCELERATION_FORCE);
+            for (unsigned int i = 0; i < 3; ++i) {
+                for (unsigned int j = 0; j < 100; ++j) {
+                    _thrusters[i]->emit();
+                }
+            }
         } else if (_physicsComponent->isMoving()) {
             _physicsComponent->applyForce(-_physicsComponent->getVelocity() * DAMPENING_FORCE);
         }

@@ -104,6 +104,8 @@ public:
 typedef ShaderAttributeDerived<vec3, 3, GL_FLOAT> PositionAttribute;
 typedef ShaderAttributeDerived<float, 1, GL_FLOAT> SizeAttribute;
 typedef ShaderAttributeDerived<float, 1, GL_FLOAT> TransparencyAttribute;
+typedef ShaderAttributeDerived<vec3, 3, GL_FLOAT> TintAttribute;
+
 
 /**
  * The particle system class. Handles lists of particle attributes
@@ -120,7 +122,8 @@ protected:
     // Default attributes (they are part of the shader)
     PositionAttribute _positions;
     SizeAttribute _sizes;
-    TransparencyAttribute _transparency;
+    TransparencyAttribute _transparencies;
+    TintAttribute _tints;
     
     void addAttribute(ParticleAttribute *attribute);
     void addShaderAttribute(ShaderAttribute *attribute);

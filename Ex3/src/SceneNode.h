@@ -44,6 +44,8 @@ protected:
     mat4 _localTransform, _worldTransform;
     void rebuildTransforms(bool localChanged);
     
+    bool _visible;
+    
 public:
     SceneNode(vec3 position = vec3(0.0f),
               quat rotation = quat(vec3(0.0f)),
@@ -71,6 +73,7 @@ public:
     void setPosition(vec3 position);
     void setRotation(quat rotation);
     void setScale(vec3 scale);
+    void setVisibility(bool visible);
     
     // Toggles
     void togglePositionInvariance();
