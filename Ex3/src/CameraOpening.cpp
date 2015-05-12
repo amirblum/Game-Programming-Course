@@ -29,12 +29,13 @@ CameraOpening::~CameraOpening()
 
 void CameraOpening::update(float dt)
 {
+    bool actionPressed = InputManager::Instance().isPressedFirstTime(KEY_ACTION);
+    
     if (!_started) {
-        if (InputManager::Instance().isPressedFirstTime(KEY_ACTION)) {
+        if (actionPressed) {
             _started = true;
-        } else {
-            return;
         }
+        return;
     }
         
     // Get current
@@ -53,7 +54,7 @@ void CameraOpening::update(float dt)
     _skyBox->setPosition(cameraPosition);
     
     float distanceFromEnd = cameraPosition.z - _endPosition.z;
-    if (distanceFromEnd < 0.01f || InputManager::Instance().isPressedFirstTime(KEY_ACTION)) {
+    if (distanceFromEnd < 0.01f || actionPressed) {
         GameState::Instance().gameStarted = true;
     }
 }
