@@ -21,7 +21,7 @@ static const std::string EXPLOSION_SOUND = "assets/sounds/explosion.wav";
 #define ROLL_SPEED (pi<float>() / 2.0f)
 #define ACCELERATION_FORCE (0.3f)
 #define DAMPENING_FORCE    (0.01f)
-#define MAX_VELOCITY (300.0f)
+#define MAX_VELOCITY (150.0f)
 #define MAX_HEALTH (5)
 
 /**

@@ -19,12 +19,9 @@ void main()
     vec3 l2Vector = normalize(light2Pos - myWorldPosition);
 
     vec3 diffuseCoefficient = texture(textureSampler, myTexcoords).xyz;
-//    vec3 diffuseCoefficient = vec3(0.5f, 0.5f, 0.5f);
-//    vec3 diffuseCoefficient = vec3(0.5f, myTexcoords);
     vec3 normal = normalize(myNormal);
     vec3 diffuseComponent = max(diffuseCoefficient * dot(l1Vector, normal), 0);
     diffuseCoefficient = max(diffuseCoefficient * dot(l2Vector, normal), 0);
 
     outColor = vec4(diffuseComponent, 1.0f);
-//    outColor = vec4(0.5f, 0.5f, 0.5f, 1.0f);
 }

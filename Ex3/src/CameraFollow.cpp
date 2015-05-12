@@ -39,23 +39,20 @@ void CameraFollow::update(float dt)
     vec3 cameraUpTarget = cross(shipForward, shipRight);
     
     if (!GameState::Instance().gameOver) {
-        cameraPositionTarget = shipPosition - shipForward * MIN_CAMERA_DISTANCE;
         cameraDirectionTarget = shipForward;
         
-        // Clamp camera lag
-        vec3 vecToTarget = cameraPositionTarget - cameraPosition;
-        float distanceFromTarget = length(vecToTarget);
-        if (distanceFromTarget > 0 && _ship->getSpeed() > MAX_LAG_SPEED) {
-            float cosCameraAngle = dot(shipForward, normalize(vecToTarget));
-            float relativeDistanceFromTarget = distanceFromTarget * cosCameraAngle;
-            float allowedDistanceFromTarget = MAX_CAMERA_DISTANCE - MIN_CAMERA_DISTANCE;
+        vec3 vecToShip = shipPosition - cameraPosition;
+        float distanceFromShip = length(vecToShip);
+        if (distanceFromShip > 0) {
+            float cosCameraAngle = dot(shipForward, normalize(vecToShip));
+            float relativeDistanceFromShip = distanceFromShip * cosCameraAngle;
             
-            if (relativeDistanceFromTarget > allowedDistanceFromTarget) {
-                float distanceFromMax = relativeDistanceFromTarget - allowedDistanceFromTarget;
-                float desiredDistanceFromTarget = distanceFromMax / FOLLOW_PERCENT;
-                float targetOffset = desiredDistanceFromTarget - relativeDistanceFromTarget;
-                cameraPositionTarget += shipForward * targetOffset;
-            }
+            float desiredDistanceFromShip = mix(MIN_CAMERA_DISTANCE, MAX_CAMERA_DISTANCE, _ship->getSpeed() / _ship->getMaxSpeed());
+            float distanceFromDesiredDistance = relativeDistanceFromShip - desiredDistanceFromShip;
+            float distanceFromTarget = distanceFromDesiredDistance / FOLLOW_PERCENT;
+            
+            float targetOffset = distanceFromTarget - distanceFromShip;
+            cameraPositionTarget = shipPosition + shipForward * targetOffset;
         }
     } else {
         // View burning ship from the side
