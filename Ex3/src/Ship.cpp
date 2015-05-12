@@ -13,9 +13,9 @@
 
 #include <iostream>
 
-static const std::string SHIP_MESH = "assets/vipermk2.lwo";
-static const std::string DRADIS_SOUND = "assets/dradis.wav";
-static const std::string EXPLOSION_SOUND = "assets/explosion.wav";
+static const std::string SHIP_MESH = "assets/vipermk2/vipermk2.obj";
+static const std::string DRADIS_SOUND = "assets/sounds/dradis.wav";
+static const std::string EXPLOSION_SOUND = "assets/sounds/explosion.wav";
 
 #define TILT_SPEED (pi<float>() / 4.0f)
 #define ROLL_SPEED (pi<float>() / 2.0f)

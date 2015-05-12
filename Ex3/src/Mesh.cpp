@@ -115,7 +115,18 @@ void Mesh::initMaterials(const aiScene* scene, std::string filename)
             aiString path;
 
             if (material->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
-                std::string fullPath = dir + "/" + path.data;
+                std::string texturePath(path.data);
+                std::string::size_type slashIndex = texturePath.find_last_of("/");
+                std::string basename;
+                
+                if (slashIndex == std::string::npos) {
+                    basename = texturePath;
+                }
+                else {
+                    basename = texturePath.substr(slashIndex + 1, texturePath.size());
+                }
+
+                std::string fullPath = dir + "/textures/" + basename;
                 _textures[i] = TextureComponent::create2DTexture(fullPath);
             }
         }

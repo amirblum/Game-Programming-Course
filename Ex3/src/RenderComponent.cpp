@@ -50,8 +50,6 @@ _numIndices(0)
 
 RenderComponent::~RenderComponent()
 {
-    std::cout << "Deconstructing render component" << std::endl;
-    
     if (_vao != 0) glDeleteVertexArrays(1, &_vao);
     if (_vbo != 0) glDeleteBuffers(1, &_vbo);
     if (_ibo != 0) glDeleteBuffers(1, &_ibo);

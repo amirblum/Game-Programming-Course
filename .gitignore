@@ -38,8 +38,5 @@ Tutorial1/
 Resources/
 *.zip
 
-# Only support bmp files for now
-*.jpg
-
 # custom non-git folders
 nogit/

@@ -8,12 +8,12 @@
 
 #include "SkyBox.h"
 
-static const std::string skyboxLF = "assets/skyboxLF.png";
-static const std::string skyboxFT = "assets/skyboxFT.png";
-static const std::string skyboxRT = "assets/skyboxRT.png";
-static const std::string skyboxBK = "assets/skyboxBK.png";
-static const std::string skyboxUP = "assets/skyboxUP.png";
-static const std::string skyboxDN = "assets/skyboxDN.png";
+static const std::string skyboxLF = "assets/skybox/skyboxLF.png";
+static const std::string skyboxFT = "assets/skybox/skyboxFT.png";
+static const std::string skyboxRT = "assets/skybox/skyboxRT.png";
+static const std::string skyboxBK = "assets/skybox/skyboxBK.png";
+static const std::string skyboxUP = "assets/skybox/skyboxUP.png";
+static const std::string skyboxDN = "assets/skybox/skyboxDN.png";
 
 SkyBox::SkyBox() :
 RenderableSceneNode("SkyBoxShader", vec3(0.0f), quat(vec3(0.0f)), vec3(20.0f))

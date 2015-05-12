@@ -39,7 +39,7 @@ using namespace glm;
 
 #include <iostream>
 
-static const std::string BACKGROUND_MUSIC = "assets/BSG_battle.wav";
+static const std::string BACKGROUND_MUSIC = "assets/sounds/BSG_battle.wav";
 
 /** Internal Definitions */
 
