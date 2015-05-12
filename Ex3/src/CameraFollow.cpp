@@ -17,7 +17,6 @@
 CameraFollow::CameraFollow(Camera *camera, Ship *ship, SkyBox *skybox) :
 _camera(camera), _ship(ship), _skybox(skybox)
 {
-    _camera->setPosition(_ship->getPosition() - _ship->getForward() * MIN_CAMERA_DISTANCE);
 }
 
 CameraFollow::~CameraFollow()

@@ -23,6 +23,7 @@
 using namespace glm;
 
 #include "SceneNode.h"
+#include "CameraOpening.h"
 #include "CameraFollow.h"
 
 class World : public SceneNode {
@@ -31,6 +32,7 @@ private:
     
     Ship *_ship;
     
+    CameraOpening *_cameraOpening;
     CameraFollow *_cameraFollow;
     
 public:

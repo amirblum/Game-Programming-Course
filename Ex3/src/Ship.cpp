@@ -120,6 +120,9 @@ Ship::~Ship()
 {
     delete _physicsComponent;
     delete _healthBar;
+    alSourceStop(_dradisSound);
+    alDeleteSources(1, &_dradisSound);
+    alDeleteSources(1, &_explosionSound);
 }
 
 void Ship::render()
@@ -128,7 +131,8 @@ void Ship::render()
 
 void Ship::update(float dt)
 {
-    if (!GameState::Instance().gameOver) {
+    GameState &state = GameState::Instance();
+    if (state.gameStarted && !state.gameOver) {
         
         InputManager &input = InputManager::Instance();
         

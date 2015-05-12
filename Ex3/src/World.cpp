@@ -33,8 +33,8 @@ _startPosition(0.0f)
     _ship = new Ship(vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.0f, 1.0f), /*radius*/1.0f);
     addChild(_ship);
     
-    DummyObject *dummy = new DummyObject(vec3(-1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(1.0f));
-    addChild(dummy);
+//    DummyObject *dummy = new DummyObject(vec3(-1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(1.0f));
+//    addChild(dummy);
     
     AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(10000, 1000.0f, _ship);
     addChild(asteroids);
@@ -44,13 +44,15 @@ _startPosition(0.0f)
     addChild(skybox);
     
     // Scripts
+    _cameraOpening = new CameraOpening(camera, _ship, skybox);
     _cameraFollow = new CameraFollow(camera, _ship, skybox);
     
-    GameState::Instance().gameOver = false;
+    GameState::Instance().reset();
 }
 
 World::~World()
 {
+    delete _ship;
 }
 
 /**
@@ -59,6 +61,11 @@ World::~World()
 void World::update(float dt)
 {
     GameState &state = GameState::Instance();
+    if (!state.gameStarted) {
+        _cameraOpening->update(dt);
+        return;
+    }
+    
     _cameraFollow->update(dt);
     
     if (!state.gameOver && InputManager::Instance().isPressedFirstTime(KEY_GAME_OVER)) {

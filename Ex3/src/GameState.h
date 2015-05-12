@@ -18,7 +18,10 @@ struct GameState {
         return instance;
     }
     
+    bool gameStarted;
     bool gameOver;
+    
+    void reset();
     
 private:
     // Singleton private instantiation

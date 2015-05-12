@@ -8,4 +8,12 @@
 
 #include "GameState.h"
 
-GameState::GameState() : gameOver(false) {}
+GameState::GameState() :
+gameStarted(false),
+gameOver(false) {}
+
+void GameState::reset()
+{
+    gameStarted = false;
+    gameOver = false;
+}
