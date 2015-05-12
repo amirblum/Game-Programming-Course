@@ -84,6 +84,7 @@ void ExplosionParticleSystem::emit()
     _positions.setValue(particleID, vec3(0.0f));
     _sizes.setValue(particleID, newSize);
     _physics.setValue(particleID, newPhysics);
+    _transparency.setValue(particleID, 1.0f);
 }
 
 void ExplosionParticleSystem::updateParticle(unsigned int particleID, float dt)

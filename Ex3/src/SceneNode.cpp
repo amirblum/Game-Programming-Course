@@ -229,13 +229,12 @@ void SceneNode::rebuildTransforms(bool localChanged)
  */
 void SceneNode::recursiveUpdate(float dt)
 {
-    // Update myself
-    update(dt);
-    
     // Update all children
     for (SceneNode *child : _childNodes) {
         child->recursiveUpdate(dt);
     }
+    // Update myself
+    update(dt);
 }
 
 /**
