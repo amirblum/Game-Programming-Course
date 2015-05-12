@@ -136,6 +136,7 @@ void Mesh::initMaterials(const aiScene* scene, std::string filename)
 void Mesh::render()
 {
     for (MeshEntry *entry : _entries) {
+        entry->setUniform<mat4, UNIFORM_MAT4>("normalRotation", toMat4(getWorldRotation()));
         entry->render(_worldTransform);
     }
 }

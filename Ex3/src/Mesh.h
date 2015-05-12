@@ -45,6 +45,7 @@ private:
     void initMesh(unsigned int index, const aiMesh* mesh);
     void initMaterials(const aiScene* scene, std::string filename);
     
+    
 public:
     Mesh(std::string filename,
          vec3 position = vec3(0.0f),
