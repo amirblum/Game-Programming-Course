@@ -31,7 +31,7 @@ _aliveParticles(0)
         };
         
         std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
-        _renderComponent->setVBO(verticesVector);
+        _renderComponent->setPositionsVBO(verticesVector);
         
         // IBO
         static const GLuint indices[] = {

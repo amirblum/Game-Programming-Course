@@ -29,18 +29,6 @@ using namespace glm;
 #include "SceneNode.h"
 #include "RenderComponent.h"
 
-struct Vertex {
-    vec3 position;
-    vec2 texcoords;
-    vec3 normal;
-
-    Vertex() {}
-
-    Vertex(const vec3 &position, const vec2 &texcoords, const vec3 &normal) :
-    position(position), texcoords(texcoords), normal(normal) {}
-};
-
-
 class Mesh : public SceneNode {
 private:
     class MeshEntry : public RenderComponent {

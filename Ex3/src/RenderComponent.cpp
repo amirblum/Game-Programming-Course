@@ -43,18 +43,6 @@ _numIndices(0)
         glGenBuffers(1, &_vbo);
         glGenBuffers(1, &_ibo);
         
-        // Tell OpenGL that there is vertex data in this buffer object and what form that vertex data takes:
-        // Obtain attribute handles:
-        GLint posAttrib = glGetAttribLocation(_shaderProgram, "position");
-        glEnableVertexAttribArray(posAttrib);
-        glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-        glVertexAttribPointer(posAttrib, // attribute handle
-                              4,          // number of scalars per vertex
-                              GL_FLOAT,   // scalar type
-                              GL_FALSE,
-                              0,
-                              (GLvoid*)0);
-        
         // Unbind vertex array:
         glBindVertexArray(0);
     }
@@ -185,19 +173,63 @@ void RenderComponent::sendUniform(UniformVariable *uniform)
 //    glBindTexture(textureComponent->type, textureComponent->texture);
 //}
 
-void RenderComponent::setVBO(std::vector<vec4> vertices)
+void RenderComponent::setPTNVBO(std::vector<Vertex> vertices)
 {
     glBindVertexArray(_vao);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vec4), &vertices[0], GL_STATIC_DRAW);
+    
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+    
+    // Tell OpenGL that there is vertex data in this buffer object and what form that vertex data takes:
+    // Obtain position handle:
+    GLint positionAttrib = glGetAttribLocation(_shaderProgram, "position");
+    glEnableVertexAttribArray(positionAttrib);
+    glVertexAttribPointer(positionAttrib, // attribute handle
+                          3,          // number of scalars per vertex
+                          GL_FLOAT,   // scalar type
+                          GL_FALSE,
+                          sizeof(Vertex),
+                          (GLvoid*)0);
+    // Obtain texcoords handle:
+    GLint texcoordsAttrib = glGetAttribLocation(_shaderProgram, "texcoords");
+    glEnableVertexAttribArray(texcoordsAttrib);
+    glVertexAttribPointer(texcoordsAttrib, // attribute handle
+                          2,          // number of scalars per vertex
+                          GL_FLOAT,   // scalar type
+                          GL_FALSE,
+                          sizeof(Vertex),
+                          (GLvoid*)12);
+    // Obtain attribute handles:
+    GLint normalAttrib = glGetAttribLocation(_shaderProgram, "normal");
+    glEnableVertexAttribArray(normalAttrib);
+    glVertexAttribPointer(normalAttrib, // attribute handle
+                          3,          // number of scalars per vertex
+                          GL_FLOAT,   // scalar type
+                          GL_FALSE,
+                          sizeof(Vertex),
+                          (GLvoid*)20);
+    
     glBindVertexArray(0);
 }
 
-void RenderComponent::setVBO(std::vector<GLfloat> vertices)
+void RenderComponent::setPositionsVBO(std::vector<GLfloat> positions)
 {
     glBindVertexArray(_vao);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
+    
+    glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(GLfloat), &positions[0], GL_STATIC_DRAW);
+    
+    // Tell OpenGL that there is vertex data in this buffer object and what form that vertex data takes:
+    // Obtain attribute handles:
+    GLint posAttrib = glGetAttribLocation(_shaderProgram, "position");
+    glEnableVertexAttribArray(posAttrib);
+    glVertexAttribPointer(posAttrib, // attribute handle
+                          4,          // number of scalars per vertex
+                          GL_FLOAT,   // scalar type
+                          GL_FALSE,
+                          0,
+                          (GLvoid*)0);
+    
     glBindVertexArray(0);
 }
 

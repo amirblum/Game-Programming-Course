@@ -64,7 +64,7 @@ RenderableSceneNode("SkyBoxShader", vec3(0.0f), quat(vec3(0.0f)), vec3(20.0f))
 
     // Push VBO
     std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
-    _renderComponent->setVBO(verticesVector);
+    _renderComponent->setPositionsVBO(verticesVector);
     
     // Push IBO
     std::vector<GLuint> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLuint)));

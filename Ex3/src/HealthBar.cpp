@@ -20,7 +20,7 @@ _maxUnits(maxUnits), _currentUnits(maxUnits)
     };
     
     std::vector<GLfloat> verticesVec(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
-    _renderComponent->setVBO(verticesVec);
+    _renderComponent->setPositionsVBO(verticesVec);
     
     const GLuint indices[] = {
         0, 1, 2,

@@ -28,6 +28,17 @@ using namespace glm;
 
 #include "SceneNode.h"
 
+struct Vertex {
+    vec3 position;
+    vec2 texcoords;
+    vec3 normal;
+    
+    Vertex() {}
+    
+    Vertex(const vec3 &position, const vec2 &texcoords, const vec3 &normal) :
+    position(position), texcoords(texcoords), normal(normal) {}
+};
+
 class TextureComponent {
 private:
     GLenum _type;
@@ -107,8 +118,8 @@ public:
     void render(mat4 worldView);
     void render(mat4 worldView, int numInstances);
     
-    void setVBO(std::vector<vec4> vertices);
-    void setVBO(std::vector<GLfloat> vertices);
+    void setPTNVBO(std::vector<Vertex> vertices);
+    void setPositionsVBO(std::vector<GLfloat> vertices);
     void setIBO(std::vector<GLuint> indices);
     
     GLuint createSupportVBO(GLenum type, int size, std::string name, int divisor);

@@ -6,15 +6,7 @@ Mesh::MeshEntry::MeshEntry(std::vector<Vertex> vertices,
                            std::vector<TextureComponent*> textures) :
 RenderComponent("MeshShader")
 {
-    std::vector<GLfloat> positions;
-    for (Vertex &vertex : vertices) {
-        vec3 position = vertex.position;
-        positions.push_back(position.x);
-        positions.push_back(position.y);
-        positions.push_back(position.z);
-        positions.push_back(1.0f);
-    }
-    setVBO(positions);
+    setPTNVBO(vertices);
     setIBO(indices);
     
     for (TextureComponent *texture : textures) {

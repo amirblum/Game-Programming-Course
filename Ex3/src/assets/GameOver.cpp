@@ -25,7 +25,7 @@ RenderableSceneNode("HUDShader")
     
     // Push VBO
     std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
-    _renderComponent->setVBO(verticesVector);
+    _renderComponent->setPositionsVBO(verticesVector);
     
     
     static const GLuint indices[] = {

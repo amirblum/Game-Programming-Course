@@ -205,13 +205,13 @@ void SceneNode::rebuildTransforms(bool localChanged)
         } else {
             mat4 parentInvariantTransform(1.0f);
             if (!_scaleInvariant) {
-                parentInvariantTransform = scale(mat4(1.0f), _parentNode->getScale()) * parentInvariantTransform;
+                parentInvariantTransform = scale(mat4(1.0f), _parentNode->getWorldScale()) * parentInvariantTransform;
             }
             if (!_rotationInvariant) {
-                parentInvariantTransform = toMat4(_parentNode->getRotation()) * parentInvariantTransform;
+                parentInvariantTransform = toMat4(_parentNode->getWorldRotation()) * parentInvariantTransform;
             }
             if (!_positionInvariant) {
-                parentInvariantTransform = translate(mat4(1.0f), _parentNode->getPosition());
+                parentInvariantTransform = translate(mat4(1.0f), _parentNode->getWorldPosition());
             }
             _worldTransform = parentInvariantTransform * _localTransform;
         }

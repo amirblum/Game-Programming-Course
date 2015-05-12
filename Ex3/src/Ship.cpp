@@ -17,7 +17,7 @@ static const std::string SHIP_MESH = "assets/vipermk2.lwo";
 static const std::string EXPLOSION_SOUND = "assets/explosion.wav";
 
 #define TILT_SPEED (pi<float>() / 4.0f)
-#define ROLL_SPEED (pi<float>() / 3.0f)
+#define ROLL_SPEED (pi<float>() / 2.0f)
 #define ACCELERATION_FORCE (0.3f)
 #define DAMPENING_FORCE    (0.01f)
 #define MAX_VELOCITY (300.0f)
