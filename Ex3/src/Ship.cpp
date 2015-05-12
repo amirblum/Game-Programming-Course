@@ -14,6 +14,7 @@
 #include <iostream>
 
 static const std::string SHIP_MESH = "assets/vipermk2.lwo";
+static const std::string DRADIS_SOUND = "assets/dradis.wav";
 static const std::string EXPLOSION_SOUND = "assets/explosion.wav";
 
 #define TILT_SPEED (pi<float>() / 4.0f)
@@ -52,14 +53,30 @@ _radius(radius)
     // Initialize sounds (this should be moved to a sound manager later)
     {
         ALuint soundBuffer;
-        soundBuffer = alutCreateBufferFromFile(EXPLOSION_SOUND.c_str());
-        ALenum alutError = alutGetError();
+        ALenum alutError;
+        
+        // Dradis
+        soundBuffer = alutCreateBufferFromFile(DRADIS_SOUND.c_str());
+        
+        alutError = alutGetError();
         if (alutError != AL_NO_ERROR) {
             std::cout << "Error loading explosion sound: " << alutGetErrorString(alutError) << std::endl;
         }
         
-        alGenSources(1, &_soundSrc);
-        alSourcei(_soundSrc, AL_BUFFER, soundBuffer);
+        alGenSources(1, &_dradisSound);
+        alSourcei(_dradisSound, AL_BUFFER, soundBuffer);
+        alSourcei(_dradisSound, AL_LOOPING, true);
+        alSourcePlay(_dradisSound);
+        
+        // Explosion
+        soundBuffer = alutCreateBufferFromFile(EXPLOSION_SOUND.c_str());
+        alutError = alutGetError();
+        if (alutError != AL_NO_ERROR) {
+            std::cout << "Error loading explosion sound: " << alutGetErrorString(alutError) << std::endl;
+        }
+        
+        alGenSources(1, &_explosionSound);
+        alSourcei(_explosionSound, AL_BUFFER, soundBuffer);
     }
     
     // Initialize components
@@ -178,7 +195,7 @@ void Ship::collide()
     int newHealth = health - 1;
     
     // Sound
-    alSourcePlay(_soundSrc);
+    alSourcePlay(_explosionSound);
     
     // Gameover
     if (newHealth >= 0) {
@@ -238,6 +255,7 @@ float Ship::getRadius()
 void Ship::die()
 {
     _healthBar->setCurrentUnits(0);
+    alSourceStop(_dradisSound);
     generateExplosion(2000);
 }
 
