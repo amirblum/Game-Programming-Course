@@ -22,10 +22,15 @@
 class ParticleAttribute {
 protected:
     int _maxParticles;
+    std::string _name;
 public:
-    ParticleAttribute(int maxParticles) :
-    _maxParticles(maxParticles) {}
+    ParticleAttribute(int maxParticles, std::string name) :
+    _maxParticles(maxParticles), _name(name) {}
     virtual ~ParticleAttribute() {}
+    std::string getName()
+    {
+        return _name;
+    }
     
     virtual void moveParticle(int fromID, int toID) = 0;
 };
@@ -52,8 +57,8 @@ class ParticleAttributeDerived : public ParticleAttribute {
 protected:
     std::vector<T> _values;
 public:
-    ParticleAttributeDerived(int maxParticles) :
-    ParticleAttribute(maxParticles),
+    ParticleAttributeDerived(int maxParticles, std::string name) :
+    ParticleAttribute(maxParticles, name),
     _values(maxParticles) {}
     
     virtual ~ParticleAttributeDerived() {}
@@ -81,7 +86,7 @@ template <class T, int size, GLenum oglType>
 class ShaderAttributeDerived : public ParticleAttributeDerived<T>, public ShaderAttribute {
 public:
     ShaderAttributeDerived(int maxParticles, RenderComponent *renderer, std::string variableName) :
-    ParticleAttributeDerived<T>(maxParticles),
+    ParticleAttributeDerived<T>(maxParticles, variableName),
     ShaderAttribute(renderer)
     {
         _attributeVBO = _renderer->createSupportVBO(oglType, size, variableName, 1);

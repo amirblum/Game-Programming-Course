@@ -59,6 +59,7 @@ static const std::string BACKGROUND_MUSIC = "assets/BSG_battle.wav";
 /** Key definitions */
 
 #define KEY_ESC            ('\e') // Key used to terminate the program - ESC  //
+#define KEY_RESET          ('r')
 
 /** display callback */
 void display(void);
@@ -231,6 +232,11 @@ void keyboardDown(unsigned char key, int x, int y)
     if (lower_key == KEY_ESC)
     {
         exit(RC_OK);
+    }
+    else if (lower_key == KEY_RESET) {
+        delete _world;
+        _world = new World;
+        Camera::MainCamera()->resize(_screenWidth, _screenHeight);
     }
     
     InputManager::Instance().handleKeyDown(lower_key, x, y);

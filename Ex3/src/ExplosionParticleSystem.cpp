@@ -28,7 +28,7 @@ ExplosionParticleSystem::ExplosionParticleSystem(unsigned int maxParticles,
                                                  quat rotation,
                                                  vec3 scale) :
 ParticleSystem(maxParticles, position, rotation, scale),
-_physics(maxParticles),
+_physics(maxParticles, "physics"),
 _nextEmitTime(0.0f),
 _timeSinceLastEmission(0.0f),
 _particlesEmitted(0)

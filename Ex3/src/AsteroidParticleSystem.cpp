@@ -27,8 +27,8 @@ AsteroidParticleSystem::AsteroidParticleSystem(unsigned int maxAsteroids, float 
 ParticleSystem(maxAsteroids),
 _emitMaxRadius(emitRadius), _emitMinRadius(0),
 _ship(ship),
-_physics(maxAsteroids),
-_collided(maxAsteroids)
+_physics(maxAsteroids, "physics"),
+_collided(maxAsteroids, "collided")
 {
     // Render-related
     {

@@ -45,6 +45,8 @@ _startPosition(0.0f)
     
     // Scripts
     _cameraFollow = new CameraFollow(camera, _ship, skybox);
+    
+    GameState::Instance().gameOver = false;
 }
 
 World::~World()

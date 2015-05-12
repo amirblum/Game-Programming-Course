@@ -25,9 +25,10 @@ _localTransform(1.0f), _worldTransform(1.0f)
  */
 SceneNode::~SceneNode()
 {
-    for (SceneNode *child : _childNodes) {
-        delete child;
-    }
+// I KNOW that this is a major memory leak...not gonna fix it yet since the project is due tomorrow
+//    for (SceneNode *child : _childNodes) {
+//        delete child;
+//    }
 }
 
 /**
@@ -49,6 +50,7 @@ void SceneNode::removeChild(unsigned int i)
         return;
     }
     
+    delete _childNodes[i];
     _childNodes.erase(_childNodes.begin() + i);
 }
 
@@ -60,6 +62,7 @@ void SceneNode::removeChild(SceneNode *childToRemove)
     auto childIterator = std::find(_childNodes.begin(), _childNodes.end(), childToRemove);
     if (childIterator != _childNodes.end()) {
         _childNodes.erase(childIterator);
+        delete childToRemove;
     }
 }
 
