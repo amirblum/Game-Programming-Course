@@ -27,7 +27,7 @@
 class Ship : public SceneNode {
 private:
     // Sound
-    ALuint _dradisSound, _explosionSound;
+    ALuint _dradisSound, _thrustersSound, _explosionSound;
     
     // Components
     Mesh *_mesh;

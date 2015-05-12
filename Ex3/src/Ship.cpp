@@ -15,6 +15,7 @@
 
 static const std::string SHIP_MESH = "assets/vipermk2/vipermk2.obj";
 static const std::string DRADIS_SOUND = "assets/sounds/dradis.wav";
+static const std::string THRUSTERS_SOUND = "assets/sounds/thrusters.wav";
 static const std::string EXPLOSION_SOUND = "assets/sounds/explosion.wav";
 
 #define TILT_SPEED (pi<float>() / 4.0f)
@@ -90,13 +91,25 @@ _radius(radius)
         
         alutError = alutGetError();
         if (alutError != AL_NO_ERROR) {
-            std::cout << "Error loading explosion sound: " << alutGetErrorString(alutError) << std::endl;
+            std::cout << "Error loading dradis sound: " << alutGetErrorString(alutError) << std::endl;
         }
         
         alGenSources(1, &_dradisSound);
         alSourcei(_dradisSound, AL_BUFFER, soundBuffer);
         alSourcei(_dradisSound, AL_LOOPING, true);
         alSourcePlay(_dradisSound);
+        
+        // Thrusters
+        soundBuffer = alutCreateBufferFromFile(THRUSTERS_SOUND.c_str());
+        
+        alutError = alutGetError();
+        if (alutError != AL_NO_ERROR) {
+            std::cout << "Error loading thrusters sound: " << alutGetErrorString(alutError) << std::endl;
+        }
+        
+        alGenSources(1, &_thrustersSound);
+        alSourcei(_thrustersSound, AL_BUFFER, soundBuffer);
+        alSourcei(_thrustersSound, AL_LOOPING, true);
         
         // Explosion
         soundBuffer = alutCreateBufferFromFile(EXPLOSION_SOUND.c_str());
@@ -144,6 +157,7 @@ void Ship::update(float dt)
         _physicsComponent->applyForce(_forward * velocityStrength);
         
         // Accelerating
+        ALint thrustersSoundState;
         if (input.isPressed(KEY_ACTION)) {
             _physicsComponent->applyForce(_forward * ACCELERATION_FORCE);
             for (unsigned int i = 0; i < 3; ++i) {
@@ -151,8 +165,16 @@ void Ship::update(float dt)
                     _thrusters[i]->emit();
                 }
             }
+            alGetSourcei(_thrustersSound, AL_SOURCE_STATE, &thrustersSoundState);
+            if (thrustersSoundState != AL_PLAYING) {
+                alSourcePlay(_thrustersSound);
+            }
         } else if (_physicsComponent->isMoving()) {
             _physicsComponent->applyForce(-_physicsComponent->getVelocity() * DAMPENING_FORCE);
+            alGetSourcei(_thrustersSound, AL_SOURCE_STATE, &thrustersSoundState);
+            if (thrustersSoundState == AL_PLAYING) {
+                alSourceStop(_thrustersSound);
+            }
         }
         
         // Tilting
@@ -295,6 +317,7 @@ void Ship::die()
 {
     _healthBar->setCurrentUnits(0);
     alSourceStop(_dradisSound);
+    alSourceStop(_thrustersSound);
     generateExplosion(2000);
 }
 
