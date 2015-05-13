@@ -7,6 +7,7 @@
 //
 
 #include "SceneNode.h"
+#include <algorithm>
 
 /**
  * Constructor
