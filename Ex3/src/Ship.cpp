@@ -13,7 +13,7 @@
 
 #include <iostream>
 
-static const std::string SHIP_MESH = "assets/vipermk2/vipermk2.obj";
+static const std::string SHIP_MESH = "assets/vipermk2/vipermk2_LW7.obj";
 static const std::string DRADIS_SOUND = "assets/sounds/dradis.wav";
 static const std::string THRUSTERS_SOUND = "assets/sounds/thrusters.wav";
 static const std::string EXPLOSION_SOUND = "assets/sounds/explosion.wav";

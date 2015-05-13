@@ -7,7 +7,6 @@ IMPORTANT NOTE
 ==============
 In order to run this on the University's "aquarium" computers, build normally with 'make', then set the LD_LIBRARY_PATH environment variable like so:
 `setenv LD_LIBRARY_PATH ./lib/`
-Or, run the handy `run.sh` shell script :)
 
 Core functionality:
 ------------------
