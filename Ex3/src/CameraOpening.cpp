@@ -9,15 +9,12 @@
 #include "CameraOpening.h"
 #include "GameState.h"
 
-#define MIN_CAMERA_DISTANCE (4.0f)
-#define MAX_CAMERA_DISTANCE (10.0f)
-#define MAX_LAG_SPEED (20.0f)
-#define FOLLOW_PERCENT (0.05f)
+#define CAMERA_DISTANCE (2.5f)
 
 CameraOpening::CameraOpening(Camera *camera, Ship *ship, SkyBox *skyBox) :
 _camera(camera), _ship(ship), _skyBox(skyBox),
-_startPosition(_ship->getPosition() + _ship->getForward() * MIN_CAMERA_DISTANCE),
-_endPosition(_ship->getPosition() - _ship->getForward() * MIN_CAMERA_DISTANCE),
+_startPosition(_ship->getPosition() + _ship->getForward() * CAMERA_DISTANCE),
+_endPosition(_ship->getPosition() - _ship->getForward() * CAMERA_DISTANCE),
 _started(false)
 {
     _camera->setPosition(_startPosition);
@@ -43,8 +40,8 @@ void CameraOpening::update(float dt)
     
     cameraPosition.z = mix(cameraPosition.z, _endPosition.z, 0.8f * dt);
     float travelPercent = abs(cameraPosition.z - _startPosition.z) / abs(_endPosition.z - _startPosition.z);
-    cameraPosition.x = -MIN_CAMERA_DISTANCE * sin(pi<float>() * travelPercent);
-    cameraPosition.y = 0.5f * MIN_CAMERA_DISTANCE * sin(pi<float>() * travelPercent);
+    cameraPosition.x = -CAMERA_DISTANCE * sin(pi<float>() * travelPercent);
+    cameraPosition.y = 0.5f * CAMERA_DISTANCE * sin(pi<float>() * travelPercent);
     
     _camera->setPosition(cameraPosition);
     _camera->setDirection(normalize(_ship->getPosition() - cameraPosition));

@@ -14,11 +14,15 @@ TAR = amirblum_cgp_ex3.tgz
 # list of all the sources files
 SRCS	=  	main.cpp		\
 		World.cpp		\
+        GameState.cpp \
         Camera.cpp  \
 		CameraFollow.cpp \
+        CameraOpening.cpp \
         InputManager.cpp    \
 		ParticleSystem.cpp \
 		AsteroidParticleSystem.cpp \
+        ExplosionParticleSystem.cpp \
+        ThrusterParticleSystem.cpp \
 		Mesh.cpp \
 		SceneNode.cpp \
 		RenderableSceneNode.cpp \
@@ -28,15 +32,21 @@ SRCS	=  	main.cpp		\
 		SkyBox.cpp \
         RenderComponent.cpp  \
 		PhysicsComponent.cpp \
-		ShaderIO.cpp	
+        GameOver.cpp \
+		ShaderIO.cpp \
+        RandUtils.cpp
 
 HDRS	=  	\
 		World.h		\
+        GameState.h \
         Camera.h  \
 		CameraFollow.h \
+        CameraOpening.h \
         InputManager.h    \
 		ParticleSystem.h \
-		AsteroidParticleSystem.h \
+        AsteroidParticleSystem.h \
+        ExplosionParticleSystem.h \
+        ThrusterParticleSystem.h \
 		Mesh.h \
 		SceneNode.h \
 		RenderableSceneNode.h \
@@ -46,8 +56,9 @@ HDRS	=  	\
 		SkyBox.h \
         RenderComponent.h  \
 		PhysicsComponent.h \
+        GameOver.h \
 		ShaderIO.h	\
-		Utils.h
+		RandUtils.h
 
 # compiler
 CC	= g++
@@ -108,7 +119,7 @@ $(OBJS) : $(SRCS)
 
 
 tar:
-	tar czvf $(TAR) Makefile $(SRCS) $(HDRS) assets/ shaders/ include/ README
+	tar czvf $(TAR) Makefile $(SRCS) $(HDRS) assets/ shaders/ include/ README run.sh
 	
 
 .PHONY:
