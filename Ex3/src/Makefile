@@ -119,7 +119,7 @@ $(OBJS) : $(SRCS)
 
 
 tar:
-	tar czvf $(TAR) Makefile $(SRCS) $(HDRS) assets/ shaders/ include/ README run.sh
+	tar czvf $(TAR) Makefile $(SRCS) $(HDRS) assets/ shaders/ include/ lib/ README 
 	
 
 .PHONY:
