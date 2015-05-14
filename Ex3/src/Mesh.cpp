@@ -24,7 +24,15 @@ _entries(), _textures()
 {
     Assimp::Importer importer;
     
-    const aiScene* scene = importer.ReadFile(filename.c_str(), aiProcess_Triangulate);
+    const aiScene* scene = importer.ReadFile(filename.c_str(),
+                                             aiProcess_Triangulate |
+                                             aiProcess_FlipUVs |
+                                             aiProcess_JoinIdenticalVertices |
+                                             aiProcess_FindInstances |
+                                             aiProcess_OptimizeGraph |
+                                             aiProcess_OptimizeMeshes |
+                                             aiProcess_RemoveRedundantMaterials |
+                                             aiProcess_FindInvalidData);
     
     if (!scene) {
         printf("Error parsing '%s': '%s'\n", filename.c_str(), importer.GetErrorString());
@@ -75,8 +83,9 @@ void Mesh::initMesh(unsigned int index, const aiMesh* mesh)
 
     for (unsigned int i = 0 ; i < mesh->mNumFaces ; i++) {
         const aiFace& face = mesh->mFaces[i];
-//        assert(face.mNumIndices == 3);
+//        std::cout << "Importing face " << i << std::endl;
         if (face.mNumIndices != 3) {
+//            std::cout << "There are " << face.mNumIndices << " indices. continuing" << std::endl;
             continue;
         }
         indices.push_back(face.mIndices[0]);
