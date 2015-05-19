@@ -23,8 +23,8 @@
 using namespace glm;
 
 #include "SceneNode.h"
-#include "CameraOpening.h"
-#include "CameraFollow.h"
+#include "Script.h"
+#include "CameraScripts.h"
 
 class World : public SceneNode {
 private:
@@ -32,8 +32,7 @@ private:
     
     Ship *_ship;
     
-    CameraOpening *_cameraOpening;
-    CameraFollow *_cameraFollow;
+    std::vector<Script*> _scripts;
     
 public:
     World();

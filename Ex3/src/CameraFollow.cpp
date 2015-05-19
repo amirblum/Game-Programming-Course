@@ -20,7 +20,7 @@ _camera(camera), _ship(ship), _skybox(skybox)
 }
 
 CameraFollow::~CameraFollow()
-{};
+{}
 
 void CameraFollow::update(float dt)
 {

@@ -22,7 +22,7 @@ _started(false)
 }
 
 CameraOpening::~CameraOpening()
-{};
+{}
 
 void CameraOpening::update(float dt)
 {

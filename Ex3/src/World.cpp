@@ -44,8 +44,7 @@ _startPosition(0.0f)
     addChild(skybox);
     
     // Scripts
-    _cameraOpening = new CameraOpening(camera, _ship, skybox);
-    _cameraFollow = new CameraFollow(camera, _ship, skybox);
+    _scripts.push_back(new CameraScripts(camera, _ship, skybox));
     
     GameState::Instance().reset();
 }
@@ -53,6 +52,9 @@ _startPosition(0.0f)
 World::~World()
 {
     delete _ship;
+    for (Script *script : _scripts) {
+        delete script;
+    }
 }
 
 /**
@@ -61,21 +63,21 @@ World::~World()
 void World::update(float dt)
 {
     GameState &state = GameState::Instance();
-    if (!state.gameStarted) {
-        _cameraOpening->update(dt);
-        return;
+    
+    if (state.gameStarted) {
+        if (!state.gameOver && InputManager::Instance().isPressedFirstTime(KEY_GAME_OVER)) {
+            _ship->die();
+        }
+        
+        if (!state.gameOver && _ship->isDead()) {
+            GameOver *gameOverText = new GameOver();
+            addChild(gameOverText);
+            state.gameOver = true;
+        }
     }
     
-    _cameraFollow->update(dt);
-    
-    if (!state.gameOver && InputManager::Instance().isPressedFirstTime(KEY_GAME_OVER)) {
-        _ship->die();
-    }
-    
-    if (!state.gameOver && _ship->isDead()) {
-        GameOver *gameOverText = new GameOver();
-        addChild(gameOverText);
-        state.gameOver = true;
+    for (Script *script : _scripts) {
+        script->update(dt);
     }
 }
 

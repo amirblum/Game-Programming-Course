@@ -12,11 +12,12 @@
 #define __CGP_Ex3__CameraFollow__
 
 #include <stdio.h>
+#include "Script.h"
 #include "Camera.h"
 #include "Ship.h"
 #include "SkyBox.h"
 
-class CameraFollow {
+class CameraFollow : public Script {
 private:
     Camera *_camera;
     Ship *_ship;
@@ -28,7 +29,7 @@ public:
     CameraFollow(Camera *camera, Ship *ship, SkyBox *skybox);
     virtual ~CameraFollow();
     
-    void update(float dt);
+    virtual void update(float dt);
 };
 
 #endif /* defined(__CGP_Ex3__CameraFollow__) */
