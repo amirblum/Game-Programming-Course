@@ -10,9 +10,9 @@ out vec4 outColor;
 
 #define EPS (0.01)
 
-vec3 light1Pos = vec3(-5.0f, 3.0f, -5.0f);
+vec3 light1Pos = vec3(-500.0f, 300.0f, -500.0f);
 //vec3 light2Pos = vec3(-1.0f, -10.0f, 0.0f);
-vec3 light3Pos = vec3(1.0f, 0.0f, 3.0f);
+vec3 light3Pos = vec3(100.0f, 0.0f, 300.0f);
 
 void main()
 {

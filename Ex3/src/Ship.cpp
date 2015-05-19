@@ -14,6 +14,8 @@
 #include <iostream>
 
 static const std::string SHIP_MESH = "assets/vipermk2/vipermk2_LW7.obj";
+//static const std::string SHIP_MESH = "assets/cylonraider/cylonraider.FBX";
+//static const std::string SHIP_MESH = "assets/serenity/serenity.3ds";
 static const std::string DRADIS_SOUND = "assets/sounds/dradis.wav";
 static const std::string THRUSTERS_SOUND = "assets/sounds/thrusters.wav";
 static const std::string EXPLOSION_SOUND = "assets/sounds/explosion.wav";
@@ -35,6 +37,11 @@ _radius(radius)
 {
     // Initialize mesh
     {
+        // Scale for serenity
+        //        vec3 meshPosition = vec3(0.0f);
+        //        quat meshRotation = quat(vec3(0.0f));
+        //        vec3 meshScale = vec3(0.02f);
+        // Scale for viper
         vec3 meshPosition = vec3(0.0f);
         quat meshRotation = rotate(quat(vec3(0.0f)), pi<float>()/2.0f, vec3(0.0f, 1.0f, 0.0f));
         vec3 meshScale = vec3(1.0f);
