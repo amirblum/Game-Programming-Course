@@ -27,20 +27,31 @@ _visible(true)
  */
 SceneNode::~SceneNode()
 {
-// I KNOW that this is a major memory leak...not gonna fix it yet since the project is due tomorrow
-//    for (SceneNode *child : _childNodes) {
-//        delete child;
-//    }
+    for (Script *script : _scripts) {
+        delete script;
+    }
+    
+    for (SceneNode *child : _childNodes) {
+        delete child;
+    }
+}
+
+/**
+ * Add a script to this node
+ */
+void SceneNode::addScript(Script *script)
+{
+    _scripts.push_back(script);
 }
 
 /**
  * Add a child to the tree under this node
  */
-void SceneNode::addChild(SceneNode *newChild)
+void SceneNode::addChild(SceneNode *child)
 {
-    _childNodes.push_back(newChild);
-    newChild->setParent(this);
-    newChild->rebuildTransforms(false);
+    _childNodes.push_back(child);
+    child->setParent(this);
+    child->rebuildTransforms(false);
 }
 
 /**
@@ -236,10 +247,16 @@ void SceneNode::rebuildTransforms(bool localChanged)
  */
 void SceneNode::recursiveUpdate(float dt)
 {
+    // Update all scripts
+    for (Script *script : _scripts) {
+        script->update(dt);
+    }
+    
     // Update all children
     for (SceneNode *child : _childNodes) {
         child->recursiveUpdate(dt);
     }
+    
     // Update myself
     update(dt);
 }

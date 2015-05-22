@@ -22,6 +22,9 @@ _cameraEnding(new CameraEnding(camera, ship, skyBox))
 
 CameraScripts::~CameraScripts()
 {
+    delete _cameraOpening;
+    delete _cameraFollow;
+    delete _cameraEnding;
 }
 
 void CameraScripts::update(float dt)

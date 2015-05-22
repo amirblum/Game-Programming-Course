@@ -13,6 +13,7 @@
 #include "DummyObject.h"
 #include "AsteroidParticleSystem.h"
 #include "InputManager.h"
+#include "CameraScripts.h"
 #include "GameOver.h"
 #include "GameState.h"
 
@@ -44,17 +45,13 @@ _startPosition(0.0f)
     addChild(skybox);
     
     // Scripts
-    _scripts.push_back(new CameraScripts(camera, _ship, skybox));
+    addScript(new CameraScripts(camera, _ship, skybox));
     
     GameState::Instance().reset();
 }
 
 World::~World()
 {
-    delete _ship;
-    for (Script *script : _scripts) {
-        delete script;
-    }
 }
 
 /**

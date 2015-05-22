@@ -3,13 +3,13 @@
 
 Mesh::MeshEntry::MeshEntry(std::vector<Vertex> vertices,
                            std::vector<GLuint> indices,
-                           std::vector<TextureComponent*> textures) :
+                           std::vector<std::shared_ptr<TextureComponent>> textures) :
 RenderComponent("MeshShader")
 {
     setPTNVBO(vertices);
     setIBO(indices);
     
-    for (TextureComponent *texture : textures) {
+    for (std::shared_ptr<TextureComponent> texture : textures) {
         addTexture(texture);
     }
 }
@@ -59,13 +59,16 @@ _entries(), _textures()
 
 Mesh::~Mesh()
 {
+    for (MeshEntry *meshEntry : _entries) {
+        delete meshEntry;
+    }
 }
 
 void Mesh::initMesh(unsigned int index, const aiMesh* mesh)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<TextureComponent*> textures;
+    std::vector<std::shared_ptr<TextureComponent>> textures;
 
     const aiVector3D zero(0.0f, 0.0f, 0.0f);
     
@@ -83,9 +86,7 @@ void Mesh::initMesh(unsigned int index, const aiMesh* mesh)
 
     for (unsigned int i = 0 ; i < mesh->mNumFaces ; i++) {
         const aiFace& face = mesh->mFaces[i];
-//        std::cout << "Importing face " << i << std::endl;
         if (face.mNumIndices != 3) {
-//            std::cout << "There are " << face.mNumIndices << " indices. continuing" << std::endl;
             continue;
         }
         indices.push_back(face.mIndices[0]);

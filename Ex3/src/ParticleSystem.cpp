@@ -68,10 +68,6 @@ _aliveParticles(0)
 
 ParticleSystem::~ParticleSystem()
 {
-// I KNOW that this is a memory leak...not gonna fix it yet since the project is due tomorrow
-//    for (ParticleAttribute *attribute : _allParticleAttributes) {
-//        delete attribute;
-//    }
 }
 
 void ParticleSystem::addAttribute(ParticleAttribute *attribute)

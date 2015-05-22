@@ -47,7 +47,9 @@ _particlesEmitted(0)
 
 ExplosionParticleSystem::~ExplosionParticleSystem()
 {
-    
+//    for (unsigned int i = 0; i < _maxParticles; ++i) {
+//        delete _physics.getValue(i);
+//    }
 }
 
 void ExplosionParticleSystem::updateGeneral(float dt)
@@ -106,6 +108,7 @@ void ExplosionParticleSystem::updateParticle(unsigned int particleID, float dt)
     _transparencies.setValue(particleID, transparency);
     
     if (size <= 0 || transparency <= 0) {
+        delete _physics.getValue(particleID);
         killParticle(particleID);
     }
 }

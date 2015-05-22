@@ -35,6 +35,7 @@ using namespace glm;
 
 #include "ShaderIO.h"
 #include "InputManager.h"
+#include "Camera.h"
 
 #include <iostream>
 
@@ -122,8 +123,6 @@ int main(int argc, char* argv[])
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//    glEnable(GL_ALPHA_TEST);
-//    glAlphaFunc(GL_GREATER, 0);
 		
     // Set callback functions:
     glutDisplayFunc(display) ;

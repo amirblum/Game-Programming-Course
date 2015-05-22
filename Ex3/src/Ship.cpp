@@ -14,7 +14,7 @@
 #include <iostream>
 
 static const std::string SHIP_MESH = "assets/vipermk2/vipermk2_LW7.obj";
-//static const std::string SHIP_MESH = "assets/cylonraider/cylonraider.FBX";
+//static const std::string SHIP_MESH = "assets/simonship/simonship.obj";
 //static const std::string SHIP_MESH = "assets/serenity/serenity.3ds";
 static const std::string DRADIS_SOUND = "assets/sounds/dradis.wav";
 static const std::string THRUSTERS_SOUND = "assets/sounds/thrusters.wav";
@@ -22,9 +22,9 @@ static const std::string EXPLOSION_SOUND = "assets/sounds/explosion.wav";
 
 #define TILT_SPEED (pi<float>() / 4.0f)
 #define ROLL_SPEED (pi<float>() / 2.0f)
-#define ACCELERATION_FORCE (0.3f)
+#define ACCELERATION_FORCE (1.0f)
 #define DAMPENING_FORCE    (0.01f)
-#define MAX_VELOCITY (150.0f)
+#define MAX_VELOCITY (500.0f)
 #define MAX_HEALTH (5)
 
 /**
@@ -38,13 +38,20 @@ _radius(radius)
     // Initialize mesh
     {
         // Scale for serenity
-        //        vec3 meshPosition = vec3(0.0f);
-        //        quat meshRotation = quat(vec3(0.0f));
-        //        vec3 meshScale = vec3(0.02f);
+//        vec3 meshPosition = vec3(0.0f);
+//        quat meshRotation = quat(vec3(0.0f));
+//        vec3 meshScale = vec3(0.02f);
+        
+         // Scale for simonship
+//        vec3 meshPosition = vec3(0.0f);
+//        quat meshRotation = quat(vec3(0.0f, 0.0f, 0.0f));
+//        vec3 meshScale = vec3(0.005f);
+        
         // Scale for viper
         vec3 meshPosition = vec3(0.0f);
         quat meshRotation = rotate(quat(vec3(0.0f)), pi<float>()/2.0f, vec3(0.0f, 1.0f, 0.0f));
         vec3 meshScale = vec3(1.0f);
+        
         _mesh = new Mesh(SHIP_MESH, meshPosition, meshRotation, meshScale);
         addChild(_mesh);
     }
@@ -90,11 +97,10 @@ _radius(radius)
     
     // Initialize sounds (this should be moved to a sound manager later)
     {
-        ALuint soundBuffer;
         ALenum alutError;
         
         // Dradis
-        soundBuffer = alutCreateBufferFromFile(DRADIS_SOUND.c_str());
+        _dradisBuffer = alutCreateBufferFromFile(DRADIS_SOUND.c_str());
         
         alutError = alutGetError();
         if (alutError != AL_NO_ERROR) {
@@ -102,12 +108,12 @@ _radius(radius)
         }
         
         alGenSources(1, &_dradisSound);
-        alSourcei(_dradisSound, AL_BUFFER, soundBuffer);
+        alSourcei(_dradisSound, AL_BUFFER, _dradisBuffer);
         alSourcei(_dradisSound, AL_LOOPING, true);
         alSourcePlay(_dradisSound);
         
         // Thrusters
-        soundBuffer = alutCreateBufferFromFile(THRUSTERS_SOUND.c_str());
+        _thrustersBuffer = alutCreateBufferFromFile(THRUSTERS_SOUND.c_str());
         
         alutError = alutGetError();
         if (alutError != AL_NO_ERROR) {
@@ -115,18 +121,18 @@ _radius(radius)
         }
         
         alGenSources(1, &_thrustersSound);
-        alSourcei(_thrustersSound, AL_BUFFER, soundBuffer);
+        alSourcei(_thrustersSound, AL_BUFFER, _thrustersBuffer);
         alSourcei(_thrustersSound, AL_LOOPING, true);
         
         // Explosion
-        soundBuffer = alutCreateBufferFromFile(EXPLOSION_SOUND.c_str());
+        _explosionBuffer = alutCreateBufferFromFile(EXPLOSION_SOUND.c_str());
         alutError = alutGetError();
         if (alutError != AL_NO_ERROR) {
             std::cout << "Error loading explosion sound: " << alutGetErrorString(alutError) << std::endl;
         }
         
         alGenSources(1, &_explosionSound);
-        alSourcei(_explosionSound, AL_BUFFER, soundBuffer);
+        alSourcei(_explosionSound, AL_BUFFER, _explosionBuffer);
     }
     
     // Initialize components
@@ -139,10 +145,13 @@ _radius(radius)
 Ship::~Ship()
 {
     delete _physicsComponent;
-    delete _healthBar;
     alSourceStop(_dradisSound);
     alDeleteSources(1, &_dradisSound);
+    alDeleteBuffers(1, &_dradisBuffer);
+    alDeleteSources(1, &_thrustersSound);
+    alDeleteBuffers(1, &_thrustersBuffer);
     alDeleteSources(1, &_explosionSound);
+    alDeleteBuffers(1, &_explosionBuffer);
 }
 
 void Ship::render()

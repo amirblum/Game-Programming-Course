@@ -23,16 +23,13 @@
 using namespace glm;
 
 #include "SceneNode.h"
-#include "Script.h"
-#include "CameraScripts.h"
+#include "Ship.h"
 
 class World : public SceneNode {
 private:
     vec3 _startPosition;
     
     Ship *_ship;
-    
-    std::vector<Script*> _scripts;
     
 public:
     World();

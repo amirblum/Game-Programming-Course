@@ -35,12 +35,12 @@ private:
     public:
         MeshEntry(std::vector<Vertex> vertices,
                   std::vector<GLuint> indices,
-                  std::vector<TextureComponent*> textures);
+                  std::vector<std::shared_ptr<TextureComponent>> textures);
         virtual ~MeshEntry();
     };
 
     std::vector<MeshEntry*> _entries;
-    std::vector<TextureComponent*> _textures;
+    std::vector<std::shared_ptr<TextureComponent>> _textures;
     
     void initMesh(unsigned int index, const aiMesh* mesh);
     void initMaterials(const aiScene* scene, std::string filename);

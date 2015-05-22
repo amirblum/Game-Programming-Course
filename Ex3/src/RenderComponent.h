@@ -43,13 +43,11 @@ class TextureComponent {
 private:
     GLenum _type;
     GLuint _textureNum;
-//    int _textureNumber;
-//    GLint samplerUniform;
-    TextureComponent();
-    TextureComponent(GLenum type, GLuint textureNum);
+    
 public:
-    static TextureComponent* create2DTexture(std::string filename);
-    static TextureComponent* createCubeTexture(std::string cubeLF,
+    TextureComponent(GLenum type, GLuint textureNum);
+    static std::shared_ptr<TextureComponent> create2DTexture(std::string filename);
+    static std::shared_ptr<TextureComponent> createCubeTexture(std::string cubeLF,
                                                std::string cubeFT,
                                                std::string cubeRT,
                                                std::string cubeBK,
@@ -70,13 +68,19 @@ enum UniformType {
     UNIFORM_MAT4
 };
 
-struct UniformVariable {
+class UniformVariable {
+public:
+    virtual ~UniformVariable() {}
+    
     GLint handle;
-    virtual UniformType getType() {return UNIFORM_NONE;}
+    virtual UniformType getType() = 0;
 };
 
 template <class T, UniformType type>
-struct UniformVariableDerived : public UniformVariable {
+class UniformVariableDerived : public UniformVariable {
+public:
+    virtual ~UniformVariableDerived() {}
+    
     T value;
     virtual UniformType getType() {return type;}
 };
@@ -100,9 +104,7 @@ private:
     GLuint _shaderProgram;
     
     // Textures
-//    unsigned int _textureCount;
-    std::vector<TextureComponent*> _textures;
-//    void sendTexture(TextureComponent *textureComponent);
+    std::vector<std::shared_ptr<TextureComponent>> _textures;
     
     // Uniform handles:
     std::unordered_map<std::string, UniformVariable*> _uniforms;
@@ -124,15 +126,7 @@ public:
     
     GLuint createSupportVBO(GLenum type, int size, std::string name, int divisor);
     
-    void addTexture(TextureComponent *textureComponent);
-    
-//    void add2DTexture(std::string textureFile);
-//    void addCubeTexture(std::string cubeLF,
-//                        std::string cubeFT,
-//                        std::string cubeRT,
-//                        std::string cubeBK,
-//                        std::string cubeUP,
-//                        std::string cubeDN);
+    void addTexture(std::shared_ptr<TextureComponent> textureComponent);
 
     /**
      * Damnits.. I hate including implementations in header files but it's a must

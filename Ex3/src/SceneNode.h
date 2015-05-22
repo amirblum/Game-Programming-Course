@@ -21,6 +21,7 @@ using namespace glm;
 
 #include <stdio.h>
 #include <vector>
+#include "Script.h"
 
 #define RIGHT_VECTOR vec3(1.0f, 0.0f, 0.0f)
 #define UP_VECTOR vec3(0.0f, 1.0f, 0.0f)
@@ -29,6 +30,7 @@ using namespace glm;
 class SceneNode {
 protected:
     // Graph-related
+    std::vector<Script*> _scripts;
     std::vector<SceneNode*> _childNodes;
     SceneNode *_parentNode;
     
@@ -52,7 +54,8 @@ public:
               vec3 scale = vec3(1.0f));
     virtual ~SceneNode();
     
-    void addChild(SceneNode *newChild);
+    void addScript(Script *script);
+    void addChild(SceneNode *child);
     void removeChild(unsigned int i);
     void removeChild(SceneNode *childToRemove);
     void setParent(SceneNode *parentNode);

@@ -53,6 +53,9 @@ _collided(maxAsteroids, "collided")
 
 AsteroidParticleSystem::~AsteroidParticleSystem()
 {
+    for (unsigned int i = 0; i < _maxParticles; ++i) {
+        delete _physics.getValue(i);
+    }
 }
 
 bool AsteroidParticleSystem::particleInView(vec3 particlePosition)

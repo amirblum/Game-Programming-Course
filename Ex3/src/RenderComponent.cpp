@@ -54,9 +54,7 @@ RenderComponent::~RenderComponent()
     if (_vbo != 0) glDeleteBuffers(1, &_vbo);
     if (_ibo != 0) glDeleteBuffers(1, &_ibo);
     
-    for (TextureComponent *texture : _textures) {
-        delete texture;
-    }
+    glDeleteBuffers(_supportVBOs.size(), &_supportVBOs[0]);
     
     for (auto kv : _uniforms) {
         delete kv.second;
@@ -91,7 +89,7 @@ void RenderComponent::render(mat4 worldTransform, int numInstances)
     }
     
     // Bind/pass textures
-    for (TextureComponent *texture : _textures) {
+    for (std::shared_ptr<TextureComponent> texture : _textures) {
         texture->bind();
     }
     
@@ -163,13 +161,6 @@ void RenderComponent::sendUniform(UniformVariable *uniform)
             break;
     }
 }
-
-//void RenderComponent::sendTexture(TextureComponent *textureComponent)
-//{
-//    //    glUniform1i(textureComponent->samplerUniform, textureComponent->textureNumber);
-//    //    glActiveTexture(textureComponent->textureNumber);
-//    glBindTexture(textureComponent->type, textureComponent->texture);
-//}
 
 void RenderComponent::setPTNVBO(std::vector<Vertex> vertices)
 {
@@ -268,80 +259,10 @@ GLuint RenderComponent::createSupportVBO(GLenum type, int size, std::string name
     return supportVBO;
 }
 
-void RenderComponent::addTexture(TextureComponent *textureComponent)
+void RenderComponent::addTexture(std::shared_ptr<TextureComponent> textureComponent)
 {
     _textures.push_back(textureComponent);
 }
-
-//void RenderComponent::add2DTexture(std::string textureFile)
-//{
-//    if (_textureCount >= 32) {
-//        std::cout << "ERROR: Cannot bind more than 32 textures at a time" << std::endl;
-//        return;
-//    }
-//    
-//    TextureComponent *newTexture = new TextureComponent();
-//    newTexture->type = GL_TEXTURE_2D;
-//    
-//    // Get the texture number. This is implementation specific and is BAD. Whatever.
-//    newTexture->textureNumber = GL_TEXTURE0 + _textureCount++;
-//    glActiveTexture(newTexture->textureNumber);
-//    
-//    newTexture->texture = SOIL_load_OGL_texture(textureFile.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
-//    if (newTexture->texture == 0) {
-//        std::cout << "Error loading texture " << textureFile << std::endl;
-//        std::cout << "Reason: " << SOIL_last_result() << std::endl;
-//        delete newTexture;
-//        return;
-//    }
-//    
-//    char sampleName[17];
-//    sprintf(sampleName, "textureSampler%u", _textureCount);
-//    newTexture->samplerUniform = glGetUniformLocation(_shaderProgram, sampleName);
-//    
-//    _textures.push_back(newTexture);
-//}
-
-//void RenderComponent::addCubeTexture(std::string cubeLF,
-//                                     std::string cubeFT,
-//                                     std::string cubeRT,
-//                                     std::string cubeBK,
-//                                     std::string cubeUP,
-//                                     std::string cubeDN)
-//{
-//    if (_textureCount >= 32) {
-//        std::cout << "ERROR: Cannot bind more than 32 textures at a time" << std::endl;
-//        return;
-//    }
-//    
-//    TextureComponent *newTexture = new TextureComponent();
-//    newTexture->type = GL_TEXTURE_CUBE_MAP;
-//    
-//    // Get the texture number. This is implementation specific and is BAD. Whatever.
-//    newTexture->textureNumber = GL_TEXTURE0 + _textureCount++;
-//    glActiveTexture(newTexture->textureNumber);
-//    
-//    newTexture->texture = SOIL_load_OGL_cubemap(cubeRT.c_str(),
-//                                                cubeLF.c_str(),
-//                                                cubeUP.c_str(),
-//                                                cubeDN.c_str(),
-//                                                cubeFT.c_str(),
-//                                                cubeBK.c_str(),
-//                                                SOIL_LOAD_AUTO,
-//                                                SOIL_CREATE_NEW_ID, 0);
-//    if (newTexture->texture == 0) {
-//        std::cout << "Error loading cube texture " << cubeLF << " (and it's other sides)" << std::endl;
-//        std::cout << "Reason: " << SOIL_last_result() << std::endl;
-//        delete newTexture;
-//        return;
-//    }
-//    
-//    char sampleName[17];
-//    sprintf(sampleName, "cubeSampler%u", _textureCount);
-//    newTexture->samplerUniform = glGetUniformLocation(_shaderProgram, sampleName);
-//    
-//    _textures.push_back(newTexture);
-//}
 
 TextureComponent::TextureComponent(GLenum type, GLuint textureNum) :
 _type(type), _textureNum(textureNum)
@@ -351,10 +272,10 @@ _type(type), _textureNum(textureNum)
 
 TextureComponent::~TextureComponent()
 {
-    
+    glDeleteTextures(1, &_textureNum);
 }
 
-TextureComponent* TextureComponent::create2DTexture(std::string filename)
+std::shared_ptr<TextureComponent> TextureComponent::create2DTexture(std::string filename)
 {
     GLuint textureNum = SOIL_load_OGL_texture(filename.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0);
     if (textureNum == 0) {
@@ -363,17 +284,17 @@ TextureComponent* TextureComponent::create2DTexture(std::string filename)
         return NULL;
     }
     
-    return new TextureComponent(GL_TEXTURE_2D, textureNum);
+    return std::make_shared<TextureComponent>(GL_TEXTURE_2D, textureNum);
 }
 
-TextureComponent* TextureComponent::createCubeTexture(std::string cubeLF,
+std::shared_ptr<TextureComponent> TextureComponent::createCubeTexture(std::string cubeLF,
                                                       std::string cubeFT,
                                                       std::string cubeRT,
                                                       std::string cubeBK,
                                                       std::string cubeUP,
                                                       std::string cubeDN)
 {
-    GLuint textureNum =  SOIL_load_OGL_cubemap(cubeRT.c_str(),
+    GLuint textureNum = SOIL_load_OGL_cubemap(cubeRT.c_str(),
                                                cubeLF.c_str(),
                                                cubeUP.c_str(),
                                                cubeDN.c_str(),
@@ -387,7 +308,7 @@ TextureComponent* TextureComponent::createCubeTexture(std::string cubeLF,
         return NULL;
     }
     
-    return new TextureComponent(GL_TEXTURE_2D, textureNum);
+    return std::make_shared<TextureComponent>(GL_TEXTURE_CUBE_MAP, textureNum);
 }
 
 void TextureComponent::bind()

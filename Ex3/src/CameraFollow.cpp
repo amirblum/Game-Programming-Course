@@ -7,7 +7,6 @@
 //
 
 #include "CameraFollow.h"
-#include "GameState.h"
 
 #define MIN_CAMERA_DISTANCE (4.0f)
 #define MAX_CAMERA_DISTANCE (10.0f)
@@ -38,31 +37,25 @@ void CameraFollow::update(float dt)
     vec3 cameraDirectionTarget;
     vec3 cameraUpTarget = cross(shipForward, shipRight);
     
-    if (!GameState::Instance().gameOver) {
-        vec3 vecToShip = shipPosition - cameraPosition;
-        float distanceFromShip = length(vecToShip);
-        if (distanceFromShip > 0) {
-            float cosCameraAngle = dot(shipForward, normalize(vecToShip));
-            float relativeDistanceFromShip = distanceFromShip * cosCameraAngle;
-            if (relativeDistanceFromShip < MIN_CAMERA_DISTANCE){
-                cameraPositionTarget = shipPosition - shipForward * MIN_CAMERA_DISTANCE;
-                cameraDirectionTarget = shipForward;
-            } else {
-                float desiredDistanceFromShip = mix(MIN_CAMERA_DISTANCE, MAX_CAMERA_DISTANCE, _ship->getSpeed() / _ship->getMaxSpeed());
-                float distanceFromDesiredDistance = relativeDistanceFromShip - desiredDistanceFromShip;
-                float distanceFromTarget = distanceFromDesiredDistance / FOLLOW_PERCENT;
-                
-                float targetOffset = distanceFromTarget - distanceFromShip;
-                cameraPositionTarget = shipPosition + shipForward * targetOffset;
-                cameraDirectionTarget = shipForward;
-            }
+    vec3 vecToShip = shipPosition - cameraPosition;
+    float distanceFromShip = length(vecToShip);
+    if (distanceFromShip > 0) {
+        float cosCameraAngle = dot(shipForward, normalize(vecToShip));
+        float relativeDistanceFromShip = distanceFromShip * cosCameraAngle;
+        if (relativeDistanceFromShip < MIN_CAMERA_DISTANCE){
+            cameraPositionTarget = shipPosition - shipForward * MIN_CAMERA_DISTANCE;
+            cameraDirectionTarget = shipForward;
+        } else {
+            float desiredDistanceFromShip = mix(MIN_CAMERA_DISTANCE, MAX_CAMERA_DISTANCE, _ship->getSpeed() / _ship->getMaxSpeed());
+            float distanceFromDesiredDistance = relativeDistanceFromShip - desiredDistanceFromShip;
+            float distanceFromTarget = distanceFromDesiredDistance / FOLLOW_PERCENT;
+            
+            float targetOffset = distanceFromTarget - distanceFromShip;
+            cameraPositionTarget = shipPosition + shipForward * targetOffset;
+            cameraDirectionTarget = shipForward;
         }
-    } else {
-        // View burning ship from the side
-        cameraPosition = shipPosition - shipRight * MIN_CAMERA_DISTANCE;
-        cameraPositionTarget = cameraPosition;
-        cameraDirectionTarget = shipRight;
     }
+    
     
     // Interpolate
     vec3 cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, FOLLOW_PERCENT);

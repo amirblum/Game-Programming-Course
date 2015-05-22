@@ -39,6 +39,7 @@ Camera* Camera::MainCamera()
 
 void Camera::setMainCamera(Camera *camera)
 {
+    delete mainCamera;
     mainCamera = camera;
 }
 
