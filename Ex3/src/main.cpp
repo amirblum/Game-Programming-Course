@@ -1,4 +1,4 @@
-//  
+//
 //  cgp-projects
 //
 //  Created by HUJI Computer Graphics course staff, 2013.
@@ -60,6 +60,7 @@ static const std::string BACKGROUND_MUSIC = "assets/sounds/BSG_battle.wav";
 
 #define KEY_ESC            ('\e') // Key used to terminate the program - ESC  //
 #define KEY_RESET          ('r')
+#define KEY_FULLSCREEN     ('f')
 
 /** display callback */
 void display(void);
@@ -86,7 +87,7 @@ World *_world;
 int main(int argc, char* argv[])
 {
     std::cout << "Starting ex3..." << std::endl;
-	
+    
     // Initialize GLUT
     glutInit(&argc, argv) ;
 #ifdef __APPLE__
@@ -100,7 +101,7 @@ int main(int argc, char* argv[])
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     glutInitWindowPosition(WINDOW_POS_X, WINDOW_POS_Y);
     glutCreateWindow("CGP Ex 3");
-	
+    
     // Initialize GLEW
     glewExperimental = GL_TRUE;
     int glewStatus = glewInit();
@@ -112,7 +113,7 @@ int main(int argc, char* argv[])
     // GLEW has a "bug" where it sets a glError. According to the wiki this
     // can be safely ignored, so we clear the error here:
     glGetError();
-	
+    
 #ifdef __APPLE__
     GLint sync = 1;
     CGLSetParameter(CGLGetCurrentContext(), kCGLCPSwapInterval, &sync);
@@ -123,7 +124,7 @@ int main(int argc, char* argv[])
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
+    
     // Set callback functions:
     glutDisplayFunc(display) ;
     glutReshapeFunc(windowResize) ;
@@ -149,19 +150,19 @@ int main(int argc, char* argv[])
     alSourcei(backgroundSource, AL_BUFFER, backgroundBuffer);
     alSourcei(backgroundSource, AL_LOOPING, true);
     alSourcePlay(backgroundSource);
-	
+    
     // Initialize random seed
     srand(time(NULL));
     
     // Set up game
     _world = new World();
-
+    
     // Set clear color to black:
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		
+    
     // Start events/drawing loop
     glutMainLoop();
-	
+    
     return 0;
 }
 
@@ -186,7 +187,7 @@ void display(void)
     
     // Tell the world to draw itself
     _world->recursiveRender();
-	
+    
     // Swap those buffers so someone will actually see the results... //
     glutSwapBuffers();
     
@@ -195,7 +196,7 @@ void display(void)
 }
 
 // This method is called when the window is resized
-float _screenWidth, _screenHeight;
+int _screenWidth, _screenHeight;
 void windowResize(int w, int h)
 {
     _screenWidth = w;
@@ -209,6 +210,29 @@ void windowResize(int w, int h)
     
     // Refresh the display //
     glutPostRedisplay();
+}
+
+void toggleFullscreen()
+{
+    static bool fullscreen = false;
+    static int previousWidth, previousHeight;
+    static int previousX, previousY;
+    
+    if (!fullscreen) {
+        previousWidth = _screenWidth;
+        previousHeight = _screenHeight;
+        previousX = glutGet(GLUT_WINDOW_X);
+        previousY = glutGet(GLUT_WINDOW_Y);
+        
+        glutFullScreen();
+        
+        fullscreen = true;
+    } else {
+        glutReshapeWindow(previousWidth, previousHeight);
+        glutPositionWindow(previousX, previousY);
+        
+        fullscreen = false;
+    }
 }
 
 /********************************************************************
@@ -231,10 +255,15 @@ void keyboardDown(unsigned char key, int x, int y)
     {
         exit(RC_OK);
     }
-    else if (lower_key == KEY_RESET) {
+    else if (lower_key == KEY_RESET)
+    {
         delete _world;
         _world = new World;
         Camera::MainCamera()->resize(_screenWidth, _screenHeight);
+    }
+    else if (lower_key == KEY_FULLSCREEN)
+    {
+        toggleFullscreen();
     }
     
     InputManager::Instance().handleKeyDown(lower_key, x, y);
@@ -275,7 +304,7 @@ void mouse(int button, int state, int x, int y)
 {
     if(button == GLUT_LEFT_BUTTON)
     {
-		
+        
     }
     else if (button == GLUT_RIGHT_BUTTON)
     {
