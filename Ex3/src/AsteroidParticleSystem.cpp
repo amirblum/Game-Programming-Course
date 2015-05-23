@@ -18,7 +18,7 @@
 #define ASTEROID_MAX_VELOCITY (15.0f)
 #define ASTEROID_MIN_VELOCITY (2.5f)
 #define ASTEROID_MIN_SIZE (2.0f)
-#define ASTEROID_MAX_SIZE (20.0f)
+#define ASTEROID_MAX_SIZE (35.0f)
 #define TRANSPARENCY_MARGIN (100.0f)
 
 static const std::string ASTEROID_IMAGE = "assets/asteroid1.png";
