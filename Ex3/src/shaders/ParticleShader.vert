@@ -9,8 +9,7 @@ layout(location = 4) in vec3 tint;
 uniform mat4 W;
 uniform mat4 PV;
 
-uniform vec3 cameraRight;
-uniform vec3 cameraUp;
+uniform vec3 cameraWorldPosition;
 
 out vec2 texcoords;
 out float myTransparency;
@@ -28,9 +27,15 @@ void main()
     myTint = tint;
     
     // Set the world position
-    vec4 myWorldPosition = W * vec4(localPosition, 1.0f);
-    myWorldPosition += vec4(cameraRight, 0.0f) * position.x * size;
-    myWorldPosition += vec4(cameraUp, 0.0f) * position.y * size;
+    vec4 centerWorldPosition = W * vec4(localPosition, 1.0f);
     
-    gl_Position = PV * myWorldPosition;
+    vec3 toCamera = normalize(cameraWorldPosition - centerWorldPosition.xyz);
+    
+    vec3 billboardUp = normalize(cross(toCamera, vec3(1.0f, 0.0f, 0.0f))); // Normalize to fix case where cross between vectors that are almost parralel isn't normalized
+    vec3 billboardRight = -cross(toCamera, billboardUp);
+    
+    centerWorldPosition += vec4(billboardRight, 0.0f) * position.x * size;
+    centerWorldPosition += vec4(billboardUp, 0.0f) * position.y * size;
+    
+    gl_Position = PV * centerWorldPosition;
 }

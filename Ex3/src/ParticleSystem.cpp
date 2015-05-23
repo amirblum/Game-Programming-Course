@@ -121,11 +121,7 @@ void ParticleSystem::preRender()
 {
     Camera *camera = Camera::MainCamera();
     
-    vec3 cameraUp = camera->getUp();
-    _renderComponent->setUniform<vec3, UNIFORM_VEC3>("cameraUp", cameraUp);
-    
-    vec3 cameraRight = cross(camera->getDirection(), cameraUp);
-    _renderComponent->setUniform<vec3, UNIFORM_VEC3>("cameraRight", cameraRight);
+    _renderComponent->setUniform<vec3, UNIFORM_VEC3>("cameraWorldPosition", camera->getPosition());
 }
 
 void ParticleSystem::render()
