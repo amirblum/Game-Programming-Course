@@ -58,7 +58,7 @@ _startPosition(0.0f), _started(false)
     
     alGenSources(1, &_backgroundMusicSource);
     alSourcei(_backgroundMusicSource, AL_BUFFER, _backgroundMusicBuffer);
-    alSourcei(_backgroundMusicSource, AL_LOOPING, true);
+    alSourcei(_backgroundMusicSource, AL_LOOPING, AL_TRUE);
     
     GameState::Instance().reset();
 }

@@ -19,6 +19,7 @@ static const std::string SHIP_MESH = "assets/vipermk2/vipermk2_LW7.obj";
 static const std::string DRADIS_SOUND = "assets/sounds/dradis.wav";
 static const std::string THRUSTERS_SOUND = "assets/sounds/thrusters.wav";
 static const std::string EXPLOSION_SOUND = "assets/sounds/explosion.wav";
+static const std::string WARNING_SOUND = "assets/sounds/warning.wav";
 
 #define TILT_SPEED (pi<float>() / 4.0f)
 #define ROLL_SPEED (pi<float>() / 2.0f)
@@ -88,9 +89,9 @@ _radius(radius)
     
     // Construct healthbar
     {
-        vec3 healthPosition = vec3(0.0f, 1.0f, 0.0f);
+        vec3 healthPosition = vec3(0.0f, -0.3f, -1.225f);
         quat healthRotation = quat(vec3(0.0f));
-        vec3 healthScale = vec3(1.0f, 0.1f, 1.0f);
+        vec3 healthScale = vec3(0.2f, 0.06f, 1.0f);
         _healthBar = new HealthBar(MAX_HEALTH, healthPosition, healthRotation, healthScale);
         addChild(_healthBar);
     }
@@ -122,7 +123,7 @@ _radius(radius)
         
         alGenSources(1, &_thrustersSound);
         alSourcei(_thrustersSound, AL_BUFFER, _thrustersBuffer);
-        alSourcei(_thrustersSound, AL_LOOPING, true);
+        alSourcei(_thrustersSound, AL_LOOPING, AL_TRUE);
         
         // Explosion
         _explosionBuffer = alutCreateBufferFromFile(EXPLOSION_SOUND.c_str());
@@ -133,6 +134,17 @@ _radius(radius)
         
         alGenSources(1, &_explosionSound);
         alSourcei(_explosionSound, AL_BUFFER, _explosionBuffer);
+        
+        // Warning
+        _warningBuffer = alutCreateBufferFromFile(WARNING_SOUND.c_str());
+        alutError = alutGetError();
+        if (alutError != AL_NO_ERROR) {
+            std::cout << "Error loading warning sound: " << alutGetErrorString(alutError) << std::endl;
+        }
+        
+        alGenSources(1, &_warningSound);
+        alSourcei(_warningSound, AL_BUFFER, _warningBuffer);
+        alSourcei(_warningSound, AL_LOOPING, AL_TRUE);
     }
     
     // Initialize components
@@ -146,12 +158,15 @@ Ship::~Ship()
 {
     delete _physicsComponent;
     alSourceStop(_dradisSound);
+    alSourceStop(_warningSound);
     alDeleteSources(1, &_dradisSound);
     alDeleteBuffers(1, &_dradisBuffer);
     alDeleteSources(1, &_thrustersSound);
     alDeleteBuffers(1, &_thrustersBuffer);
     alDeleteSources(1, &_explosionSound);
     alDeleteBuffers(1, &_explosionBuffer);
+    alDeleteSources(1, &_warningSound);
+    alDeleteBuffers(1, &_warningBuffer);
 }
 
 void Ship::render()
@@ -273,6 +288,10 @@ void Ship::collide()
     
     // Sound
     alSourcePlay(_explosionSound);
+    if (newHealth == 1) {
+        alSourcePlay(_warningSound);
+        alSourcei(_warningSound, AL_LOOPING, AL_TRUE);
+    }
     
     // Gameover
     if (newHealth >= 0) {
