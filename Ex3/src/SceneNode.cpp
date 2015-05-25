@@ -247,11 +247,6 @@ void SceneNode::rebuildTransforms(bool localChanged)
  */
 void SceneNode::recursiveUpdate(float dt)
 {
-    // Update all scripts
-    for (Script *script : _scripts) {
-        script->update(dt);
-    }
-    
     // Update all children
     for (SceneNode *child : _childNodes) {
         child->recursiveUpdate(dt);
@@ -259,6 +254,11 @@ void SceneNode::recursiveUpdate(float dt)
     
     // Update myself
     update(dt);
+    
+    // Update all scripts
+    for (Script *script : _scripts) {
+        script->update(dt);
+    }
 }
 
 /**

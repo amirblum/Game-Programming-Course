@@ -39,8 +39,6 @@ using namespace glm;
 
 #include <iostream>
 
-static const std::string BACKGROUND_MUSIC = "assets/sounds/BSG_battle.wav";
-
 /** Internal Definitions */
 
 #define	WINDOW_WIDTH         (1024) // initial width of the window               //
@@ -138,18 +136,6 @@ int main(int argc, char* argv[])
     
     // Initialize ALUT (& background music)
     alutInit(&argc, argv);
-    
-    ALuint backgroundBuffer, backgroundSource;
-    backgroundBuffer = alutCreateBufferFromFile(BACKGROUND_MUSIC.c_str());
-    ALenum alutError = alutGetError();
-    if (alutError != AL_NO_ERROR) {
-        std::cout << "Error loading background music: " << alutGetErrorString(alutError) << std::endl;
-    }
-    
-    alGenSources(1, &backgroundSource);
-    alSourcei(backgroundSource, AL_BUFFER, backgroundBuffer);
-    alSourcei(backgroundSource, AL_LOOPING, true);
-    alSourcePlay(backgroundSource);
     
     // Initialize random seed
     srand(time(NULL));

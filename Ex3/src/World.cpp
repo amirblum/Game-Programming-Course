@@ -17,9 +17,11 @@
 #include "GameOver.h"
 #include "GameState.h"
 
+static const std::string BACKGROUND_MUSIC = "assets/sounds/BSG_battle.wav";
+
 World::World() :
 SceneNode(),
-_startPosition(0.0f)
+_startPosition(0.0f), _started(false)
 {
 //    GLenum error;
 //    error = glGetError();
@@ -47,11 +49,25 @@ _startPosition(0.0f)
     // Scripts
     addScript(new CameraScripts(camera, _ship, skybox));
     
+    // Background music
+    _backgroundMusicBuffer = alutCreateBufferFromFile(BACKGROUND_MUSIC.c_str());
+    ALenum alutError = alutGetError();
+    if (alutError != AL_NO_ERROR) {
+        std::cout << "Error loading background music: " << alutGetErrorString(alutError) << std::endl;
+    }
+    
+    alGenSources(1, &_backgroundMusicSource);
+    alSourcei(_backgroundMusicSource, AL_BUFFER, _backgroundMusicBuffer);
+    alSourcei(_backgroundMusicSource, AL_LOOPING, true);
+    
     GameState::Instance().reset();
 }
 
 World::~World()
 {
+    alSourceStop(_backgroundMusicSource);
+    alDeleteBuffers(1, &_backgroundMusicBuffer);
+    alDeleteSources(1, &_backgroundMusicSource);
 }
 
 /**
@@ -62,6 +78,11 @@ void World::update(float dt)
     GameState &state = GameState::Instance();
     
     if (state.gameStarted) {
+        if (!_started) {
+            alSourcePlay(_backgroundMusicSource);
+            _started = true;
+        }
+        
         if (!state.gameOver && InputManager::Instance().isPressedFirstTime(KEY_GAME_OVER)) {
             _ship->die();
         }
@@ -71,10 +92,6 @@ void World::update(float dt)
             addChild(gameOverText);
             state.gameOver = true;
         }
-    }
-    
-    for (Script *script : _scripts) {
-        script->update(dt);
     }
 }
 

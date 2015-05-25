@@ -28,7 +28,9 @@ using namespace glm;
 class World : public SceneNode {
 private:
     vec3 _startPosition;
+    bool _started;
     
+    ALuint _backgroundMusicBuffer, _backgroundMusicSource;
     Ship *_ship;
     
 public:
