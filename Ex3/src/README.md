@@ -69,6 +69,7 @@ This project has three main external library dependencies which I will outline h
 
    This is a port of the Simple OpenGL Image Library (SOIL), which updates a bunch of features. It is hosted here: https://bitbucket.org/SpartanJ/soil2 . I am actually using a slightly modified build. On both my machine and the aquarium machine, SOIL2 reported that cubemap textures were not supported and refused to load them. I modified the SOIL2.c file to remove that check. You may or may not have to do this on a windows machine. In any case, the modified libsoil.a is in the lib/ directory. Just in case, here is the diff:
    
+    ```
     Amirs-MacBook-Pro-2:SOIL2 amirblum$ diff SOIL2.c.ORIG SOIL2.c
     605,609c605,609
     < 	if( query_cubemap_capability() != SOIL_CAPABILITY_PRESENT )
@@ -82,6 +83,7 @@ This project has three main external library dependencies which I will outline h
     > //		result_string_pointer = "No cube map capability present";
     > //		return 0;
     > //	}
+    ```
     
 3. Assimp (The Open Asset Import Library)
 
