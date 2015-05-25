@@ -5,6 +5,7 @@ layout(location = 1) in vec3 localPosition;
 layout(location = 2) in float size;
 layout(location = 3) in float transparency;
 layout(location = 4) in vec3 tint;
+layout(location = 5) in vec2 billboardRight;
 
 uniform mat4 W;
 uniform mat4 PV;
@@ -31,7 +32,7 @@ void main()
     
     vec3 toCamera = normalize(cameraWorldPosition - centerWorldPosition.xyz);
     
-    vec3 billboardUp = normalize(cross(toCamera, vec3(1.0f, 0.0f, 0.0f))); // Normalize to fix case where cross between vectors that are almost parralel isn't normalized
+    vec3 billboardUp = normalize(cross(toCamera, vec3(billboardRight, 0.0f))); // Normalize to fix case where cross between vectors that are almost parralel isn't normalized
     vec3 billboardRight = -cross(toCamera, billboardUp);
     
     centerWorldPosition += vec4(billboardRight, 0.0f) * position.x * size;

@@ -118,11 +118,15 @@ void AsteroidParticleSystem::emit()
     // the position was randomly chosen), we let the physics run a bit
     newPosition += newPhysics->getVelocity() * 30.0f;
     
+    // Billboard right
+    vec2 newBillboardRight = circularRand(1.0f);    
+    
     _positions.setValue(particleID, newPosition);
     _sizes.setValue(particleID, size);
     _physics.setValue(particleID, newPhysics);
     _collided.setValue(particleID, false);
     _transparencies.setValue(particleID, 1.0f);
+    _billboardRights.setValue(particleID, newBillboardRight);
 }
 
 void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)

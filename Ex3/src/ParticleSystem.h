@@ -105,6 +105,7 @@ typedef ShaderAttributeDerived<vec3, 3, GL_FLOAT> PositionAttribute;
 typedef ShaderAttributeDerived<float, 1, GL_FLOAT> SizeAttribute;
 typedef ShaderAttributeDerived<float, 1, GL_FLOAT> TransparencyAttribute;
 typedef ShaderAttributeDerived<vec3, 3, GL_FLOAT> TintAttribute;
+typedef ShaderAttributeDerived<vec2, 2, GL_FLOAT> BillboardRightAttribute;
 
 
 /**
@@ -124,6 +125,7 @@ protected:
     SizeAttribute _sizes;
     TransparencyAttribute _transparencies;
     TintAttribute _tints;
+    BillboardRightAttribute _billboardRights;
     
     void addAttribute(ParticleAttribute *attribute);
     void addShaderAttribute(ShaderAttribute *attribute);

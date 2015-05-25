@@ -17,6 +17,7 @@ _positions(maxParticles, _renderComponent, "localPosition"),
 _sizes(maxParticles, _renderComponent, "size"),
 _transparencies(maxParticles, _renderComponent, "transparency"),
 _tints(maxParticles, _renderComponent, "tint"),
+_billboardRights(maxParticles, _renderComponent, "billboardRight"),
 _allParticleAttributes(),
 _shaderAttributes(),
 _aliveParticles(0)
@@ -58,10 +59,14 @@ _aliveParticles(0)
         addAttribute(&_tints);
         addShaderAttribute(&_tints);
         
+        addAttribute(&_billboardRights);
+        addShaderAttribute(&_billboardRights);
+        
         // Init some attributes
         for (unsigned int i = 0; i < _maxParticles; ++i) {
             _transparencies.setValue(i, 1.0f);
             _tints.setValue(i, vec3(1.0f));
+            _billboardRights.setValue(i, vec2(1.0f, 0.0f));
         }
     }
 }
