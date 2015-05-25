@@ -11,7 +11,7 @@
 #define MIN_CAMERA_DISTANCE (4.0f)
 #define MAX_CAMERA_DISTANCE (10.0f)
 #define MAX_LAG_SPEED (20.0f)
-#define POSITION_FOLLOW_PERCENT (0.05f)
+#define POSITION_FOLLOW_PERCENT (0.085f)
 #define ROTATION_FOLLOW_PERCENT (0.07f)
 
 CameraFollow::CameraFollow(Camera *camera, Ship *ship, SkyBox *skybox) :
