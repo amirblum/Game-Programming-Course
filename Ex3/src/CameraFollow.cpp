@@ -11,7 +11,8 @@
 #define MIN_CAMERA_DISTANCE (4.0f)
 #define MAX_CAMERA_DISTANCE (10.0f)
 #define MAX_LAG_SPEED (20.0f)
-#define FOLLOW_PERCENT (0.05f)
+#define POSITION_FOLLOW_PERCENT (0.05f)
+#define ROTATION_FOLLOW_PERCENT (0.07f)
 
 CameraFollow::CameraFollow(Camera *camera, Ship *ship, SkyBox *skybox) :
 _camera(camera), _ship(ship), _skybox(skybox)
@@ -48,7 +49,7 @@ void CameraFollow::update(float dt)
         } else {
             float desiredDistanceFromShip = mix(MIN_CAMERA_DISTANCE, MAX_CAMERA_DISTANCE, _ship->getSpeed() / _ship->getMaxSpeed());
             float distanceFromDesiredDistance = relativeDistanceFromShip - desiredDistanceFromShip;
-            float distanceFromTarget = distanceFromDesiredDistance / FOLLOW_PERCENT;
+            float distanceFromTarget = distanceFromDesiredDistance / POSITION_FOLLOW_PERCENT;
             
             float targetOffset = distanceFromTarget - distanceFromShip;
             cameraPositionTarget = shipPosition + shipForward * targetOffset;
@@ -58,9 +59,9 @@ void CameraFollow::update(float dt)
     
     
     // Interpolate
-    vec3 cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, FOLLOW_PERCENT);
-    vec3 cameraDirectionInterpolated = mix(cameraDirection, cameraDirectionTarget, FOLLOW_PERCENT);
-    vec3 cameraUpInterpolated = mix(cameraUp, cameraUpTarget, FOLLOW_PERCENT);
+    vec3 cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, POSITION_FOLLOW_PERCENT);
+    vec3 cameraDirectionInterpolated = mix(cameraDirection, cameraDirectionTarget, ROTATION_FOLLOW_PERCENT);
+    vec3 cameraUpInterpolated = mix(cameraUp, cameraUpTarget, ROTATION_FOLLOW_PERCENT);
         
     _camera->setPosition(cameraPositionInterpolated);
     _camera->setDirection(cameraDirectionInterpolated);
