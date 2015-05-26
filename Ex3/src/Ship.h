@@ -11,14 +11,13 @@
 #ifndef __ex3__Ship__
 #define __ex3__Ship__
 
-#include <AL/alut.h>
-
 #include "SceneNode.h"
 #include "Mesh.h"
 #include "PhysicsComponent.h"
 #include "HealthBar.h"
 #include "ThrusterParticleSystem.h"
 #include "ExplosionParticleSystem.h"
+#include "SoundManager.h"
 
 #include <vector>
 
@@ -26,9 +25,8 @@
 
 class Ship : public SceneNode {
 private:
-    // Sound
+    // Sounds
     ALuint _dradisSound, _thrustersSound, _explosionSound, _warningSound;
-    ALuint _dradisBuffer, _thrustersBuffer, _explosionBuffer, _warningBuffer;
     
     // Components
     Mesh *_mesh;
@@ -53,7 +51,6 @@ public:
     Ship(vec3 position, quat rotation, vec3 scale, float radius);
     virtual ~Ship();
     
-    virtual void render();
     virtual void update(float dt);
     
     void collide();

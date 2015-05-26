@@ -50,24 +50,14 @@ _startPosition(0.0f), _started(false)
     addScript(new CameraScripts(camera, _ship, skybox));
     
     // Background music
-    _backgroundMusicBuffer = alutCreateBufferFromFile(BACKGROUND_MUSIC.c_str());
-    ALenum alutError = alutGetError();
-    if (alutError != AL_NO_ERROR) {
-        std::cout << "Error loading background music: " << alutGetErrorString(alutError) << std::endl;
-    }
-    
-    alGenSources(1, &_backgroundMusicSource);
-    alSourcei(_backgroundMusicSource, AL_BUFFER, _backgroundMusicBuffer);
-    alSourcei(_backgroundMusicSource, AL_LOOPING, AL_TRUE);
+    _backgroundMusic = SoundManager::Instance().loadSound(BACKGROUND_MUSIC, true);
     
     GameState::Instance().reset();
 }
 
 World::~World()
 {
-    alSourceStop(_backgroundMusicSource);
-    alDeleteBuffers(1, &_backgroundMusicBuffer);
-    alDeleteSources(1, &_backgroundMusicSource);
+    SoundManager::Instance().releaseSound(_backgroundMusic);
 }
 
 /**
@@ -79,7 +69,7 @@ void World::update(float dt)
     
     if (state.gameStarted) {
         if (!_started) {
-            alSourcePlay(_backgroundMusicSource);
+            SoundManager::Instance().playSound(_backgroundMusic);
             _started = true;
         }
         

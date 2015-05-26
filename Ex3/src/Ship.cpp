@@ -98,53 +98,14 @@ _radius(radius)
     
     // Initialize sounds (this should be moved to a sound manager later)
     {
-        ALenum alutError;
+        SoundManager &soundManager = SoundManager::Instance();
+        _dradisSound = soundManager.loadSound(DRADIS_SOUND, true);
+        _thrustersSound = soundManager.loadSound(THRUSTERS_SOUND, true);
+        _explosionSound = soundManager.loadSound(EXPLOSION_SOUND);
+        _warningSound = soundManager.loadSound(WARNING_SOUND, true);
         
-        // Dradis
-        _dradisBuffer = alutCreateBufferFromFile(DRADIS_SOUND.c_str());
-        
-        alutError = alutGetError();
-        if (alutError != AL_NO_ERROR) {
-            std::cout << "Error loading dradis sound: " << alutGetErrorString(alutError) << std::endl;
-        }
-        
-        alGenSources(1, &_dradisSound);
-        alSourcei(_dradisSound, AL_BUFFER, _dradisBuffer);
-        alSourcei(_dradisSound, AL_LOOPING, true);
-        alSourcePlay(_dradisSound);
-        
-        // Thrusters
-        _thrustersBuffer = alutCreateBufferFromFile(THRUSTERS_SOUND.c_str());
-        
-        alutError = alutGetError();
-        if (alutError != AL_NO_ERROR) {
-            std::cout << "Error loading thrusters sound: " << alutGetErrorString(alutError) << std::endl;
-        }
-        
-        alGenSources(1, &_thrustersSound);
-        alSourcei(_thrustersSound, AL_BUFFER, _thrustersBuffer);
-        alSourcei(_thrustersSound, AL_LOOPING, AL_TRUE);
-        
-        // Explosion
-        _explosionBuffer = alutCreateBufferFromFile(EXPLOSION_SOUND.c_str());
-        alutError = alutGetError();
-        if (alutError != AL_NO_ERROR) {
-            std::cout << "Error loading explosion sound: " << alutGetErrorString(alutError) << std::endl;
-        }
-        
-        alGenSources(1, &_explosionSound);
-        alSourcei(_explosionSound, AL_BUFFER, _explosionBuffer);
-        
-        // Warning
-        _warningBuffer = alutCreateBufferFromFile(WARNING_SOUND.c_str());
-        alutError = alutGetError();
-        if (alutError != AL_NO_ERROR) {
-            std::cout << "Error loading warning sound: " << alutGetErrorString(alutError) << std::endl;
-        }
-        
-        alGenSources(1, &_warningSound);
-        alSourcei(_warningSound, AL_BUFFER, _warningBuffer);
-        alSourcei(_warningSound, AL_LOOPING, AL_TRUE);
+        // Play the dradis sound on init
+        soundManager.playSound(_dradisSound);
     }
     
     // Initialize components
@@ -157,20 +118,13 @@ _radius(radius)
 Ship::~Ship()
 {
     delete _physicsComponent;
-    alSourceStop(_dradisSound);
-    alSourceStop(_warningSound);
-    alDeleteSources(1, &_dradisSound);
-    alDeleteBuffers(1, &_dradisBuffer);
-    alDeleteSources(1, &_thrustersSound);
-    alDeleteBuffers(1, &_thrustersBuffer);
-    alDeleteSources(1, &_explosionSound);
-    alDeleteBuffers(1, &_explosionBuffer);
-    alDeleteSources(1, &_warningSound);
-    alDeleteBuffers(1, &_warningBuffer);
-}
-
-void Ship::render()
-{
+    
+    // Sounds
+    SoundManager &soundManager = SoundManager::Instance();
+    soundManager.releaseSound(_dradisSound);
+    soundManager.releaseSound(_thrustersSound);
+    soundManager.releaseSound(_explosionSound);
+    soundManager.releaseSound(_warningSound);
 }
 
 void Ship::update(float dt)
@@ -188,7 +142,7 @@ void Ship::update(float dt)
         _physicsComponent->applyForce(_forward * velocityStrength);
         
         // Accelerating
-        ALint thrustersSoundState;
+        SoundManager &soundManager = SoundManager::Instance();
         if (input.isPressed(KEY_ACTION)) {
             _physicsComponent->applyForce(_forward * ACCELERATION_FORCE);
             for (unsigned int i = 0; i < 3; ++i) {
@@ -196,16 +150,10 @@ void Ship::update(float dt)
                     _thrusters[i]->emit();
                 }
             }
-            alGetSourcei(_thrustersSound, AL_SOURCE_STATE, &thrustersSoundState);
-            if (thrustersSoundState != AL_PLAYING) {
-                alSourcePlay(_thrustersSound);
-            }
+            soundManager.playSound(_thrustersSound);
         } else if (_physicsComponent->isMoving()) {
             _physicsComponent->applyForce(-_physicsComponent->getVelocity() * DAMPENING_FORCE);
-            alGetSourcei(_thrustersSound, AL_SOURCE_STATE, &thrustersSoundState);
-            if (thrustersSoundState == AL_PLAYING) {
-                alSourceStop(_thrustersSound);
-            }
+            soundManager.stopSound(_thrustersSound);
         }
         
         // Tilting
@@ -351,9 +299,12 @@ float Ship::getRadius()
 void Ship::die()
 {
     _healthBar->setCurrentUnits(0);
-    alSourceStop(_dradisSound);
-    alSourceStop(_thrustersSound);
     generateExplosion(2000);
+    
+    SoundManager &soundManager = SoundManager::Instance();
+    soundManager.stopSound(_dradisSound);
+    soundManager.stopSound(_thrustersSound);
+    soundManager.stopSound(_warningSound);
 }
 
 bool Ship::isDead()

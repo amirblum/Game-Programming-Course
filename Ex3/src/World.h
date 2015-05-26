@@ -24,13 +24,14 @@ using namespace glm;
 
 #include "SceneNode.h"
 #include "Ship.h"
+#include "SoundManager.h"
 
 class World : public SceneNode {
 private:
     vec3 _startPosition;
     bool _started;
     
-    ALuint _backgroundMusicBuffer, _backgroundMusicSource;
+    ALuint _backgroundMusic;
     Ship *_ship;
     
 public:
