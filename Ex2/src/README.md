@@ -8,17 +8,17 @@ The basic game has you in a dark corridor with a spotlight. The spotlight is dir
 
 Controls:
 ---------
-W - Move forward
-A - Move left
-S - Move backward
-D - Move right
+W - Move forward  
+A - Move left  
+S - Move backward  
+D - Move right  
 Mouse - Move flashlight around
 
-(Optional keys):
-B - Toggle bump mapping on/off
-G - Toggle glow on/off
--/+ - Decrease/Increase ambient lighting in corridor
-0,1,2,3,4 - Change the post-processing convolution kernel (detailed below)
+(Optional keys):  
+B - Toggle bump mapping on/off  
+G - Toggle glow on/off  
+-/+ - Decrease/Increase ambient lighting in corridor  
+0,1,2,3,4 - Change the post-processing convolution kernel (detailed below)  
 F - Initiate end sequence
 
 Required implementations:
@@ -27,11 +27,11 @@ I implemented the following optional features as specified in the exercise descr
 * Flickering light: I implemented a light flickering system that makes the flashlight flicker randomly every few seconds. I think it's pretty scary! If you the 'f' key you might even see some special flickering...
 * Walking left/right: Pretty straightforward
 * Using mouse for light control: Yessir
-* Other kernels: The game includes the following kernels:
-    0) Identity
-    1) Gaussian blur
-    2) Sharpen
-    3) Edge detection
+* Other kernels: The game includes the following kernels:  
+    0) Identity  
+    1) Gaussian blur  
+    2) Sharpen  
+    3) Edge detection  
     4) Emboss
 * Glow: Press 'g' to activate a glow around the light from the flashlight. The way the glow works is that first the game tells the corridor to draw only the light part onto a framebuffer. This is saved in a texture. Now the normal PPBuffer is set up and the complete draw is drawn to it's framebuffer. When the PPBuffer renders we pass it the "glow" texture from before and in the PPBuffer shader it blurs that glow then adds on top of the fully rendered scene.
 
