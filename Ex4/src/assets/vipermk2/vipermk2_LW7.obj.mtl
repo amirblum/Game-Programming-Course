@@ -1,0 +1,716 @@
+# File produced by Open Asset Import Library (http://www.assimp.sf.net)
+# (assimp v3.1.187496374)
+
+newmtl VMK2_flightstick
+Kd 0.54902 0.54902 0.54902
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+
+newmtl VMK2_flightstickblack
+Kd 0.0411765 0.0411765 0.0411765
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+
+newmtl VMK2_flightstickred
+Kd 0.683529 0 0
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+
+newmtl vmk2_aft
+Kd 0.847059 0.847059 0.847059
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+
+newmtl vmk2_aftmechanic
+Kd 0.67451 0.67451 0.67451
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/aftmechM.jpg
+
+newmtl vmk2_aftmechanic2
+Kd 0.67451 0.67451 0.67451
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+map_Kd C://Documents and Settings/kennedys/Desktop/vipermk2/textures/aftmechM.jpg
+
+newmtl vmk2_aftmechanic3
+Kd 0.67451 0.67451 0.67451
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+map_Kd C:///Documents and Settings/kennedys/Desktop/vipermk2/textures/aftmechM.jpg
+
+newmtl vmk2_aftred
+Kd 0.52549 0.52549 0.52549
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/basicred.jpg
+
+newmtl vmk2_Caution1
+Kd 0.796079 0.94902 0.741176
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/CAUTION1.jpg
+
+newmtl vmk2_Caution2
+Kd 0.796079 0.94902 0.741176
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/CAUTION2.jpg
+
+newmtl vmk2_canopy
+Kd 0.279216 0.279216 0.279216
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/COCKPITm.jpg
+
+newmtl vmk2_canopywindow
+Kd 0.776471 0.917647 0.992157
+Ks 1 1 1
+Ke 0 0 0
+d 0.00999999
+Ns 36
+illum 2
+
+newmtl vmk2_cockpit
+Kd 0.513726 0.513726 0.513726
+Ks 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl vmk2_cockpit_dash
+Kd 0.254902 0.254902 0.254902
+Ks 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/dash.jpg
+
+newmtl vmk2_cockpitmetal
+Kd 0.513726 0.513726 0.513726
+Ks 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl vmk2_cockpitscreen
+Kd 0.109804 0.490196 0.917647
+Ks 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/screenM.jpg
+
+newmtl vmk2_cockpitseat
+Kd 0.411765 0.411765 0.411765
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 64
+illum 2
+
+newmtl vmk2_cockpitseat_yellow
+Kd 0.823529 0.803922 0
+Ks 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/seatyello.jpg
+
+newmtl vmk2_engblock
+Kd 0.847059 0.847059 0.847059
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+
+newmtl vmk2_enghousing
+Kd 0.847059 0.847059 0.847059
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/vertstab_M.jpg
+
+newmtl vmk2_enghousing1left
+Kd 0.796079 0.94902 0.741176
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/ENG1L_M.jpg
+
+newmtl vmk2_enghousing1red
+Kd 0.423529 0.423529 0.423529
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/eng1redM.jpg
+
+newmtl vmk2_enghousing1right
+Kd 0.847059 0.847059 0.847059
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/ENG1R_M.jpg
+
+newmtl vmk2_enghousing2
+Kd 0.847059 0.847059 0.847059
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/ENG23_M.jpg
+
+newmtl vmk2_enghousing2grey
+Kd 0.423529 0.423529 0.423529
+Ks 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl vmk2_enghousing2red
+Kd 0.423529 0.423529 0.423529
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/ENG2ERED_M.jpg
+
+newmtl vmk2_enghousing2warning
+Kd 0.709804 0.709804 0.984314
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/ENGWORDS2_M.jpg
+
+newmtl vmk2_enghousing3
+Kd 0.847059 0.847059 0.847059
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C://Documents and Settings/kennedys/Desktop/vipermk2/textures/ENG23_M.jpg
+
+newmtl vmk2_enghousing3_gearbox
+Kd 0.847059 0.847059 0.847059
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/gearboxM.jpg
+
+newmtl vmk2_enghousing3_gearboxred
+Kd 0.423529 0.423529 0.423529
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C://Documents and Settings/kennedys/Desktop/vipermk2/textures/basicred.jpg
+
+newmtl vmk2_enghousing3grey
+Kd 0.423529 0.423529 0.423529
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+
+newmtl vmk2_enghousing3red
+Kd 0.423529 0.423529 0.423529
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/ENG3ERED_M.jpg
+
+newmtl vmk2_enghousing3warning
+Kd 0.709804 0.709804 0.984314
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/ENGWORDS1_M.jpg
+
+newmtl vmk2_enghousingblack
+Kd 0 0 0
+Ks 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl vmk2_enghousingcore
+Kd 0.444706 0.444706 0.444706
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/engcoreM.jpg
+
+newmtl vmk2_enghousingpipes
+Kd 0.635294 0.635294 0.635294
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+
+newmtl vmk2_enghousingRCT
+Kd 0.0470588 0.0470588 0.0470588
+Ks 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl JoinedMaterial_#39
+Kd 0.65098 0.65098 0.65098
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+
+newmtl vmk2_engmech
+Kd 0.627451 0.627451 0.627451
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+
+newmtl vmk2_engthrusters
+Kd 0.321569 0.321569 0.321569
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/thrustM.jpg
+
+newmtl vmk2_engthrusters_ext
+Kd 0.321569 0.321569 0.321569
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+map_Kd C://Documents and Settings/kennedys/Desktop/vipermk2/textures/thrustM.jpg
+
+newmtl vmk2_gearboxdoors
+Kd 0.815686 0.8 0.890196
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/underbumbM.jpg
+
+newmtl vmk2_gearfore
+Kd 0.815686 0.8 0.890196
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C://Documents and Settings/kennedys/Desktop/vipermk2/textures/underbumbM.jpg
+
+newmtl vmk2_INTAKEWARNING1
+Kd 0.905882 0.85098 0.788235
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/INTAKEWARN1.jpg
+
+newmtl vmk2_INTAKEWARNING2
+Kd 0.835294 0.752941 0.937255
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/INTAKEWARN2.jpg
+
+newmtl vmk2_nose
+Kd 0.796079 0.94902 0.741176
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/noseM.jpg
+
+newmtl vmk2_nose_bot
+Kd 0.839216 0.752941 0.937255
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/nosebotM.jpg
+
+newmtl vmk2_nose_top
+Kd 0.737255 0.835294 0.952941
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/nosetopM.jpg
+
+newmtl vmk2_nose_topred
+Kd 0.584314 0.584314 0.584314
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:///Documents and Settings/kennedys/Desktop/vipermk2/textures/basicred.jpg
+
+newmtl vmk2_nosedark
+Kd 0.113725 0.113725 0.113725
+Ks 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl vmk2_noseemblem1
+Kd 0.796079 0.94902 0.741176
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C://Documents and Settings/kennedys/Desktop/vipermk2/textures/noseM.jpg
+
+newmtl vmk2_noseemblem2
+Kd 0.796079 0.94902 0.741176
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:///Documents and Settings/kennedys/Desktop/vipermk2/textures/noseM.jpg
+
+newmtl vmk2_noseintake
+Kd 0.654902 0.654902 0.654902
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+
+newmtl vmk2_nosemech
+Kd 0.423529 0.423529 0.423529
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 16
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/foremechM.jpg
+
+newmtl vmk2_nosemechred
+Kd 0.392157 0.176471 0.176471
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+
+newmtl vmk2_nosename1
+Kd 0.796079 0.94902 0.741176
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:////Documents and Settings/kennedys/Desktop/vipermk2/textures/noseM.jpg
+
+newmtl vmk2_nosename2
+Kd 0.796079 0.94902 0.741176
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C://///Documents and Settings/kennedys/Desktop/vipermk2/textures/noseM.jpg
+
+newmtl vmk2_nosered
+Kd 0.52549 0.52549 0.52549
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:////Documents and Settings/kennedys/Desktop/vipermk2/textures/basicred.jpg
+
+newmtl vmk2_RCTport
+Kd 0.254902 0.254902 0.254902
+Ks 1 1 1
+Ke 0 0 0
+d 1
+illum 1
+
+newmtl vmk2_rescue1
+Kd 0.796079 0.94902 0.741176
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/rescue1.jpg
+
+newmtl vmk2_rescue2
+Kd 0.796079 0.94902 0.741176
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/rescue2.jpg
+
+newmtl vmk2_service1
+Kd 0.796079 0.94902 0.741176
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/SERVICE1.jpg
+
+newmtl vmk2_service2
+Kd 0.796079 0.94902 0.741176
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/SERVICE2.jpg
+
+newmtl vmk2_underbump
+Kd 0.815686 0.8 0.890196
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:///Documents and Settings/kennedys/Desktop/vipermk2/textures/underbumbM.jpg
+
+newmtl vmk2_underbump_intake
+Kd 0.815686 0.8 0.890196
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:////Documents and Settings/kennedys/Desktop/vipermk2/textures/underbumbM.jpg
+
+newmtl vmk2_vertstab
+Kd 0.847059 0.847059 0.847059
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C://Documents and Settings/kennedys/Desktop/vipermk2/textures/vertstab_M.jpg
+
+newmtl vmk2_vertstab_gal1
+Kd 0.709804 0.960784 0.984314
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/vertstabG1M.jpg
+
+newmtl vmk2_vertstab_gal2
+Kd 0.733333 0.956863 0.909804
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/vertstabG2M.jpg
+
+newmtl vmk2_vertstab_red
+Kd 0.513726 0.513726 0.513726
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C://///Documents and Settings/kennedys/Desktop/vipermk2/textures/basicred.jpg
+
+newmtl vmk2_winglft
+Kd 0.847059 0.847059 0.847059
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/wingT_rt.jpg
+
+newmtl vmk2_winglft_bot
+Kd 0.847059 0.847059 0.847059
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/wingB_rt.jpg
+
+newmtl vmk2_winglft_dk
+Kd 0.392157 0.392157 0.392157
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/wethering.jpg
+
+newmtl vmk2_winglftgun
+Kd 0.831373 0.831373 0.831373
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/laserM.jpg
+
+newmtl vmk2_winglftgun_2
+Kd 0.215686 0.215686 0.215686
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+
+newmtl JoinedMaterial_#84
+Kd 0.227451 0.227451 0.227451
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+
+newmtl JoinedMaterial_#85
+Kd 0.956863 0 0.0235294
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 64
+illum 2
+
+newmtl vmk2_winglftred
+Kd 0.494118 0.494118 0.494118
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C://////Documents and Settings/kennedys/Desktop/vipermk2/textures/basicred.jpg
+
+newmtl vmk2_wingrt
+Kd 0.733333 0.760784 0.956863
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:/Documents and Settings/kennedys/Desktop/vipermk2/textures/wingT_f.jpg
+
+newmtl vmk2_wingrt_bot
+Kd 0.847059 0.847059 0.847059
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C://Documents and Settings/kennedys/Desktop/vipermk2/textures/wingB_rt.jpg
+
+newmtl vmk2_wingrt_dk
+Kd 0.415686 0.415686 0.415686
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C://Documents and Settings/kennedys/Desktop/vipermk2/textures/wethering.jpg
+
+newmtl vmk2_wingrtgun
+Kd 0.831373 0.831373 0.831373
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C://Documents and Settings/kennedys/Desktop/vipermk2/textures/laserM.jpg
+
+newmtl vmk2_wingrtgun_2
+Kd 0.266667 0.266667 0.266667
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+
+newmtl vmk2_wingrtred
+Kd 0.494118 0.494118 0.494118
+Ks 1 1 1
+Ke 0 0 0
+d 1
+Ns 36
+illum 2
+map_Kd C:///////Documents and Settings/kennedys/Desktop/vipermk2/textures/basicred.jpg
+
