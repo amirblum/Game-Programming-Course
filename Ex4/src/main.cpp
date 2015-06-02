@@ -152,8 +152,15 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+// Time
 int oldTimeSinceStart = 0;
-bool drawGlow = false;
+float physicsTimeStep = 1.0f / 50.0f;
+float accumulator = 0.0f;
+
+// FPS
+int frames = 0;
+int fpsCounter = 0;
+
 void display(void)
 {
     // Update the delta
@@ -161,9 +168,25 @@ void display(void)
     int deltaTime = timeSinceStart - oldTimeSinceStart;
     oldTimeSinceStart = timeSinceStart;
     
-    // Update the game state
     float dt = (float)deltaTime / 1000.0f;
+    if (dt > 0.25f) {
+        dt = 0.25f;
+    }
+    
+    // We fix the physics timestep based on the information in the following
+    // article: http://gafferongames.com/game-physics/fix-your-timestep/
+    accumulator += dt;
+    while (accumulator >= physicsTimeStep) {
+//        std::cout << "physics update" << std::endl;
+        _world->recursiveFixedUpdate(physicsTimeStep);
+        accumulator -= physicsTimeStep;
+    }
+    
+    const double physicsInterpolation = accumulator / physicsTimeStep;
+
+    // Update the game state
     _world->recursiveUpdate(dt);
+    
     
     // Drawing time
     
@@ -173,6 +196,15 @@ void display(void)
     
     // Tell the world to draw itself
     _world->recursiveRender();
+    
+    // Print fps
+    frames++;
+    fpsCounter += deltaTime;
+    if (fpsCounter > 1000) {
+        std::cout << (frames * 1000) / fpsCounter << " FPS" << std::endl;
+        fpsCounter = fpsCounter - 1000;
+        frames = 0;
+    }
     
     // Swap those buffers so someone will actually see the results... //
     glutSwapBuffers();

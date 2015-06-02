@@ -132,6 +132,12 @@ void RenderComponent::sendUniform(UniformVariable *uniform)
             glUniform1i(uniformb->handle, uniformb->value);
             break;
         }
+        case UNIFORM_VEC2:
+        {
+            UniformVariableVec2 *uniformv2 = dynamic_cast<UniformVariableVec2*>(uniform);
+            glUniform2fv(uniformv2->handle, 1, value_ptr(uniformv2->value));
+            break;
+        }
         case UNIFORM_VEC3:
         {
             UniformVariableVec3 *uniformv3 = dynamic_cast<UniformVariableVec3*>(uniform);
@@ -141,7 +147,7 @@ void RenderComponent::sendUniform(UniformVariable *uniform)
         case UNIFORM_VEC4:
         {
             UniformVariableVec4 *uniformv4 = dynamic_cast<UniformVariableVec4*>(uniform);
-            glUniform3fv(uniformv4->handle, 1, value_ptr(uniformv4->value));
+            glUniform4fv(uniformv4->handle, 1, value_ptr(uniformv4->value));
             break;
         }
         case UNIFORM_MAT3:

@@ -15,8 +15,9 @@
 #define GLM_FORCE_RADIANS
 #include <glm/gtc/random.hpp>
 
-#define ASTEROID_MAX_VELOCITY (15.0f)
-#define ASTEROID_MIN_VELOCITY (2.5f)
+#define ASTEROID_MASS (2.0f)
+#define ASTEROID_MAX_VELOCITY (150.0f)
+#define ASTEROID_MIN_VELOCITY (25.0f)
 #define ASTEROID_MIN_SIZE (2.0f)
 #define ASTEROID_MAX_SIZE (35.0f)
 #define TRANSPARENCY_MARGIN (100.0f)
@@ -27,7 +28,7 @@ AsteroidParticleSystem::AsteroidParticleSystem(unsigned int maxAsteroids, float 
 ParticleSystem(maxAsteroids),
 _emitMaxRadius(emitRadius), _emitMinRadius(0),
 _ship(ship),
-_physics(maxAsteroids, "physics"),
+_rigidBodies(maxAsteroids, "rigidBodies"),
 _collided(maxAsteroids, "collided")
 {
     // Render-related
@@ -38,7 +39,7 @@ _collided(maxAsteroids, "collided")
     
     // Add particle attributes
     {        
-        addAttribute(&_physics);
+        addAttribute(&_rigidBodies);
         addAttribute(&_collided);
     }
     
@@ -54,7 +55,7 @@ _collided(maxAsteroids, "collided")
 AsteroidParticleSystem::~AsteroidParticleSystem()
 {
     for (unsigned int i = 0; i < _maxParticles; ++i) {
-        delete _physics.getValue(i);
+        delete _rigidBodies.getValue(i);
     }
 }
 
@@ -97,7 +98,7 @@ void AsteroidParticleSystem::emit()
     }
     
     // Physics
-    PhysicsComponent *newPhysics;
+    RigidBody *newRigidBody;
     {
         vec3 randomDirection = sphericalRand(1.0f);
         float randomSpeed = randutils::randomRange(ASTEROID_MIN_VELOCITY, ASTEROID_MAX_VELOCITY);
@@ -109,21 +110,24 @@ void AsteroidParticleSystem::emit()
             initialForce = -initialForce;
         }
         
-        newPhysics = new PhysicsComponent(ASTEROID_MAX_VELOCITY);
-        newPhysics->applyForce(initialForce);
+        // Move the asteroid around a bit from the initial random position
+        newPosition += initialForce;// * 30.0f;
+        
+        newRigidBody = new RigidBody(newPosition, size * 0.3f, ASTEROID_MASS, false);
+        newRigidBody->getPhysics().applyForce(initialForce);
     }
     
     // Random fun
     // To avoid having most asteroids near the ship at start (due to the way
     // the position was randomly chosen), we let the physics run a bit
-    newPosition += newPhysics->getVelocity() * 30.0f;
+//    newPosition += newRigidBody->getPhysics().getVelocity() * 30.0f;
     
     // Billboard right
     vec2 newBillboardRight = circularRand(1.0f);    
     
     _positions.setValue(particleID, newPosition);
     _sizes.setValue(particleID, size);
-    _physics.setValue(particleID, newPhysics);
+    _rigidBodies.setValue(particleID, newRigidBody);
     _collided.setValue(particleID, false);
     _transparencies.setValue(particleID, 1.0f);
     _billboardRights.setValue(particleID, newBillboardRight);
@@ -132,20 +136,21 @@ void AsteroidParticleSystem::emit()
 void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
 {
     // Update position
-    vec3 currentPosition = _positions.getValue(particleID);
-    vec3 updatedPosition = currentPosition;
-    PhysicsComponent *physics = _physics.getValue(particleID);
+//    vec3 currentPosition = _positions.getValue(particleID);
+//    vec3 newPosition = currentPosition;
+    vec3 newPosition = _rigidBodies.getValue(particleID)->getPhysics().getPosition();
+//    PhysicsComponent &physics = _rigidBodies.getValue(particleID)->getPhysics();
+//    newPosition += physics.getVelocity() * dt;
     
-    updatedPosition += physics->getVelocity() * dt;
     
     // Check death
     vec3 shipWorldPosition = _ship->getWorldPosition();
-    vec3 relativePosition = updatedPosition - shipWorldPosition;
+    vec3 relativePosition = newPosition - shipWorldPosition;
     float distanceFromShip = length(relativePosition);
     if (distanceFromShip > _emitMaxRadius) {
         // Pop-through to other side of field
         vec3 newRelativePosition = -relativePosition;
-        updatedPosition = shipWorldPosition + newRelativePosition;
+        newPosition = shipWorldPosition + newRelativePosition;
     }
     
     // Check collision
@@ -167,5 +172,5 @@ void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
     _transparencies.setValue(particleID, transparency);
     
     // Update particle
-    _positions.setValue(particleID, updatedPosition);
+    _positions.setValue(particleID, newPosition);
 }

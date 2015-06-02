@@ -11,13 +11,13 @@
 
 #include <stdio.h>
 #include "ParticleSystem.h"
-#include "PhysicsComponent.h"
+#include "RigidBody.h"
 
-typedef ParticleAttributeDerived<PhysicsComponent*> PhysicsAttribute;
+typedef ParticleAttributeDerived<vec3> VelocityAttribute;
 
 class ExplosionParticleSystem : public ParticleSystem {
 private:
-    PhysicsAttribute _physics;
+    VelocityAttribute _velocities;
     float _nextEmitTime;
     float _timeSinceLastEmission;
     unsigned int _particlesEmitted;

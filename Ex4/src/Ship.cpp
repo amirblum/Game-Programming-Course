@@ -21,9 +21,10 @@ static const std::string THRUSTERS_SOUND = "assets/sounds/thrusters.wav";
 static const std::string EXPLOSION_SOUND = "assets/sounds/explosion.wav";
 static const std::string WARNING_SOUND = "assets/sounds/warning.wav";
 
+#define SHIP_MASS (0.5f)
 #define TILT_SPEED (pi<float>() / 4.0f)
 #define ROLL_SPEED (pi<float>() / 2.0f)
-#define ACCELERATION_FORCE (1.0f)
+#define ACCELERATION_FORCE (10.0f)
 #define DAMPENING_FORCE    (0.005f)
 #define MAX_VELOCITY (300.0f)
 #define MAX_HEALTH (5)
@@ -33,6 +34,7 @@ static const std::string WARNING_SOUND = "assets/sounds/warning.wav";
  */
 Ship::Ship(vec3 position, quat rotation, vec3 scale, float radius) :
 SceneNode(position, rotation, scale),
+RigidBody(position, radius, SHIP_MASS, false),
 _forward(FORWARD_VECTOR), _right(RIGHT_VECTOR),
 _radius(radius)
 {
@@ -96,7 +98,7 @@ _radius(radius)
         addChild(_healthBar);
     }
     
-    // Initialize sounds (this should be moved to a sound manager later)
+    // Initialize sounds
     {
         SoundManager &soundManager = SoundManager::Instance();
         _dradisSound = soundManager.loadSound(DRADIS_SOUND, true);
@@ -107,9 +109,6 @@ _radius(radius)
         // Play the dradis sound on init
         soundManager.playSound(_dradisSound);
     }
-    
-    // Initialize components
-    _physicsComponent = new PhysicsComponent(MAX_VELOCITY);
 }
 
 /**
@@ -117,8 +116,6 @@ _radius(radius)
  */
 Ship::~Ship()
 {
-    delete _physicsComponent;
-    
     // Sounds
     SoundManager &soundManager = SoundManager::Instance();
     soundManager.releaseSound(_dradisSound);
@@ -127,7 +124,7 @@ Ship::~Ship()
     soundManager.releaseSound(_warningSound);
 }
 
-void Ship::update(float dt)
+void Ship::fixedUpdate(float dt)
 {
     GameState &state = GameState::Instance();
     if (state.gameStarted && !state.gameOver) {
@@ -136,23 +133,24 @@ void Ship::update(float dt)
         
         // Velocity hack. Basically this retains the forward velocity even when
         //changing directions. Not realistic physics AT ALL...but feels better XD
-        vec3 prevVelocity = _physicsComponent->getVelocity();
-        float velocityStrength = length(prevVelocity);
-        _physicsComponent->applyForce(-prevVelocity);
-        _physicsComponent->applyForce(_forward * velocityStrength);
+//        vec3 prevVelocity = _physics.getVelocity();
+//        float velocityStrength = length(prevVelocity);
+//        _physics.applyForce(-prevVelocity);
+//        _physics.applyForce(_forward * velocityStrength);
         
         // Accelerating
         SoundManager &soundManager = SoundManager::Instance();
         if (input.isPressed(KEY_ACTION)) {
-            _physicsComponent->applyForce(_forward * ACCELERATION_FORCE);
+            accelerate(ACCELERATION_FORCE);
+//            _physics.applyForce(_forward * ACCELERATION_FORCE);
             for (unsigned int i = 0; i < 3; ++i) {
-                for (unsigned int j = 0; j < 400; ++j) {
+                for (unsigned int j = 0; j < 100; ++j) {
                     _thrusters[i]->emit();
                 }
             }
             soundManager.playSound(_thrustersSound);
-        } else if (_physicsComponent->isMoving()) {
-            _physicsComponent->applyForce(-_physicsComponent->getVelocity() * DAMPENING_FORCE);
+        } else if (_physics.isMoving()) {
+//            _physics.applyForce(-_physics.getVelocity() * DAMPENING_FORCE);
             soundManager.stopSound(_thrustersSound);
         }
         
@@ -175,13 +173,23 @@ void Ship::update(float dt)
         {
             twist(ROLL_SPEED * dt);
         }
-    } else if (_physicsComponent->isMoving()) {
-        _physicsComponent->applyForce(-_physicsComponent->getVelocity() * DAMPENING_FORCE);
+    } else if (_physics.isMoving()) {
+//        _physics.applyForce(-_physics.getVelocity() * DAMPENING_FORCE);
     }
     
     // Update position
-    vec3 velocity = _physicsComponent->getVelocity();
-    setPosition(_position + velocity * dt);
+//    vec3 velocity = _physics.getVelocity();
+//    setPosition(_position + velocity * dt);
+    
+}
+
+/**
+ * Perform non-physics related updates
+ */
+void Ship::update(float dt)
+{
+    // Update position
+    setPosition(_physics.getPosition());
     
     // Update explosions
     {
@@ -203,7 +211,7 @@ void Ship::update(float dt)
  */
 void Ship::accelerate(float force)
 {
-    _physicsComponent->applyForce(_forward * force);
+    _physics.applyForce(_forward * force);
 }
 
 /**
@@ -283,7 +291,7 @@ vec3 Ship::getRight()
 
 float Ship::getSpeed()
 {
-    return length(_physicsComponent->getVelocity());
+    return length(_physics.getVelocity());
 }
 
 float Ship::getMaxSpeed()

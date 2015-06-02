@@ -25,18 +25,22 @@ using namespace glm;
 #include "SceneNode.h"
 #include "Ship.h"
 #include "SoundManager.h"
+#include "PhysicsSimulation.h"
 
 class World : public SceneNode {
 private:
+    ALuint _backgroundMusic;
+    
     vec3 _startPosition;
     bool _started;
     
-    ALuint _backgroundMusic;
     Ship *_ship;
+    PhysicsSimulation *_physicsSimulation;
     
 public:
     World();
     virtual ~World();
+    virtual void fixedUpdate(float dt);
     virtual void update(float dt);
     
     // Getters

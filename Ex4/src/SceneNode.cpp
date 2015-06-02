@@ -243,6 +243,26 @@ void SceneNode::rebuildTransforms(bool localChanged)
 
 /**
  * First, call virtual update method on self to perform any of the node's
+ * personal fixedUpdates, then recursively call fixedUpdate on all the children.
+ */
+void SceneNode::recursiveFixedUpdate(float dt)
+{
+    // Update all children
+    for (SceneNode *child : _childNodes) {
+        child->recursiveFixedUpdate(dt);
+    }
+    
+    // Update myself
+    fixedUpdate(dt);
+    
+    // Update all scripts
+    for (Script *script : _scripts) {
+        script->fixedUpdate(dt);
+    }
+}
+
+/**
+ * First, call virtual update method on self to perform any of the node's
  * personal updates, then recursively call update on all the children.
  */
 void SceneNode::recursiveUpdate(float dt)
@@ -279,6 +299,11 @@ void SceneNode::recursiveRender()
         child->recursiveRender();
     }
 }
+
+/**
+ * Empty implementation for personal fixedUpdate
+ */
+void SceneNode::fixedUpdate(float dt) {}
 
 /**
  * Empty implementation for personal update

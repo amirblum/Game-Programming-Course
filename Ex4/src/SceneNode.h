@@ -84,8 +84,10 @@ public:
     void toggleScaleInvariance();
     
     // Recursive actions
+    void recursiveFixedUpdate(float dt);
     void recursiveUpdate(float dt);
     void recursiveRender();
+    virtual void fixedUpdate(float dt);
     virtual void update(float dt);
     virtual void render();
 };

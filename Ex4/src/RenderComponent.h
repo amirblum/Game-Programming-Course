@@ -62,6 +62,7 @@ enum UniformType {
     UNIFORM_FLOAT,
     UNIFORM_INT,
     UNIFORM_BOOLEAN,
+    UNIFORM_VEC2,
     UNIFORM_VEC3,
     UNIFORM_VEC4,
     UNIFORM_MAT3,
@@ -88,6 +89,7 @@ public:
 typedef UniformVariableDerived<float, UNIFORM_FLOAT> UniformVariableFloat;
 typedef UniformVariableDerived<int, UNIFORM_INT> UniformVariableInt;
 typedef UniformVariableDerived<bool, UNIFORM_BOOLEAN> UniformVariableBool;
+typedef UniformVariableDerived<vec2, UNIFORM_VEC2> UniformVariableVec2;
 typedef UniformVariableDerived<vec3, UNIFORM_VEC3> UniformVariableVec3;
 typedef UniformVariableDerived<vec4, UNIFORM_VEC4> UniformVariableVec4;
 typedef UniformVariableDerived<mat3, UNIFORM_MAT3> UniformVariableMat3;

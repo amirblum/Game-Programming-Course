@@ -28,7 +28,7 @@ ExplosionParticleSystem::ExplosionParticleSystem(unsigned int maxParticles,
                                                  quat rotation,
                                                  vec3 scale) :
 ParticleSystem(maxParticles, position, rotation, scale),
-_physics(maxParticles, "physics"),
+_velocities(maxParticles, "velocities"),
 _nextEmitTime(0.0f),
 _timeSinceLastEmission(0.0f),
 _particlesEmitted(0)
@@ -41,15 +41,12 @@ _particlesEmitted(0)
     
     // Add particle attributes
     {
-        addAttribute(&_physics);
+        addAttribute(&_velocities);
     }
 }
 
 ExplosionParticleSystem::~ExplosionParticleSystem()
 {
-//    for (unsigned int i = 0; i < _maxParticles; ++i) {
-//        delete _physics.getValue(i);
-//    }
 }
 
 void ExplosionParticleSystem::updateGeneral(float dt)
@@ -76,16 +73,20 @@ void ExplosionParticleSystem::emit()
         return;
     }
     
+    vec3 newPosition = vec3(0.0f);
+    vec3 newVelocity;
     float newSize = randutils::randomRange(MIN_SIZE, MAX_SIZE);
     
-    PhysicsComponent *newPhysics = new PhysicsComponent(MAX_VELOCITY);
-    float force = randutils::randomRange(MIN_VELOCITY, MAX_VELOCITY);
-    vec3 directionalForce = sphericalRand(force);
-    newPhysics->applyForce(directionalForce);
+    // Set initial force
+    {
+        float force = randutils::randomRange(MIN_VELOCITY, MAX_VELOCITY);
+        vec3 directionalForce = sphericalRand(force);
+        newVelocity = directionalForce;
+    }
     
-    _positions.setValue(particleID, vec3(0.0f));
+    _positions.setValue(particleID, newPosition);
     _sizes.setValue(particleID, newSize);
-    _physics.setValue(particleID, newPhysics);
+    _velocities.setValue(particleID, newVelocity);
     _transparencies.setValue(particleID, 1.0f);
 }
 
@@ -94,21 +95,20 @@ void ExplosionParticleSystem::updateParticle(unsigned int particleID, float dt)
     vec3 position = _positions.getValue(particleID);
     float size = _sizes.getValue(particleID);
     float transparency = _transparencies.getValue(particleID);
-    PhysicsComponent *physics = _physics.getValue(particleID);
-    vec3 velocity = physics->getVelocity();
+    vec3 velocity = _velocities.getValue(particleID);
     
     position += velocity;
-    physics->applyForce(-velocity * DAMPENING_SPEED * dt);
+    velocity -= velocity * DAMPENING_SPEED * dt;
     
     size -= SHRINK_SPEED * dt;
     transparency -= FADE_SPEED * dt;
     
     _positions.setValue(particleID, position);
+    _velocities.setValue(particleID, velocity);
     _sizes.setValue(particleID, size);
     _transparencies.setValue(particleID, transparency);
     
     if (size <= 0 || transparency <= 0) {
-        delete _physics.getValue(particleID);
         killParticle(particleID);
     }
 }

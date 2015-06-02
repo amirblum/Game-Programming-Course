@@ -12,6 +12,7 @@
 #include "Ship.h"
 #include "DummyObject.h"
 #include "AsteroidParticleSystem.h"
+#include "BlackHole.h"
 #include "InputManager.h"
 #include "CameraScripts.h"
 #include "GameOver.h"
@@ -39,7 +40,21 @@ _startPosition(0.0f), _started(false)
 //    DummyObject *dummy = new DummyObject(vec3(-1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(1.0f));
 //    addChild(dummy);
     
-    AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(10000, 1000.0f, _ship);
+    // Set up black holes
+    {
+        vec3 hole1Pos = vec3(100.0f, 20.0f, 300.0f);
+        float hole1size = 100.0f;
+        BlackHole *hole1 = new BlackHole(hole1Pos, hole1size);
+        addChild(hole1);
+        
+//        vec3 hole2Pos = vec3(-100.0f, -40.0f, -100.0f);
+//        float hole2size = 50.0f;
+//        BlackHole *hole2 = new BlackHole(hole2Pos, hole2size);
+//        addChild(hole2);
+    }
+    
+    // Set up asteroids
+    AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(100, 1000.0f, _ship);
     addChild(asteroids);
     
     // Skybox (draw last to save on fragments that already have info in them)
@@ -58,6 +73,11 @@ _startPosition(0.0f), _started(false)
 World::~World()
 {
     SoundManager::Instance().releaseSound(_backgroundMusic);
+}
+
+void World::fixedUpdate(float dt)
+{
+    PhysicsSimulation::Instance().fixedUpdate(dt);
 }
 
 /**

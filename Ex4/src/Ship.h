@@ -13,7 +13,7 @@
 
 #include "SceneNode.h"
 #include "Mesh.h"
-#include "PhysicsComponent.h"
+#include "RigidBody.h"
 #include "HealthBar.h"
 #include "ThrusterParticleSystem.h"
 #include "ExplosionParticleSystem.h"
@@ -23,14 +23,13 @@
 
 #define GRID_ELEMENT_SIZE (1.0f)
 
-class Ship : public SceneNode {
+class Ship : public SceneNode, public RigidBody {
 private:
     // Sounds
     ALuint _dradisSound, _thrustersSound, _explosionSound, _warningSound;
     
     // Components
     Mesh *_mesh;
-    PhysicsComponent *_physicsComponent;
     
     // Convenient info
     vec3 _forward;
@@ -51,6 +50,7 @@ public:
     Ship(vec3 position, quat rotation, vec3 scale, float radius);
     virtual ~Ship();
     
+    virtual void fixedUpdate(float dt);
     virtual void update(float dt);
     
     void collide();
