@@ -24,7 +24,8 @@ RenderComponent::RenderComponent(std::string shaderProgram) :
 _vao(0), _vbo(0), _ibo(0),
 _supportVBOs(),
 _textures(), _uniforms(),
-_numIndices(0)
+_numIndices(0),
+_polyFace(GL_FRONT_AND_BACK), _polyMode(GL_FILL)
 {
     programManager::sharedInstance()
     .createProgram(shaderProgram,
@@ -77,7 +78,7 @@ void RenderComponent::render(mat4 worldTransform, int numInstances)
     // Set the program to be used in subsequent lines:
     glUseProgram(_shaderProgram);
     
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Also try using GL_LINE and GL_POINT
+    glPolygonMode(_polyFace, _polyMode); // Also try using GL_LINE and GL_POINT
     
     // Update world/viewProjection uniforms
     setUniform<mat4, UNIFORM_MAT4>("W", worldTransform);
@@ -109,6 +110,16 @@ void RenderComponent::render(mat4 worldTransform, int numInstances)
     
     // Cleanup
     glUseProgram(0);
+}
+
+void RenderComponent::setPolygonFace(GLenum face)
+{
+    _polyFace = face;
+}
+
+void RenderComponent::setPolygonDrawMode(GLenum mode)
+{
+    _polyMode = mode;
 }
 
 void RenderComponent::sendUniform(UniformVariable *uniform)
@@ -185,6 +196,7 @@ void RenderComponent::setPTNVBO(std::vector<Vertex> vertices)
                           GL_FALSE,
                           sizeof(Vertex),
                           (GLvoid*)0);
+    
     // Obtain texcoords handle:
     GLint texcoordsAttrib = glGetAttribLocation(_shaderProgram, "texcoords");
     glEnableVertexAttribArray(texcoordsAttrib);
@@ -194,6 +206,7 @@ void RenderComponent::setPTNVBO(std::vector<Vertex> vertices)
                           GL_FALSE,
                           sizeof(Vertex),
                           (GLvoid*)12);
+    
     // Obtain attribute handles:
     GLint normalAttrib = glGetAttribLocation(_shaderProgram, "normal");
     glEnableVertexAttribArray(normalAttrib);

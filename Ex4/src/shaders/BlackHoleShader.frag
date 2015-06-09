@@ -13,9 +13,9 @@ void main()
     
     // Discard transparent pixels (this assumes pixels are either fully opaque
     // or fully transparent
-    if (texel.a < 0.5f) {
-        discard;
-    }
+//    if (texel.a < 0.5f) {
+//        discard;
+//    }
     
     outColor = texel;
 }

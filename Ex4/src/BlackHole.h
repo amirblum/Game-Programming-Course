@@ -17,12 +17,15 @@
 class BlackHole : public RenderableSceneNode, public RigidBody {
 private:
     float _size;
+    float _spinAmount;
     vec2 _right;
 protected:
     virtual void preRender();
 public:
     BlackHole(vec3 position, float size);
     virtual ~BlackHole();
+    
+    virtual void update(float dt);
 };
 
 #endif /* defined(__CGP_Ex4__BlackHole__) */

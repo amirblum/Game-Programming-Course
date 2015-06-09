@@ -21,7 +21,7 @@ protected:
     PhysicsComponent _physics;
     
 public:
-    RigidBody(vec3 initialPosition, float radius, float mass, bool isSource);
+    RigidBody(vec3 initialPos, vec3 initialVel, float radius, float mass, bool isSource);
     virtual ~RigidBody();
     
     void physicsUpdate(float dt);

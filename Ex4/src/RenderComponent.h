@@ -115,12 +115,18 @@ private:
     // Number of elements
     unsigned int _numIndices;
     
+    // Polygon options
+    GLenum _polyFace, _polyMode;
+    
 public:
     RenderComponent(std::string shaderProgram);
     virtual ~RenderComponent();
     
     void render(mat4 worldView);
     void render(mat4 worldView, int numInstances);
+    
+    void setPolygonFace(GLenum face);
+    void setPolygonDrawMode(GLenum mode);
     
     void setPTNVBO(std::vector<Vertex> vertices);
     void setPositionsVBO(std::vector<GLfloat> vertices);

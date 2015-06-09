@@ -9,8 +9,8 @@
 #include "RigidBody.h"
 #include "PhysicsSimulation.h"
 
-RigidBody::RigidBody(vec3 initialPosition, float radius, float mass, bool isSource) :
-_radius(radius), _physics(initialPosition, mass)
+RigidBody::RigidBody(vec3 initialPos, vec3 initialVel, float radius, float mass, bool isSource) :
+_radius(radius), _physics(initialPos, initialVel, mass)
 {
     PhysicsSimulation::Instance().addObject(this, isSource);
 }

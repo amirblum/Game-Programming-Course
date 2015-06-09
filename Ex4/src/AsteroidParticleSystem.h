@@ -14,7 +14,7 @@
 #include "RenderComponent.h"
 #include "RigidBody.h"
 #include "PhysicsSimulation.h"
-#include "Ship.h"
+//#include "Ship.h"
 
 typedef ParticleAttributeDerived<RigidBody*> RigidBodyAttribute;
 typedef ParticleAttributeDerived<bool> CollisionAttribute;
@@ -22,7 +22,7 @@ typedef ParticleAttributeDerived<bool> CollisionAttribute;
 class AsteroidParticleSystem : public ParticleSystem {
 private:
     float _emitMaxRadius, _emitMinRadius;
-    Ship *_ship;
+//    Ship *_ship;
     
     RigidBodyAttribute _rigidBodies;
     CollisionAttribute _collided;
@@ -31,7 +31,7 @@ private:
 protected:
     virtual void updateParticle(unsigned int particleID, float dt);
 public:
-    AsteroidParticleSystem(unsigned int maxAsteroids, float emitRadius, Ship *ship);
+    AsteroidParticleSystem(unsigned int maxAsteroids, float emitRadius);
     virtual ~AsteroidParticleSystem();
     
     virtual void emit();

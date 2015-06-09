@@ -45,7 +45,7 @@ private:
     void rungeKutta4(float dt);
     
 public:
-    PhysicsComponent(vec3 initialPos, float mass);
+    PhysicsComponent(vec3 initialPos, vec3 initialVel, float mass);
     virtual ~PhysicsComponent();
     
     // Getters

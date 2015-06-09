@@ -10,7 +10,8 @@
 
 #include "World.h"
 #include "Ship.h"
-#include "DummyObject.h"
+//#include "DummyObject.h"
+#include "Beacon.h"
 #include "AsteroidParticleSystem.h"
 #include "BlackHole.h"
 #include "InputManager.h"
@@ -19,6 +20,8 @@
 #include "GameState.h"
 
 static const std::string BACKGROUND_MUSIC = "assets/sounds/BSG_battle.wav";
+
+static const vec3 BEACON_POS = vec3(-50.0f, 15.0f, 900.0f);
 
 World::World() :
 SceneNode(),
@@ -34,32 +37,35 @@ _startPosition(0.0f), _started(false)
     Camera *camera = new Camera(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
     Camera::setMainCamera(camera);
     
-    _ship = new Ship(vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.0f, 1.0f), /*radius*/1.0f);
-    addChild(_ship);
-    
 //    DummyObject *dummy = new DummyObject(vec3(-1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(1.0f));
 //    addChild(dummy);
     
-    // Set up black holes
+    Beacon *beacon = new Beacon(BEACON_POS, quat(vec3(0.0f)), vec3(1.0f), 200.0f);
+    addChild(beacon);
+    
+    // Set up asteroids
+    AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(100, 1000.0f);
+    addChild(asteroids);
+    
+    // Skybox (draw last to save on fragments that already have info in them)
+    SkyBox *skybox = new SkyBox();
+    addChild(skybox);
+    
+    // Set up black holes (After skybox so that transparency will work)
     {
         vec3 hole1Pos = vec3(100.0f, 20.0f, 300.0f);
         float hole1size = 100.0f;
         BlackHole *hole1 = new BlackHole(hole1Pos, hole1size);
         addChild(hole1);
         
-//        vec3 hole2Pos = vec3(-100.0f, -40.0f, -100.0f);
-//        float hole2size = 50.0f;
-//        BlackHole *hole2 = new BlackHole(hole2Pos, hole2size);
-//        addChild(hole2);
+        vec3 hole2Pos = vec3(-70.0f, -40.0f, 250.0f);
+        float hole2size = 50.0f;
+        BlackHole *hole2 = new BlackHole(hole2Pos, hole2size);
+        addChild(hole2);
     }
     
-    // Set up asteroids
-    AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(100, 1000.0f, _ship);
-    addChild(asteroids);
-    
-    // Skybox (draw last to save on fragments that already have info in them)
-    SkyBox *skybox = new SkyBox();
-    addChild(skybox);
+    _ship = new Ship(vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.0f, 1.0f), /*radius*/1.6f);
+    addChild(_ship);
     
     // Scripts
     addScript(new CameraScripts(camera, _ship, skybox));

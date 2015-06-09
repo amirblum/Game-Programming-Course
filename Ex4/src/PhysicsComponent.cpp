@@ -12,11 +12,11 @@
 #define G (6.674f)
 #define COLLISION_ELASTICITY (0.5f)
 
-PhysicsComponent::PhysicsComponent(vec3 initialPos, float mass) :
+PhysicsComponent::PhysicsComponent(vec3 initialPos, vec3 initialVel, float mass) :
 _mass(mass), _inverseMass(1.0f / mass), _isStatic(false),
 _internalForce(0.0f)
 {
-    _currentState = State{initialPos, vec3(0.0f)};
+    _currentState = State{initialPos, initialVel};
     _previousState = _currentState;
 }
 

@@ -34,7 +34,7 @@ static const std::string WARNING_SOUND = "assets/sounds/warning.wav";
  */
 Ship::Ship(vec3 position, quat rotation, vec3 scale, float radius) :
 SceneNode(position, rotation, scale),
-RigidBody(position, radius, SHIP_MASS, false),
+RigidBody(position, vec3(0.0f), radius, SHIP_MASS, false),
 _forward(FORWARD_VECTOR), _right(RIGHT_VECTOR),
 _radius(radius)
 {
@@ -96,6 +96,13 @@ _radius(radius)
         vec3 healthScale = vec3(0.2f, 0.06f, 1.0f);
         _healthBar = new HealthBar(MAX_HEALTH, healthPosition, healthRotation, healthScale);
         addChild(_healthBar);
+    }
+    
+    // Activate shield
+    {
+        vec3 shieldPosition = vec3(0.0f, 0.0f, -0.05f);
+        _shield = new Shield(shieldPosition, radius);
+        addChild(_shield);
     }
     
     // Initialize sounds
@@ -287,6 +294,19 @@ vec3 Ship::getForward()
 vec3 Ship::getRight()
 {
     return _right;
+}
+
+/**
+ * Return the direction of movement
+ */
+vec3 Ship::getMovementDirection()
+{
+    vec3 velocity = _physics.getVelocity();
+    if (length(velocity) < 0.01f) {
+        return velocity;
+    } else {
+        return normalize(velocity);
+    }
 }
 
 float Ship::getSpeed()

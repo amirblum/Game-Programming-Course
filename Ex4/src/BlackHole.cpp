@@ -13,13 +13,14 @@
 #include <glm/gtc/random.hpp>
 
 #define BH_SIZE_MASS_RATIO (1.0f)
+#define SPIN_SPEED (0.1f)
 
 static const std::string BLACK_HOLE_IMAGE = "assets/blackhole.png";
 
 BlackHole::BlackHole(vec3 position, float size) :
 RenderableSceneNode("BlackHoleShader", position),
-RigidBody(position, size * 0.3f, size * size * BH_SIZE_MASS_RATIO, true),
-_size(size), _right(circularRand(1.0f))
+RigidBody(position, vec3(0.0f), size * 0.3f, size * size * BH_SIZE_MASS_RATIO, true),
+_size(size), _spinAmount(0.0f), _right(circularRand(1.0f))
 {
     // Set physics to static
     _physics.setStatic(true);
@@ -51,6 +52,15 @@ _size(size), _right(circularRand(1.0f))
 BlackHole::~BlackHole()
 {
     
+}
+
+void BlackHole::update(float dt)
+{
+    _spinAmount += pi<float>() * SPIN_SPEED * dt;
+    if (_spinAmount > pi<float>()) {
+        _spinAmount = _spinAmount < pi<float>();
+    }
+    _right = vec2(sin(_spinAmount), cos(_spinAmount));
 }
 
 void BlackHole::preRender()

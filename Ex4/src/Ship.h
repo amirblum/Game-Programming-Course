@@ -15,6 +15,7 @@
 #include "Mesh.h"
 #include "RigidBody.h"
 #include "HealthBar.h"
+#include "Shield.h"
 #include "ThrusterParticleSystem.h"
 #include "ExplosionParticleSystem.h"
 #include "SoundManager.h"
@@ -38,6 +39,7 @@ private:
     
     // Children
     HealthBar *_healthBar;
+    Shield *_shield;
     ThrusterParticleSystem* _thrusters[3];
     std::vector<ExplosionParticleSystem*> _explosions;
     
@@ -58,6 +60,7 @@ public:
     // Getters
     vec3 getForward();
     vec3 getRight();
+    vec3 getMovementDirection();
     float getSpeed();
     float getMaxSpeed();
     float getRadius();

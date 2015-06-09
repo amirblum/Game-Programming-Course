@@ -16,18 +16,18 @@
 #include <glm/gtc/random.hpp>
 
 #define ASTEROID_MASS (2.0f)
-#define ASTEROID_MAX_VELOCITY (150.0f)
-#define ASTEROID_MIN_VELOCITY (25.0f)
-#define ASTEROID_MIN_SIZE (2.0f)
-#define ASTEROID_MAX_SIZE (35.0f)
+#define ASTEROID_MAX_INITIAL_FORCE (15.0f)
+#define ASTEROID_MIN_INITIAL_FORCE (2.0f)
+#define ASTEROID_MIN_SIZE (20.0f)
+#define ASTEROID_MAX_SIZE (150.0f)
 #define TRANSPARENCY_MARGIN (100.0f)
 
 static const std::string ASTEROID_IMAGE = "assets/asteroid1.png";
 
-AsteroidParticleSystem::AsteroidParticleSystem(unsigned int maxAsteroids, float emitRadius, Ship *ship) :
+AsteroidParticleSystem::AsteroidParticleSystem(unsigned int maxAsteroids, float emitRadius) :
 ParticleSystem(maxAsteroids),
 _emitMaxRadius(emitRadius), _emitMinRadius(0),
-_ship(ship),
+//_ship(ship),
 _rigidBodies(maxAsteroids, "rigidBodies"),
 _collided(maxAsteroids, "collided")
 {
@@ -44,7 +44,7 @@ _collided(maxAsteroids, "collided")
     }
     
     // Emit min-radius
-    _emitMinRadius = glm::length(Camera::MainCamera()->getPosition() - _ship->getPosition()) * 2.0f;
+    _emitMinRadius = glm::length(Camera::MainCamera()->getPosition()) * 2.0f;
     
     // Emit all the asteroids
     for (int i = 0; i < maxAsteroids; ++i) {
@@ -101,20 +101,24 @@ void AsteroidParticleSystem::emit()
     RigidBody *newRigidBody;
     {
         vec3 randomDirection = sphericalRand(1.0f);
-        float randomSpeed = randutils::randomRange(ASTEROID_MIN_VELOCITY, ASTEROID_MAX_VELOCITY);
-        vec3 initialForce = randomDirection * randomSpeed;
+        float randomSpeed = randutils::randomRange(ASTEROID_MIN_INITIAL_FORCE, ASTEROID_MAX_INITIAL_FORCE);
+        vec3 initialVelocity = randomDirection * randomSpeed;
         
         bool closeToShip = distance < _emitMinRadius * 3.0f;
         bool headingTowardsShip = dot(randomPosition, randomDirection) < -0.8;
         if (closeToShip && headingTowardsShip) {
-            initialForce = -initialForce;
+            initialVelocity = -initialVelocity;
         }
         
         // Move the asteroid around a bit from the initial random position
-        newPosition += initialForce;// * 30.0f;
+//        while (distance < size) {
+//            newPosition += initialVelocity * 30.0f;
+//            distance = length(newPosition);
+//        }
+        newPosition += initialVelocity;
         
-        newRigidBody = new RigidBody(newPosition, size * 0.3f, ASTEROID_MASS, false);
-        newRigidBody->getPhysics().applyForce(initialForce);
+        newRigidBody = new RigidBody(newPosition, initialVelocity, size * 0.3f, ASTEROID_MASS, false);
+//        newRigidBody->getPhysics().applyForce(initialForce);
     }
     
     // Random fun
@@ -144,30 +148,31 @@ void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
     
     
     // Check death
-    vec3 shipWorldPosition = _ship->getWorldPosition();
-    vec3 relativePosition = newPosition - shipWorldPosition;
-    float distanceFromShip = length(relativePosition);
-    if (distanceFromShip > _emitMaxRadius) {
-        // Pop-through to other side of field
-        vec3 newRelativePosition = -relativePosition;
-        newPosition = shipWorldPosition + newRelativePosition;
-    }
+//    vec3 shipWorldPosition = _ship->getWorldPosition();
+//    vec3 relativePosition = newPosition - shipWorldPosition;
+//    float distanceFromShip = length(relativePosition);
+    float distanceFromCenter = length(newPosition);
+//    if (distanceFromShip > _emitMaxRadius) {
+//        // Pop-through to other side of field
+//        vec3 newRelativePosition = -relativePosition;
+//        newPosition = shipWorldPosition + newRelativePosition;
+//    }
     
     // Check collision
-    if (distanceFromShip < (_sizes.getValue(particleID) * 0.3f + _ship->getRadius())) {
-        bool collided = _collided.getValue(particleID);
-        if (!collided) {
-            _ship->collide();
-            _collided.setValue(particleID, true);
-        }
-    } else {
-        _collided.setValue(particleID, false);
-    }
+//    if (distanceFromShip < (_sizes.getValue(particleID) * 0.3f + _ship->getRadius())) {
+//        bool collided = _collided.getValue(particleID);
+//        if (!collided) {
+//            _ship->collide();
+//            _collided.setValue(particleID, true);
+//        }
+//    } else {
+//        _collided.setValue(particleID, false);
+//    }
     
     // Transparency
     float transparency = 1.0f;
-    if (distanceFromShip > (_emitMaxRadius - TRANSPARENCY_MARGIN)) {
-        transparency = 1.0f - (distanceFromShip - (_emitMaxRadius - TRANSPARENCY_MARGIN)) / TRANSPARENCY_MARGIN;
+    if (distanceFromCenter > (_emitMaxRadius - TRANSPARENCY_MARGIN)) {
+        transparency = 1.0f - (distanceFromCenter - (_emitMaxRadius - TRANSPARENCY_MARGIN)) / TRANSPARENCY_MARGIN;
     }
     _transparencies.setValue(particleID, transparency);
     
