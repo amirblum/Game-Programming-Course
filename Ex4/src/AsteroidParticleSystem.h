@@ -12,20 +12,17 @@
 #include <stdio.h>
 #include "ParticleSystem.h"
 #include "RenderComponent.h"
-#include "RigidBody.h"
+#include "AsteroidRigidBody.h"
 #include "PhysicsSimulation.h"
 //#include "Ship.h"
 
-typedef ParticleAttributeDerived<RigidBody*> RigidBodyAttribute;
-typedef ParticleAttributeDerived<bool> CollisionAttribute;
+typedef ParticleAttributeDerived<AsteroidRigidBody*> RigidBodyAttribute;
 
 class AsteroidParticleSystem : public ParticleSystem {
 private:
     float _emitMaxRadius, _emitMinRadius;
-//    Ship *_ship;
     
     RigidBodyAttribute _rigidBodies;
-    CollisionAttribute _collided;
     
     bool particleInView(vec3 particlePosition);
 protected:

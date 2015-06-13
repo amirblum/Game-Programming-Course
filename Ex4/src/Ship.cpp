@@ -243,7 +243,31 @@ void Ship::twist(float angle)
     _right = _rotation * RIGHT_VECTOR;
 }
 
-void Ship::collide()
+void Ship::onCollision(RigidBody *collided)
+{
+    // Asteroid
+    AsteroidRigidBody *asteroid = dynamic_cast<AsteroidRigidBody*>(collided);
+    if (asteroid != nullptr) {
+        collideWithAsteroid(asteroid);
+        return;
+    }
+    
+    // Black Hole
+    BlackHole *blackHole = dynamic_cast<BlackHole*>(collided);
+    if (blackHole != nullptr) {
+        collideWithBlackHole(blackHole);
+        return;
+    }
+    
+    // Beacon
+    Beacon *beacon = dynamic_cast<Beacon*>(collided);
+    if (beacon != nullptr) {
+        collideWithBeacon(beacon);
+        return;
+    }
+}
+
+void Ship::collideWithAsteroid(AsteroidRigidBody *asteroid)
 {
     // Health
     int health = _healthBar->getCurrentUnits();
@@ -256,17 +280,25 @@ void Ship::collide()
         alSourcei(_warningSound, AL_LOOPING, AL_TRUE);
     }
     
-    // Gameover
     if (newHealth >= 0) {
         _healthBar->setCurrentUnits(newHealth);
         if (newHealth == 0) {
-            std::cout << "Game Over!" << std::endl;
+            // Gameover
             die();
         } else {
             // Explosion
             generateExplosion(20);
         }
     }
+}
+
+void Ship::collideWithBlackHole(BlackHole *blackHole)
+{
+    
+}
+
+void Ship::collideWithBeacon(Beacon *beacon)
+{
     
 }
 

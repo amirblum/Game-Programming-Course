@@ -84,8 +84,8 @@ void PhysicsSimulation::checkCollisions()
                 if (previousDistance > radiiSum) {
                     // This is the first collision
                     vec3 collisionNormal = normalize(centerToCenter);
-                    object1->handleCollision(*object2, collisionNormal);
-                    object2->handleCollision(*object1, collisionNormal);
+                    object1->handleCollision(object2, collisionNormal);
+                    object2->handleCollision(object1, collisionNormal);
                 }
             }
 

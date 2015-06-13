@@ -40,14 +40,14 @@ float RigidBody::getRadius() const
     return _radius;
 }
 
-void RigidBody::handleCollision(const RigidBody &collided, const vec3 &collisionNormal)
+void RigidBody::handleCollision(RigidBody *collided, const vec3 &collisionNormal)
 {
-    _physics.handleCollision(collided.getPhysics(), collisionNormal);
+    _physics.handleCollision(collided->getPhysics(), collisionNormal);
     
     onCollision(collided);
 }
 
-void RigidBody::onCollision(const RigidBody &collided)
+void RigidBody::onCollision(RigidBody *collided)
 {
     std::cout << "Collided!" << std::endl;
 }

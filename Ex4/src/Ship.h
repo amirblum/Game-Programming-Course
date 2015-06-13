@@ -20,6 +20,11 @@
 #include "ExplosionParticleSystem.h"
 #include "SoundManager.h"
 
+// Rigidbodies
+#include "AsteroidRigidBody.h"
+#include "BlackHole.h"
+#include "Beacon.h"
+
 #include <vector>
 
 #define GRID_ELEMENT_SIZE (1.0f)
@@ -48,6 +53,11 @@ private:
     void tilt(float angle);
     void twist(float angle);
     void generateExplosion(unsigned int explosionSize);
+    
+    // Collisions
+    void collideWithAsteroid(AsteroidRigidBody *asteroid);
+    void collideWithBlackHole(BlackHole *blackHole);
+    void collideWithBeacon(Beacon *beacon);
 public:
     Ship(vec3 position, quat rotation, vec3 scale, float radius);
     virtual ~Ship();
@@ -55,7 +65,7 @@ public:
     virtual void fixedUpdate(float dt);
     virtual void update(float dt);
     
-    void collide();
+    virtual void onCollision(RigidBody *collided);
     
     // Getters
     vec3 getForward();

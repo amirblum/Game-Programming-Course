@@ -28,8 +28,7 @@ AsteroidParticleSystem::AsteroidParticleSystem(unsigned int maxAsteroids, float 
 ParticleSystem(maxAsteroids),
 _emitMaxRadius(emitRadius), _emitMinRadius(0),
 //_ship(ship),
-_rigidBodies(maxAsteroids, "rigidBodies"),
-_collided(maxAsteroids, "collided")
+_rigidBodies(maxAsteroids, "rigidBodies")
 {
     // Render-related
     {
@@ -40,7 +39,6 @@ _collided(maxAsteroids, "collided")
     // Add particle attributes
     {        
         addAttribute(&_rigidBodies);
-        addAttribute(&_collided);
     }
     
     // Emit min-radius
@@ -98,7 +96,7 @@ void AsteroidParticleSystem::emit()
     }
     
     // Physics
-    RigidBody *newRigidBody;
+    AsteroidRigidBody *newRigidBody;
     {
         vec3 randomDirection = sphericalRand(1.0f);
         float randomSpeed = randutils::randomRange(ASTEROID_MIN_INITIAL_FORCE, ASTEROID_MAX_INITIAL_FORCE);
@@ -117,7 +115,7 @@ void AsteroidParticleSystem::emit()
 //        }
         newPosition += initialVelocity;
         
-        newRigidBody = new RigidBody(newPosition, initialVelocity, size * 0.3f, ASTEROID_MASS, false);
+        newRigidBody = new AsteroidRigidBody(newPosition, initialVelocity, size * 0.3f, ASTEROID_MASS);
 //        newRigidBody->getPhysics().applyForce(initialForce);
     }
     
@@ -132,7 +130,6 @@ void AsteroidParticleSystem::emit()
     _positions.setValue(particleID, newPosition);
     _sizes.setValue(particleID, size);
     _rigidBodies.setValue(particleID, newRigidBody);
-    _collided.setValue(particleID, false);
     _transparencies.setValue(particleID, 1.0f);
     _billboardRights.setValue(particleID, newBillboardRight);
 }

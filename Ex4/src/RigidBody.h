@@ -29,8 +29,8 @@ public:
     PhysicsComponent& getPhysics();
     const PhysicsComponent& getPhysics() const;
     float getRadius() const;
-    void handleCollision(const RigidBody &collided, const vec3 &collisionNormal);
-    virtual void onCollision(const RigidBody &collided);
+    void handleCollision(RigidBody *collided, const vec3 &collisionNormal);
+    virtual void onCollision(RigidBody *collided);
 };
 
 #endif /* defined(__CGP_Ex4__RigidBody__) */
