@@ -148,7 +148,7 @@ void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
 //    vec3 shipWorldPosition = _ship->getWorldPosition();
 //    vec3 relativePosition = newPosition - shipWorldPosition;
 //    float distanceFromShip = length(relativePosition);
-    float distanceFromCenter = length(newPosition);
+//    float distanceFromCenter = length(newPosition);
 //    if (distanceFromShip > _emitMaxRadius) {
 //        // Pop-through to other side of field
 //        vec3 newRelativePosition = -relativePosition;
@@ -167,11 +167,11 @@ void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
 //    }
     
     // Transparency
-    float transparency = 1.0f;
-    if (distanceFromCenter > (_emitMaxRadius - TRANSPARENCY_MARGIN)) {
-        transparency = 1.0f - (distanceFromCenter - (_emitMaxRadius - TRANSPARENCY_MARGIN)) / TRANSPARENCY_MARGIN;
-    }
-    _transparencies.setValue(particleID, transparency);
+//    float transparency = 1.0f;
+//    if (distanceFromCenter > (_emitMaxRadius - TRANSPARENCY_MARGIN)) {
+//        transparency = 1.0f - (distanceFromCenter - (_emitMaxRadius - TRANSPARENCY_MARGIN)) / TRANSPARENCY_MARGIN;
+//    }
+//    _transparencies.setValue(particleID, transparency);
     
     // Update particle
     _positions.setValue(particleID, newPosition);
