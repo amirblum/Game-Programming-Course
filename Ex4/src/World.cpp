@@ -16,10 +16,12 @@
 #include "BlackHole.h"
 #include "InputManager.h"
 #include "CameraScripts.h"
-#include "GameOver.h"
+#include "Overlay.h"
 #include "GameState.h"
 
 static const std::string BACKGROUND_MUSIC = "assets/sounds/BSG_battle.wav";
+static const std::string YOU_WIN_TEXTURE = "assets/youwin.png";
+static const std::string GAME_OVER_TEXTURE = "assets/gameover.png";
 
 static const vec3 BEACON_POS = vec3(-50.0f, 15.0f, 900.0f);
 
@@ -48,7 +50,7 @@ _startPosition(0.0f), _started(false)
     SkyBox *skybox = new SkyBox();
     addChild(skybox);
     
-    Beacon *beacon = new Beacon(BEACON_POS, quat(vec3(0.0f)), vec3(1.0f), 200.0f);
+    Beacon *beacon = new Beacon(BEACON_POS, quat(vec3(0.0f)), vec3(1.0f), 300.0f);
     addChild(beacon);
     
     // Set up black holes (After skybox so that transparency will work)
@@ -106,9 +108,17 @@ void World::update(float dt)
         }
         
         if (!state.gameOver && _ship->isDead()) {
-            GameOver *gameOverText = new GameOver();
+            Overlay *gameOverText = new Overlay(GAME_OVER_TEXTURE);
             addChild(gameOverText);
             state.gameOver = true;
+        }
+        
+        if (state.gameWon) {
+            state.gameWon = false; // So that we only perform this once
+            state.gameOver = true;
+            
+            Overlay *youWinText = new Overlay(YOU_WIN_TEXTURE);
+            addChild(youWinText);
         }
     }
 }

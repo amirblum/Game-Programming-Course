@@ -18,7 +18,9 @@ struct GameState {
         return instance;
     }
     
+    // These should definitely be an enum. Maybe in Ex5 :P
     bool gameStarted;
+    bool gameWon;
     bool gameOver;
     
     void reset();

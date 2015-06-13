@@ -24,7 +24,7 @@ _compass("CompassShader")
     
     // Set up mesh
     {
-        vec3 meshPosition = vec3(0.0f);
+        vec3 meshPosition = vec3(0.0f, -200.0f, 0.0f);
         quat meshRotation = rotate(quat(vec3(0.0f)), pi<float>()/2.0f, vec3(0.0f, 0.0f, 1.0f));
         meshRotation = rotate(meshRotation, pi<float>()/2.0f, vec3(0.0f, 1.0f, 0.0f));
     //    quat meshRotation = quat(vec3(0.0f));

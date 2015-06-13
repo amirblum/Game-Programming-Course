@@ -20,6 +20,7 @@ static const std::string DRADIS_SOUND = "assets/sounds/dradis.wav";
 static const std::string THRUSTERS_SOUND = "assets/sounds/thrusters.wav";
 static const std::string EXPLOSION_SOUND = "assets/sounds/explosion.wav";
 static const std::string WARNING_SOUND = "assets/sounds/warning.wav";
+static const std::string WIN_SOUND = "assets/sounds/win.wav";
 
 #define SHIP_MASS (0.5f)
 #define TILT_SPEED (pi<float>() / 4.0f)
@@ -112,6 +113,7 @@ _radius(radius)
         _thrustersSound = soundManager.loadSound(THRUSTERS_SOUND, true);
         _explosionSound = soundManager.loadSound(EXPLOSION_SOUND);
         _warningSound = soundManager.loadSound(WARNING_SOUND, true);
+        _winSound = soundManager.loadSound(WIN_SOUND);
         
         // Play the dradis sound on init
         soundManager.playSound(_dradisSound);
@@ -134,7 +136,7 @@ Ship::~Ship()
 void Ship::fixedUpdate(float dt)
 {
     GameState &state = GameState::Instance();
-    if (state.gameStarted && !state.gameOver) {
+    if (state.gameStarted && !state.gameOver && !state.gameWon) {
         
         InputManager &input = InputManager::Instance();
         
@@ -195,8 +197,11 @@ void Ship::fixedUpdate(float dt)
  */
 void Ship::update(float dt)
 {
-    // Update position
-    setPosition(_physics.getPosition());
+    GameState &state = GameState::Instance();
+    if (state.gameStarted && !state.gameWon) {
+        // Update position
+        setPosition(_physics.getPosition());
+    }
     
     // Update explosions
     {
@@ -294,12 +299,12 @@ void Ship::collideWithAsteroid(AsteroidRigidBody *asteroid)
 
 void Ship::collideWithBlackHole(BlackHole *blackHole)
 {
-    
+    die();
 }
 
 void Ship::collideWithBeacon(Beacon *beacon)
 {
-    
+    win();
 }
 
 void Ship::generateExplosion(unsigned int explosionSize)
@@ -307,7 +312,7 @@ void Ship::generateExplosion(unsigned int explosionSize)
     ExplosionParticleSystem *newExplosion = new ExplosionParticleSystem(explosionSize);
     newExplosion->toggleRotationInvariance();
     newExplosion->toggleScaleInvariance();
-    addChild(newExplosion);
+    addChild(newExplosion, 1);
     
     _explosions.push_back(newExplosion);
 }
@@ -360,6 +365,18 @@ void Ship::die()
 {
     _healthBar->setCurrentUnits(0);
     generateExplosion(2000);
+    removeChild(_shield);
+    
+    SoundManager &soundManager = SoundManager::Instance();
+    soundManager.stopSound(_dradisSound);
+    soundManager.stopSound(_thrustersSound);
+    soundManager.stopSound(_warningSound);
+}
+
+void Ship::win()
+{
+    SoundManager::Instance().playSound(_winSound);
+    GameState::Instance().gameWon = true;
     
     SoundManager &soundManager = SoundManager::Instance();
     soundManager.stopSound(_dradisSound);

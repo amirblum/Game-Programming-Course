@@ -55,6 +55,18 @@ void SceneNode::addChild(SceneNode *child)
 }
 
 /**
+ * Add a child to the tree under this node at the given order
+ */
+void SceneNode::addChild(SceneNode *child, int order)
+{
+//    _childNodes.push_back(child);
+    _childNodes.insert(_childNodes.begin() + order, child);
+    
+    child->setParent(this);
+    child->rebuildTransforms(false);
+}
+
+/**
  * Remove a child by index
  */
 void SceneNode::removeChild(unsigned int i)

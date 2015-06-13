@@ -56,6 +56,7 @@ public:
     
     void addScript(Script *script);
     void addChild(SceneNode *child);
+    void addChild(SceneNode *child, int order);
     void removeChild(unsigned int i);
     void removeChild(SceneNode *childToRemove);
     void setParent(SceneNode *parentNode);

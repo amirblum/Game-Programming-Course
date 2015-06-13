@@ -10,10 +10,12 @@
 
 GameState::GameState() :
 gameStarted(false),
+gameWon(false),
 gameOver(false) {}
 
 void GameState::reset()
 {
     gameStarted = false;
+    gameWon = false;
     gameOver = false;
 }

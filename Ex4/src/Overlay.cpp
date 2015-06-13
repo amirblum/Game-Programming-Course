@@ -1,25 +1,23 @@
 //
-//  GameOver.cpp
+//  Overlay.cpp
 //  CGP-Ex4
 //
 //  Created by Amir Blum on 5/12/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
 
-#include "GameOver.h"
+#include "Overlay.h"
 
-static const std::string GAME_OVER_TEXTURE = "assets/gameover.png";
-
-GameOver::GameOver() :
+Overlay::Overlay(std::string texture) :
 RenderableSceneNode("HUDShader")
 {
     // Initialize board
     static const GLfloat vertices[] = {
-        -1.0f, -0.5f, -1.0f, 1.0f,
-        -1.0f, 0.5f, -1.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f, 1.0f,
+        -1.0f, 1.0f, -1.0f, 1.0f,
         
-        1.0f, -0.5f, -1.0f, 1.0f,
-        1.0f, 0.5f, -1.0f, 1.0f
+        1.0f, -1.0f, -1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f, 1.0f
     };
     
     
@@ -36,10 +34,10 @@ RenderableSceneNode("HUDShader")
     std::vector<GLuint> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLuint)));
     _renderComponent->setIBO(indicesVector);
     
-    _renderComponent->addTexture(TextureComponent::create2DTexture(GAME_OVER_TEXTURE));
+    _renderComponent->addTexture(TextureComponent::create2DTexture(texture));
 }
 
-GameOver::~GameOver()
+Overlay::~Overlay()
 {
     
 }

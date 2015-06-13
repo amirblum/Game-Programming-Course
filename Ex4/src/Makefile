@@ -32,7 +32,7 @@ SRCS	=  	main.cpp		\
 		SkyBox.cpp \
         RenderComponent.cpp  \
 		PhysicsComponent.cpp \
-        GameOver.cpp \
+        Overlay.cpp \
 		ShaderIO.cpp \
         RandUtils.cpp
 
@@ -56,7 +56,7 @@ HDRS	=  	\
 		SkyBox.h \
         RenderComponent.h  \
 		PhysicsComponent.h \
-        GameOver.h \
+        Overlay.h \
 		ShaderIO.h	\
 		RandUtils.h
 

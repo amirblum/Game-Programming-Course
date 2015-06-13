@@ -32,7 +32,7 @@
 class Ship : public SceneNode, public RigidBody {
 private:
     // Sounds
-    ALuint _dradisSound, _thrustersSound, _explosionSound, _warningSound;
+    ALuint _dradisSound, _thrustersSound, _explosionSound, _warningSound, _winSound;
     
     // Components
     Mesh *_mesh;
@@ -76,6 +76,7 @@ public:
     float getRadius();
     
     void die();
+    void win();
     bool isDead();
 };
 

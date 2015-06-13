@@ -11,7 +11,7 @@ out vec2 texcoords;
 void main()
 {
     // determine texture coordinates
-    texcoords = position.xy + 0.5;
+    texcoords = position.xy + 0.5f;
     
     // move position to the line connecting eye and object, but at distance 1,
     // so that it always appear at constant size on the screen
@@ -29,7 +29,7 @@ void main()
     // Offset for square
     vec3 aspects = vec3(1.0f, aspectRatio, 1.0f);
     pos += vec4(position.xyz * aspects * 0.1f, 0.0f);
-    pos.z = 0;
+    pos.z = -1.0f;
     
     gl_Position = pos;
 }

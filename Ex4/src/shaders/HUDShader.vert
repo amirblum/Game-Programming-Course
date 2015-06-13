@@ -7,7 +7,9 @@ out vec2 texcoords;
 void main()
 {
     // Start with base position
-    texcoords = vec2((position.x + 1.0f) / 2.0f, (-position.y + 0.5f));
+    texcoords = vec2((position.x + 1.0f) / 2.0f, (-position.y + 1.0f) / 2.0f);
     
-    gl_Position = position;
+    vec4 pos = position;
+    pos.xy *= 0.8f;
+    gl_Position = pos;
 }

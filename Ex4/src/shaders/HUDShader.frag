@@ -9,6 +9,6 @@ out vec4 outColor;
 void main()
 {
     vec4 texel = texture(textureSampler1, texcoords);
-    texel.a = 0.3;
+//    texel.a = 0.3;
     outColor = texel;
 }
