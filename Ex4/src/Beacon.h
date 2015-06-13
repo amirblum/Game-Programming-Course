@@ -17,9 +17,12 @@
 class Beacon : public SceneNode, public RigidBody {
 private:
     Mesh *_mesh;
+    RenderComponent _compass;
 public:
     Beacon(vec3 position, quat rotation, vec3 scale, float radius);
     virtual ~Beacon();
+    
+    virtual void render();
 };
 
 #endif /* defined(__CGP_Ex4__Beacon__) */

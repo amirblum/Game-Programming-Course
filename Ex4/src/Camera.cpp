@@ -15,11 +15,9 @@
 
 Camera::Camera(vec3 position, vec3 direction, vec3 up) :
 _frustumAngle(FRUSTUM_ANGLE),
-_nearPlane(NEAR_PLANE),
-_farPlane(FAR_PLANE),
-_position(position),
-_direction(direction),
-_up(up),
+_nearPlane(NEAR_PLANE), _farPlane(FAR_PLANE),
+_aspectRatio(1.0f),
+_position(position), _direction(direction), _up(up),
 _view(lookAt(position, position + _direction, _up)),
 _projection(perspective(_frustumAngle, 1.0f, _nearPlane, _farPlane)),
 _viewProjection(_projection * _view)
@@ -56,6 +54,11 @@ float Camera::getNearPlane()
 float Camera::getFarPlane()
 {
     return _farPlane;
+}
+
+float Camera::getAspectRatio()
+{
+    return _aspectRatio;
 }
 
 /**
@@ -127,8 +130,25 @@ mat4 Camera::getViewProjection()
     return _viewProjection;
 }
 
+/**
+ * Get the view projection matrix
+ */
+mat4 Camera::getView()
+{
+    return _view;
+}
+
+/**
+ * Get the view projection matrix
+ */
+mat4 Camera::getProjection()
+{
+    return _projection;
+}
+
 void Camera::resize(int screenWidth, int screenHeight)
 {
     _projection = perspective(_frustumAngle, (float)screenWidth/screenHeight, _nearPlane, _farPlane);
     updateViewProjection();
+    _aspectRatio = (float)screenWidth / screenHeight;
 }

@@ -31,6 +31,7 @@ class Camera {
 private:
     float _frustumAngle;
     float _nearPlane, _farPlane;
+    float _aspectRatio;
     
     vec3 _position;
     vec3 _direction;
@@ -56,9 +57,12 @@ public:
     float getFrustumAngle();
     float getNearPlane();
     float getFarPlane();
+    float getAspectRatio();
     vec3 getPosition();
     vec3 getDirection();
     vec3 getUp();
+    mat4 getView();
+    mat4 getProjection();
     mat4 getViewProjection();
     
     // Setters

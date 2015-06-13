@@ -40,9 +40,6 @@ _startPosition(0.0f), _started(false)
 //    DummyObject *dummy = new DummyObject(vec3(-1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(1.0f));
 //    addChild(dummy);
     
-    Beacon *beacon = new Beacon(BEACON_POS, quat(vec3(0.0f)), vec3(1.0f), 200.0f);
-    addChild(beacon);
-    
     // Set up asteroids
     AsteroidParticleSystem *asteroids = new AsteroidParticleSystem(100, 1000.0f);
     addChild(asteroids);
@@ -50,6 +47,9 @@ _startPosition(0.0f), _started(false)
     // Skybox (draw last to save on fragments that already have info in them)
     SkyBox *skybox = new SkyBox();
     addChild(skybox);
+    
+    Beacon *beacon = new Beacon(BEACON_POS, quat(vec3(0.0f)), vec3(1.0f), 200.0f);
+    addChild(beacon);
     
     // Set up black holes (After skybox so that transparency will work)
     {
@@ -64,8 +64,10 @@ _startPosition(0.0f), _started(false)
         addChild(hole2);
     }
     
+    
     _ship = new Ship(vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.0f, 1.0f), /*radius*/1.6f);
     addChild(_ship);
+    
     
     // Scripts
     addScript(new CameraScripts(camera, _ship, skybox));
