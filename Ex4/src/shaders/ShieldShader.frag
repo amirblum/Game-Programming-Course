@@ -142,10 +142,10 @@ void main()
 //    outColor = color;
 //    outColor = vec4(texcoords, 1.0f);
     
-    float t = turb(texcoords);
-    float sineMarblingRed = sin((2 * M_PI) * (texcoords.x + t));
-    float sineMarblingGreen = sin((2 * M_PI) * (texcoords.y + t));
-    float sineMarblingBlue = sin((2 * M_PI) * (texcoords.z + t));
+    float turbulence = turb(texcoords * (2.0 + sin(0.5 * time)));
+    float sineMarblingRed = sin((2 * M_PI) * (texcoords.x + turbulence));
+    float sineMarblingGreen = sin((2 * M_PI) * (texcoords.y + turbulence));
+    float sineMarblingBlue = sin((2 * M_PI) * (texcoords.z + turbulence));
     
     float red = (0.5f) + (sineMarblingRed * sineMarblingRed * sineMarblingRed) / 2.0f;
     float green = (0.5f) + (sineMarblingGreen * sineMarblingGreen * sineMarblingGreen) / 2.0f;

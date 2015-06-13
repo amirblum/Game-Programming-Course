@@ -13,11 +13,15 @@
 #include "RenderableSceneNode.h"
 
 class Shield : public RenderableSceneNode {
-//private:
+private:
+    float _time;
 //    float _radius;
 public:
     Shield(vec3 pos, float radius);
     virtual ~Shield();
+    
+    virtual void update(float dt);
+    virtual void preRender();
 };
 
 #endif /* defined(__CGP_Ex4__Shield__) */

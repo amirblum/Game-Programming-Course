@@ -13,7 +13,8 @@
 static const std::string HEXMAP = "assets/hexmap.png";
 
 Shield::Shield(vec3 pos, float radius) :
-RenderableSceneNode("ShieldShader", pos, quat(vec3(0.0f)), vec3(radius))
+RenderableSceneNode("ShieldShader", pos, quat(vec3(0.0f)), vec3(radius)),
+_time(0.0f)
 {
     int stacks = (int)radius * FINENESS;
     int slices = (int)radius * FINENESS;
@@ -80,3 +81,13 @@ RenderableSceneNode("ShieldShader", pos, quat(vec3(0.0f)), vec3(radius))
 }
 
 Shield::~Shield() {}
+
+void Shield::update(float dt)
+{
+    _time += dt;
+}
+
+void Shield::preRender()
+{
+    _renderComponent->setUniform<float, UNIFORM_FLOAT>("time", _time);
+}
