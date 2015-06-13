@@ -15,7 +15,9 @@
 #define ROTATION_FOLLOW_PERCENT (0.07f)
 
 CameraFollow::CameraFollow(Camera *camera, Ship *ship, SkyBox *skybox) :
-_camera(camera), _ship(ship), _skybox(skybox)
+_camera(camera), _ship(ship),
+_previousFromShip(camera->getPosition() - ship->getWorldPosition()),
+_skybox(skybox)
 {
 }
 
@@ -34,32 +36,39 @@ void CameraFollow::update(float dt)
     vec3 shipForward = _ship->getForward();
     vec3 shipRight = _ship->getRight();
     
-    vec3 cameraPositionTarget;
+//    vec3 cameraPositionTarget;
+    vec3 fromShipTarget;
     vec3 cameraDirectionTarget;
     vec3 cameraUpTarget = cross(shipForward, shipRight);
     
     vec3 vecToShip = shipPosition - cameraPosition;
     float distanceFromShip = length(vecToShip);
     if (distanceFromShip > 0) {
-        float cosCameraAngle = dot(shipForward, normalize(vecToShip));
-        float relativeDistanceFromShip = distanceFromShip * cosCameraAngle;
-        if (relativeDistanceFromShip < MIN_CAMERA_DISTANCE){
-            cameraPositionTarget = shipPosition - shipForward * MIN_CAMERA_DISTANCE;
+//        float cosCameraAngle = dot(shipForward, normalize(vecToShip));
+//        float relativeDistanceFromShip = distanceFromShip * cosCameraAngle;
+        if (distanceFromShip < MIN_CAMERA_DISTANCE){
+            fromShipTarget = -shipForward * MIN_CAMERA_DISTANCE;
             cameraDirectionTarget = shipForward;
         } else {
             float desiredDistanceFromShip = mix(MIN_CAMERA_DISTANCE, MAX_CAMERA_DISTANCE, _ship->getSpeed() / _ship->getMaxSpeed());
-            float distanceFromDesiredDistance = relativeDistanceFromShip - desiredDistanceFromShip;
-            float distanceFromTarget = distanceFromDesiredDistance / POSITION_FOLLOW_PERCENT;
+//            float distanceFromDesiredDistance = relativeDistanceFromShip - desiredDistanceFromShip;
+//            float distanceFromTarget = distanceFromDesiredDistance / POSITION_FOLLOW_PERCENT;
+//            
+//            float targetOffset = distanceFromTarget - distanceFromShip;
+//            cameraPositionTarget = shipPosition + shipForward * targetOffset;
+            fromShipTarget = -shipForward * desiredDistanceFromShip;
             
-            float targetOffset = distanceFromTarget - distanceFromShip;
-            cameraPositionTarget = shipPosition + shipForward * targetOffset;
             cameraDirectionTarget = shipForward;
         }
     }
     
     
     // Interpolate
-    vec3 cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, POSITION_FOLLOW_PERCENT);
+//    vec3 cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, POSITION_FOLLOW_PERCENT);
+    vec3 fromShipInterpolated = mix(_previousFromShip, fromShipTarget, POSITION_FOLLOW_PERCENT);
+    _previousFromShip = fromShipInterpolated;
+    
+    vec3 cameraPositionInterpolated = shipPosition + fromShipInterpolated;
     vec3 cameraDirectionInterpolated = mix(cameraDirection, cameraDirectionTarget, ROTATION_FOLLOW_PERCENT);
     vec3 cameraUpInterpolated = mix(cameraUp, cameraUpTarget, ROTATION_FOLLOW_PERCENT);
         

@@ -22,8 +22,7 @@ private:
     Camera *_camera;
     Ship *_ship;
     
-    bool _wasResting;
-    vec3 _previousRight;
+    vec3 _previousFromShip;
     
     // Also, handle skyboxiness here
     SkyBox *_skybox;
