@@ -52,7 +52,7 @@ private:
     void accelerate(float force);
     void tilt(float angle);
     void twist(float angle);
-    void generateExplosion(unsigned int explosionSize);
+    void generateExplosion(vec3 position, unsigned int explosionSize);
     
     // Collisions
     void collideWithAsteroid(AsteroidRigidBody *asteroid);

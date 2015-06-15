@@ -292,7 +292,9 @@ void Ship::collideWithAsteroid(AsteroidRigidBody *asteroid)
             die();
         } else {
             // Explosion
-            generateExplosion(20);
+            vec3 toAsteroid = asteroid->getPhysics().getPosition() - getWorldPosition();
+            vec3 explosionOffset = normalize(toAsteroid) * _radius;
+            generateExplosion(explosionOffset, 20);
         }
     }
 }
@@ -307,9 +309,9 @@ void Ship::collideWithBeacon(Beacon *beacon)
     win();
 }
 
-void Ship::generateExplosion(unsigned int explosionSize)
+void Ship::generateExplosion(vec3 position, unsigned int explosionSize)
 {
-    ExplosionParticleSystem *newExplosion = new ExplosionParticleSystem(explosionSize);
+    ExplosionParticleSystem *newExplosion = new ExplosionParticleSystem(explosionSize, position);
     newExplosion->toggleRotationInvariance();
     newExplosion->toggleScaleInvariance();
     addChild(newExplosion, 1);
@@ -364,7 +366,7 @@ float Ship::getRadius()
 void Ship::die()
 {
     _healthBar->setCurrentUnits(0);
-    generateExplosion(2000);
+    generateExplosion(vec3(0.0f), 2000);
     removeChild(_shield);
     
     SoundManager &soundManager = SoundManager::Instance();

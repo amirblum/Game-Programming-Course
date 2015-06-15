@@ -49,5 +49,5 @@ void RigidBody::handleCollision(RigidBody *collided, const vec3 &collisionNormal
 
 void RigidBody::onCollision(RigidBody *collided)
 {
-    std::cout << "Collided!" << std::endl;
+//    std::cout << "Collided!" << std::endl;
 }
