@@ -13,7 +13,8 @@
 static const std::string HEXMAP = "assets/hexmap.png";
 
 Shield::Shield(vec3 pos, float radius) :
-RenderableSceneNode("ShieldShader", pos, quat(vec3(0.0f)), vec3(radius)),
+SceneNode(pos, quat(vec3(0.0f)), vec3(radius)),
+_renderComponent("ShieldShader"),
 _time(0.0f)
 {
     int stacks = (int)radius * FINENESS;
@@ -47,7 +48,7 @@ _time(0.0f)
             }
         }
         
-        _renderComponent->setPositionsVBO(vertices);
+        _renderComponent.setPositionsVBO(vertices);
     }
     
     // IBO
@@ -66,12 +67,12 @@ _time(0.0f)
             indices.push_back(i + 1);
         }
         
-        _renderComponent->setIBO(indices);
+        _renderComponent.setIBO(indices);
     }
     
     // Texture
     {
-        _renderComponent->addTexture(TextureComponent::createCubeTexture(HEXMAP, HEXMAP, HEXMAP, HEXMAP, HEXMAP, HEXMAP));
+        _renderComponent.addTexture(TextureComponent::createCubeTexture(HEXMAP, HEXMAP, HEXMAP, HEXMAP, HEXMAP, HEXMAP));
     }
     
 //    // Mode
@@ -87,7 +88,16 @@ void Shield::update(float dt)
     _time += dt;
 }
 
-void Shield::preRender()
+void Shield::render()
 {
-    _renderComponent->setUniform<float, UNIFORM_FLOAT>("time", _time);
+    glEnable(GL_CULL_FACE);
+    _renderComponent.setUniform<float, UNIFORM_FLOAT>("time", _time);
+    
+    glCullFace(GL_FRONT);
+    _renderComponent.render(_worldTransform);
+    
+    glCullFace(GL_BACK);
+    _renderComponent.render(_worldTransform);
+    
+    glDisable(GL_CULL_FACE);
 }

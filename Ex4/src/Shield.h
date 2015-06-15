@@ -10,10 +10,12 @@
 #define __CGP_Ex4__Shield__
 
 #include <stdio.h>
-#include "RenderableSceneNode.h"
+#include "SceneNode.h"
+#include "RenderComponent.h"
 
-class Shield : public RenderableSceneNode {
+class Shield : public SceneNode {
 private:
+    RenderComponent _renderComponent;
     float _time;
 //    float _radius;
 public:
@@ -21,7 +23,7 @@ public:
     virtual ~Shield();
     
     virtual void update(float dt);
-    virtual void preRender();
+    virtual void render();
 };
 
 #endif /* defined(__CGP_Ex4__Shield__) */
