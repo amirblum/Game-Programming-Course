@@ -40,7 +40,7 @@ void PhysicsSimulation::removeObject(RigidBody *object)
     // Search in force sources
     auto sourceIter = std::find(_forceSources.begin(), _forceSources.end(), object);
     if (sourceIter != _forceSources.end()) {
-        _objects.erase(sourceIter);
+        _forceSources.erase(sourceIter);
         // Remove the source from all other objects
         for (RigidBody *otherObject : _objects) {
             otherObject->getPhysics().removeForceSource(&object->getPhysics());

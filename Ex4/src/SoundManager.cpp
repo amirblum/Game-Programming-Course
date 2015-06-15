@@ -44,6 +44,7 @@ SoundManager::SoundBuffer SoundManager::locateSoundBuffer(std::string filename)
     // Not found, so create one
     ALuint bufferID = alutCreateBufferFromFile(filename.c_str());
     SoundBuffer buffer{filename, bufferID};
+    _buffers.push_back(buffer);
     return buffer;
 }
 
