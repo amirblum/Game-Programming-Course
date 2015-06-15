@@ -7,6 +7,7 @@
 //
 
 #include "PhysicsSimulation.h"
+#include <algorithm>
 
 PhysicsSimulation::PhysicsSimulation() :
 _forceSources(), _objects()

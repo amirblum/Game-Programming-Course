@@ -25,6 +25,7 @@ using namespace glm;
 
 #include <iostream>
 #include <unordered_map>
+#include <memory>
 
 #include "SceneNode.h"
 

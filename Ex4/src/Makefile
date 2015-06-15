@@ -53,6 +53,7 @@ HDRS	=  	\
         CameraOpening.h \
         CameraEnding.h \
         CameraScripts.h \
+		Script.h \
         InputManager.h    \
         SoundManager.h \
 		ParticleSystem.h \
