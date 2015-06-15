@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <memory>
 #include "Mesh.h"
 
 Mesh::MeshEntry::MeshEntry(std::vector<Vertex> vertices,

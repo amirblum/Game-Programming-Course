@@ -7,6 +7,7 @@
 //
 
 #include "PhysicsComponent.h"
+#include <algorithm>
 
 #define EPS (0.0001f)
 #define G (6.674f)
