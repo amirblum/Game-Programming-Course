@@ -35,6 +35,7 @@ using namespace glm;
 
 #include "ShaderIO.h"
 #include "InputManager.h"
+#include "GameState.h"
 #include "Camera.h"
 
 #include <iostream>
@@ -173,13 +174,15 @@ void display(void)
         dt = 0.25f;
     }
     
-    // We fix the physics timestep based on the information in the following
-    // article: http://gafferongames.com/game-physics/fix-your-timestep/
-    accumulator += dt;
-    while (accumulator >= physicsTimeStep) {
-//        std::cout << "physics update" << std::endl;
-        _world->recursiveFixedUpdate(physicsTimeStep);
-        accumulator -= physicsTimeStep;
+    if (GameState::Instance().gameStarted) {
+        // We fix the physics timestep based on the information in the following
+        // article: http://gafferongames.com/game-physics/fix-your-timestep/
+        accumulator += dt;
+        while (accumulator >= physicsTimeStep) {
+    //        std::cout << "physics update" << std::endl;
+            _world->recursiveFixedUpdate(physicsTimeStep);
+            accumulator -= physicsTimeStep;
+        }
     }
     
     const double physicsInterpolation = accumulator / physicsTimeStep;
