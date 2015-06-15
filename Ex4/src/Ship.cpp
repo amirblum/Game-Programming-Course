@@ -10,6 +10,9 @@
 #include "Ship.h"
 #include "InputManager.h"
 #include "GameState.h"
+#include "AsteroidRigidBody.h"
+#include "BlackHole.h"
+#include "Beacon.h"
 
 #include <iostream>
 

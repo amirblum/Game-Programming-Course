@@ -136,10 +136,33 @@ void AsteroidParticleSystem::emit()
 
 void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
 {
+    AsteroidRigidBody *rigidBody = _rigidBodies.getValue(particleID);
+    PhysicsComponent &physics = rigidBody->getPhysics();
+    vec3 newPosition = physics.getPosition();
+    
+    if (rigidBody->isDead()) {
+        // Create random direction
+        vec3 randomDirection = sphericalRand(1.0f);
+        
+        // Move it behind ship
+        if (dot(randomDirection, Camera::MainCamera()->getDirection()) > 0) {
+            randomDirection = -randomDirection;
+        }
+        
+        newPosition = randomDirection * _emitMaxRadius;
+        
+        // Create new rigidbody
+        AsteroidRigidBody *newRigidBody = new AsteroidRigidBody(newPosition, physics.getVelocity(), rigidBody->getRadius(), physics.getMass());
+        delete rigidBody;
+        _rigidBodies.setValue(particleID, newRigidBody);
+    }
+
+    _positions.setValue(particleID, newPosition);
+    
     // Update position
 //    vec3 currentPosition = _positions.getValue(particleID);
 //    vec3 newPosition = currentPosition;
-    vec3 newPosition = _rigidBodies.getValue(particleID)->getPhysics().getPosition();
+//    vec3 newPosition = _rigidBodies.getValue(particleID)->getPhysics().getPosition();
 //    PhysicsComponent &physics = _rigidBodies.getValue(particleID)->getPhysics();
 //    newPosition += physics.getVelocity() * dt;
     
@@ -174,5 +197,5 @@ void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
 //    _transparencies.setValue(particleID, transparency);
     
     // Update particle
-    _positions.setValue(particleID, newPosition);
+//    _positions.setValue(particleID, newPosition);
 }

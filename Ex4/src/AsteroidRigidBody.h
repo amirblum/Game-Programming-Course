@@ -11,12 +11,23 @@
 
 #include <stdio.h>
 #include "RigidBody.h"
+#include "BlackHole.h"
+#include "Ship.h"
 
 class AsteroidRigidBody : public RigidBody {
+private:
+    bool _dead;
+    void collideWithBlackHole(BlackHole *blackHole);
+    void collideWithShip(Ship *ship);
+    
+protected:
+    virtual void onCollision(RigidBody *collided);
+    
 public:
     AsteroidRigidBody(vec3 initialPos, vec3 initialVel, float radius, float mass);
     virtual ~AsteroidRigidBody();
-    virtual void onCollision(RigidBody *other);
+    
+    bool isDead();
 };
 
 #endif /* defined(__CGP_Ex4__AsteroidRigidBody__) */

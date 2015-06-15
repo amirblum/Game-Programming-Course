@@ -20,10 +20,10 @@
 #include "ExplosionParticleSystem.h"
 #include "SoundManager.h"
 
-// Rigidbodies
-#include "AsteroidRigidBody.h"
-#include "BlackHole.h"
-#include "Beacon.h"
+// Rigidbodies forward decleration
+class AsteroidRigidBody;
+class BlackHole;
+class Beacon;
 
 #include <vector>
 
