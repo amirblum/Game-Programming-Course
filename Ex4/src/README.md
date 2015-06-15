@@ -2,8 +2,6 @@
 
 This project builds on the previous exercise, adding more advanced physics with black holes and collisions and stuff!
 
-Video here: https://youtu.be/eDRsresMcLE
-
 IMPORTANT NOTE
 ==============
 In order to run this on the University's "aquarium" computers, build normally with 'make', then set the LD_LIBRARY_PATH environment variable like so:
@@ -30,7 +28,7 @@ Space - Accelerate
 g - Toggle game over  
 r - Reset game
 
-Required implementations:
+Bonus implementations:
 -------------------------
 I implemented the following optional features as specified in the exercise description:
 * Destroy the asteroid if impact is above certain threshhold (1pt)
@@ -39,6 +37,7 @@ I implemented the following optional features as specified in the exercise descr
 * Beacon compass that shows direction to the beacon at any orientation (1pt) [Thanks to Zeev Adelman for help with the shader on this!]
 * Nicer shield. Sphere with semitransparent texture + time based color changes (2pts)
 * Music and sound effects (1pt)
+
 Total: 13 (base) + 9 (Optional) = 21 pts
 
 Final note/s:
