@@ -9,7 +9,7 @@
 #
 ##################################################################
 
-TAR = amirblum_cgp_ex4.tgz
+TAR = amirblum_ex4.tgz
 
 # list of all the sources files
 SRCS	=  	main.cpp		\
@@ -18,9 +18,13 @@ SRCS	=  	main.cpp		\
         Camera.cpp  \
 		CameraFollow.cpp \
         CameraOpening.cpp \
+        CameraEnding.cpp \
+        CameraScripts.cpp \
         InputManager.cpp    \
+        SoundManager.cpp \
 		ParticleSystem.cpp \
 		AsteroidParticleSystem.cpp \
+        AsteroidRigidBody.cpp \
         ExplosionParticleSystem.cpp \
         ThrusterParticleSystem.cpp \
 		Mesh.cpp \
@@ -28,9 +32,14 @@ SRCS	=  	main.cpp		\
 		RenderableSceneNode.cpp \
 		Ship.cpp 	\
 		HealthBar.cpp \
+        Shield.cpp \
+        BlackHole.cpp \
+        Beacon.cpp \
 		DummyObject.cpp \
 		SkyBox.cpp \
         RenderComponent.cpp  \
+        PhysicsSimulation.cpp \
+        RigidBody.cpp \
 		PhysicsComponent.cpp \
         Overlay.cpp \
 		ShaderIO.cpp \
@@ -42,9 +51,13 @@ HDRS	=  	\
         Camera.h  \
 		CameraFollow.h \
         CameraOpening.h \
+        CameraEnding.h \
+        CameraScripts.h \
         InputManager.h    \
+        SoundManager.h \
 		ParticleSystem.h \
         AsteroidParticleSystem.h \
+        AsteroidRigidBody.h \
         ExplosionParticleSystem.h \
         ThrusterParticleSystem.h \
 		Mesh.h \
@@ -52,9 +65,14 @@ HDRS	=  	\
 		RenderableSceneNode.h \
 		Ship.h 	\
 		HealthBar.h \
+        Shield.h \
+        BlackHole.h \
+        Beacon.h \
 		DummyObject.h \
 		SkyBox.h \
         RenderComponent.h  \
+        PhysicsSimulation.h \
+        RigidBody.h \
 		PhysicsComponent.h \
         Overlay.h \
 		ShaderIO.h	\

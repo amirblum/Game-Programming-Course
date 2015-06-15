@@ -1,6 +1,6 @@
-# Game Programming Course Exercise 3
+# Game Programming Course Exercise 4
 
-In this project I implemented a 3D space shooter with an infinite asteroid field. Inspired by Battlestar Galactice :)
+This project builds on the previous exercise, adding more advanced physics with black holes and collisions and stuff!
 
 Video here: https://youtu.be/eDRsresMcLE
 
@@ -8,12 +8,15 @@ IMPORTANT NOTE
 ==============
 In order to run this on the University's "aquarium" computers, build normally with 'make', then set the LD_LIBRARY_PATH environment variable like so:
 `setenv LD_LIBRARY_PATH ./lib/`
+Then run the game with `cgp_ex4`
 
 Core functionality:
 ------------------
-* Endless asteroid field implemented using particle system, billboarding and instancing. The ship cannot escape the asteroid field.
-* A Spaceraft with WASD/Space tail-following camera control.
-* Collision detection with asteroids; Collision counter; Game Over after five collisions; Visual indicator of lives Left.
+1. Rigid-body physics engine for position. All objects (Ship, asteroids, black holes) have size and mass. The black holes act as static force sources (the rest of the objects in the simulation don't apply force to each other).
+2. Ship thrust. Thrusters apply force in the direction of the ship. This force does not move with the direction of the ship as in the previous exercise (if you want to stop/turn around you have to turn the ship around and apply force in the opposite direction)
+3. Black holes. As stated black holes apply gravity to the ship and asteroids, inversely proportional to the square distance. Black holes themselves are static.
+4. A static space beacon. The beacon takes the form of the Battlestar Galactica. You must reach it!
+5. A shield around the ship (so as to show it's radius).
 
 Controls:
 ---------
@@ -30,35 +33,20 @@ r - Reset game
 Required implementations:
 -------------------------
 I implemented the following optional features as specified in the exercise description:
-* Skybox (using the wonderful SpaceScape)
-* Better ship mesh - The Viper Mk2 from the rebooted Battlestar Galactica television show.
-* Sound and music
-    - Space battle music from the Battlestar Galactica television show.
-    - Dradis ship sound (also from the show)
-    - Thruster sounds
-    - Explosion sounds
-* Better camera control - Spent WAY too long getting this just right. Just search camerafollow in the git log to see all the iterations...
-    - Thrust
-    - Inertia
-    - Camera with inertia
-* Explosions in space - Particle system on impact sends fireballs in all directions
-
-Bonus implementations:
-----------------------
-In addition to the features requaired by the exercise, I implemented the following because I thought it looked good or felt good:
-* Particle-system thrusters - When accelerating the thrusters of the ship show a blue fire created using a particle system.
-* Opening camera sequence - To really show off the model of the ship. At the start of the game press space to sweep the camera from the front to the back of the ship. If you get impatient just press space again to begin flying.
+* Destroy the asteroid if impact is above certain threshhold (1pt)
+* A runge-kutta 4 ODE solver (2pts)
+* Show thrust using particle system (2pts)
+* Beacon compass that shows direction to the beacon at any orientation (1pt) [Thanks to Zeev Adelman for help with the shader on this!]
+* Nicer shield. Sphere with semitransparent texture + time based color changes (2pts)
+* Music and sound effects (1pt)
+Total: 13 (base) + 9 (Optional) = 21 pts
 
 Final note/s:
 -------------
-My true achievement during this exercise was creating the particle system. I think it is robust and efficient. It uses a structure of arrays to hold the particle attributes. This is in sync with how OpenGL holds the dividor VBO's for instancing. This way there is no need to recreate the arrays of attributes every frame but instead they can be accessed and then dumped directly to the GPU.
+This wasn't as big as a jump as exercise 3, but I liked how it came out anyway so nyeh.
 
-The ParticleSystem base class handles these particle attributes and rendering etc. and allows deriving classes to simply implement the emit() and updateParticle(particleID, dt) functions. That's all! This allows for all sorts of different kinds of particle systems, as exemplified in the exercise. The asteroids are a system that doesn't kill or generate any new particles, while the explosions create particles ever random amount of time. The thrusters create half-circle shaped fireballs coming out of the ship.
-
-In short, I think it's wonderful and I hope you like it too :)
-
-Dependencies:
--------------
+Dependencies (same as Ex3. Repeated here for prosperity):
+---------------------------------------------------------
 This project has three main external library dependencies which I will outline here:
 
 1. Alut.
@@ -90,4 +78,4 @@ This project has three main external library dependencies which I will outline h
    This is a big one. It handles the mesh loading. It can be downloaded from http://assimp.sourceforge.net . Should be a pretty straightforward install. Note that the version for running on aquarium computers, included with this project, is a dynamic library (.so and not .a). Since I don't have permissions to install it on aquarium computers, it will sit in the local ./lib/ folder. When running the project we do need to point it to this folder, which is why I've specified setting LD_LIBRARY_PATH to ./lib/, as detailed above.
 
 
-I think that's everything. Have fun!
+Have fun!
