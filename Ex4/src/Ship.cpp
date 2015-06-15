@@ -39,6 +39,7 @@ static const std::string WIN_SOUND = "assets/sounds/win.wav";
 Ship::Ship(vec3 position, quat rotation, vec3 scale, float radius) :
 SceneNode(position, rotation, scale),
 RigidBody(position, vec3(0.0f), radius, SHIP_MASS, false),
+_dead(false),
 _forward(FORWARD_VECTOR), _right(RIGHT_VECTOR),
 _radius(radius)
 {
@@ -368,6 +369,8 @@ float Ship::getRadius()
 
 void Ship::die()
 {
+    if (_dead) return;
+    _dead = true;
     _healthBar->setCurrentUnits(0);
     generateExplosion(vec3(0.0f), 2000);
     removeChild(_shield);

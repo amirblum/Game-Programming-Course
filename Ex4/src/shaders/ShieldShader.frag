@@ -128,9 +128,9 @@ float turb(vec3 v)
 void main()
 {
     vec4 hexSample = texture(cubeSampler1, texcoords);
-    vec3 color = hexSample.xyz;
+    vec3 hexSampleColor = hexSample.xyz;
     float alpha = 0.5f;
-    if (dot(color, color) > 0.1f) {
+    if (dot(hexSampleColor, hexSampleColor) > 0.1f) {
 //        discard;
         alpha = 0.05f;
     }
@@ -151,5 +151,14 @@ void main()
     float green = (0.5f) + (sineMarblingGreen * sineMarblingGreen * sineMarblingGreen) / 2.0f;
     float blue = (0.5f) + (sineMarblingBlue * sineMarblingBlue * sineMarblingBlue) / 2.0f;
     
-    outColor = vec4(red, green, blue, alpha);
+    vec4 color = vec4(red, green, blue, alpha);
+//    if (length(color.xyz) < 1.1f) {
+//        color.a = 0.05;
+//        
+//        if (hexSample.a < 0.1f) {
+//            alpha = 0.15f;
+//        }
+//    }
+    
+    outColor = color;
 }

@@ -31,6 +31,8 @@ class Beacon;
 
 class Ship : public SceneNode, public RigidBody {
 private:
+    bool _dead;
+    
     // Sounds
     ALuint _dradisSound, _thrustersSound, _explosionSound, _warningSound, _winSound;
     
