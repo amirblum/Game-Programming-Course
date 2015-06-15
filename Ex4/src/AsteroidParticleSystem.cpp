@@ -24,9 +24,10 @@
 
 static const std::string ASTEROID_IMAGE = "assets/asteroid1.png";
 
-AsteroidParticleSystem::AsteroidParticleSystem(unsigned int maxAsteroids, float emitRadius) :
+AsteroidParticleSystem::AsteroidParticleSystem(vec3 center, quat axisRotation, unsigned int maxAsteroids, float emitRadius) :
 ParticleSystem(maxAsteroids),
-_emitMaxRadius(emitRadius), _emitMinRadius(0),
+_center(center), _axisRotation(toMat4(axisRotation)),
+_emitMaxRadius(emitRadius), _emitMinRadius(emitRadius * 4.0f / 5.0f),
 //_ship(ship),
 _rigidBodies(maxAsteroids, "rigidBodies")
 {
@@ -41,8 +42,8 @@ _rigidBodies(maxAsteroids, "rigidBodies")
         addAttribute(&_rigidBodies);
     }
     
-    // Emit min-radius
-    _emitMinRadius = glm::length(Camera::MainCamera()->getPosition()) * 2.0f;
+//    // Emit min-radius
+//    _emitMinRadius = glm::length(Camera::MainCamera()->getPosition()) * 2.0f;
     
     // Emit all the asteroids
     for (int i = 0; i < maxAsteroids; ++i) {
@@ -66,6 +67,27 @@ bool AsteroidParticleSystem::particleInView(vec3 particlePosition)
     return particleAngle < radians(camera->getFrustumAngle());
 }
 
+vec3 AsteroidParticleSystem::asteroidToWorldPosition(vec3 asteroidPosition)
+{
+    vec4 affinePosition = vec4(asteroidPosition, 1.0f);
+    vec4 affineWorldPosition = getWorldTransform() * affinePosition;
+    return vec3(affineWorldPosition);
+}
+
+vec3 AsteroidParticleSystem::worldToAsteroidPosition(vec3 worldPosition)
+{
+    vec4 affinePosition = vec4(worldPosition, 1.0f);
+    vec4 affineAsteroidPosition = inverse(getWorldTransform()) * affinePosition;
+    return vec3(affineAsteroidPosition);
+}
+
+vec3 AsteroidParticleSystem::rotateAxis(vec3 vector)
+{
+    vec4 affineVector = vec4(vector, 1.0f);
+    vec4 affineRotatedVector = _axisRotation * affineVector;
+    return vec3(affineRotatedVector);
+}
+
 void AsteroidParticleSystem::emit()
 {
     // Create a particle
@@ -80,13 +102,20 @@ void AsteroidParticleSystem::emit()
     vec3 newPosition;
     {
         // Create random vector on unit sphere
-        randomPosition = sphericalRand(1.0f);
+        randomPosition = vec3(circularRand(1.0f), 0.0f);
         
         // Decide it's length
         distance = randutils::randomRange(_emitMinRadius, _emitMaxRadius);
         
-        // Make it relative to the camera and set it
-        newPosition = Camera::MainCamera()->getPosition() + randomPosition * distance;
+        // Make it relative to the center and set it's distance
+        newPosition = _center + randomPosition * distance;
+    }
+    
+    // Velocity
+    vec3 velocity;
+    {
+        velocity = cross(-randomPosition, vec3(0.0f, 0.0f, 1.0f)) * 50.0f;
+//        velocity = vec3(0.0f);
     }
     
     // Size
@@ -98,31 +127,22 @@ void AsteroidParticleSystem::emit()
     // Physics
     AsteroidRigidBody *newRigidBody;
     {
-        vec3 randomDirection = sphericalRand(1.0f);
-        float randomSpeed = randutils::randomRange(ASTEROID_MIN_INITIAL_FORCE, ASTEROID_MAX_INITIAL_FORCE);
-        vec3 initialVelocity = randomDirection * randomSpeed;
+        // Initial velocity
+//        vec3 randomDirection = sphericalRand(1.0f);
+//        float randomSpeed = randutils::randomRange(ASTEROID_MIN_INITIAL_FORCE, ASTEROID_MAX_INITIAL_FORCE);
+//        vec3 initialVelocity = randomDirection * randomSpeed;
         
-        bool closeToShip = distance < _emitMinRadius * 3.0f;
-        bool headingTowardsShip = dot(randomPosition, randomDirection) < -0.8;
-        if (closeToShip && headingTowardsShip) {
-            initialVelocity = -initialVelocity;
-        }
-        
-        // Move the asteroid around a bit from the initial random position
-//        while (distance < size) {
-//            newPosition += initialVelocity * 30.0f;
-//            distance = length(newPosition);
+//        bool closeToShip = distance < _emitMinRadius * 3.0f;
+//        bool headingTowardsShip = dot(randomPosition, randomDirection) < -0.8;
+//        if (closeToShip && headingTowardsShip) {
+//            initialVelocity = -initialVelocity;
 //        }
-        newPosition += initialVelocity;
         
-        newRigidBody = new AsteroidRigidBody(newPosition, initialVelocity, size * 0.3f, ASTEROID_MASS);
-//        newRigidBody->getPhysics().applyForce(initialForce);
+//        newPosition += initialVelocity;
+        
+//        newRigidBody = new AsteroidRigidBody(newPosition, initialVelocity, size * 0.3f, ASTEROID_MASS);
+        newRigidBody = new AsteroidRigidBody(newPosition, velocity, size * 0.3f, size * ASTEROID_MASS / ASTEROID_MAX_SIZE);
     }
-    
-    // Random fun
-    // To avoid having most asteroids near the ship at start (due to the way
-    // the position was randomly chosen), we let the physics run a bit
-//    newPosition += newRigidBody->getPhysics().getVelocity() * 30.0f;
     
     // Billboard right
     vec2 newBillboardRight = circularRand(1.0f);    
@@ -138,7 +158,7 @@ void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
 {
     AsteroidRigidBody *rigidBody = _rigidBodies.getValue(particleID);
     PhysicsComponent &physics = rigidBody->getPhysics();
-    vec3 newPosition = physics.getPosition();
+    vec3 newWorldPosition = physics.getPosition();
     
     if (rigidBody->isDead()) {
         // Create random direction
@@ -149,53 +169,13 @@ void AsteroidParticleSystem::updateParticle(unsigned int particleID, float dt)
             randomDirection = -randomDirection;
         }
         
-        newPosition = randomDirection * _emitMaxRadius;
+        newWorldPosition = randomDirection * _emitMaxRadius * 10.0f;
         
         // Create new rigidbody
-        AsteroidRigidBody *newRigidBody = new AsteroidRigidBody(newPosition, physics.getVelocity(), rigidBody->getRadius(), physics.getMass());
+        AsteroidRigidBody *newRigidBody = new AsteroidRigidBody(newWorldPosition, physics.getVelocity(), rigidBody->getRadius(), physics.getMass());
         delete rigidBody;
         _rigidBodies.setValue(particleID, newRigidBody);
     }
 
-    _positions.setValue(particleID, newPosition);
-    
-    // Update position
-//    vec3 currentPosition = _positions.getValue(particleID);
-//    vec3 newPosition = currentPosition;
-//    vec3 newPosition = _rigidBodies.getValue(particleID)->getPhysics().getPosition();
-//    PhysicsComponent &physics = _rigidBodies.getValue(particleID)->getPhysics();
-//    newPosition += physics.getVelocity() * dt;
-    
-    
-    // Check death
-//    vec3 shipWorldPosition = _ship->getWorldPosition();
-//    vec3 relativePosition = newPosition - shipWorldPosition;
-//    float distanceFromShip = length(relativePosition);
-//    float distanceFromCenter = length(newPosition);
-//    if (distanceFromShip > _emitMaxRadius) {
-//        // Pop-through to other side of field
-//        vec3 newRelativePosition = -relativePosition;
-//        newPosition = shipWorldPosition + newRelativePosition;
-//    }
-    
-    // Check collision
-//    if (distanceFromShip < (_sizes.getValue(particleID) * 0.3f + _ship->getRadius())) {
-//        bool collided = _collided.getValue(particleID);
-//        if (!collided) {
-//            _ship->collide();
-//            _collided.setValue(particleID, true);
-//        }
-//    } else {
-//        _collided.setValue(particleID, false);
-//    }
-    
-    // Transparency
-//    float transparency = 1.0f;
-//    if (distanceFromCenter > (_emitMaxRadius - TRANSPARENCY_MARGIN)) {
-//        transparency = 1.0f - (distanceFromCenter - (_emitMaxRadius - TRANSPARENCY_MARGIN)) / TRANSPARENCY_MARGIN;
-//    }
-//    _transparencies.setValue(particleID, transparency);
-    
-    // Update particle
-//    _positions.setValue(particleID, newPosition);
+    _positions.setValue(particleID, newWorldPosition);
 }

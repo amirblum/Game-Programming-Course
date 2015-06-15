@@ -28,7 +28,7 @@ static const std::string WIN_SOUND = "assets/sounds/win.wav";
 #define SHIP_MASS (0.5f)
 #define TILT_SPEED (pi<float>() / 4.0f)
 #define ROLL_SPEED (pi<float>() / 2.0f)
-#define ACCELERATION_FORCE (10.0f)
+#define ACCELERATION_FORCE (30.0f)
 #define DAMPENING_FORCE    (0.005f)
 #define MAX_VELOCITY (300.0f)
 #define MAX_HEALTH (5)
@@ -144,18 +144,10 @@ void Ship::fixedUpdate(float dt)
         
         InputManager &input = InputManager::Instance();
         
-        // Velocity hack. Basically this retains the forward velocity even when
-        //changing directions. Not realistic physics AT ALL...but feels better XD
-//        vec3 prevVelocity = _physics.getVelocity();
-//        float velocityStrength = length(prevVelocity);
-//        _physics.applyForce(-prevVelocity);
-//        _physics.applyForce(_forward * velocityStrength);
-        
         // Accelerating
         SoundManager &soundManager = SoundManager::Instance();
         if (input.isPressed(KEY_ACTION)) {
             accelerate(ACCELERATION_FORCE);
-//            _physics.applyForce(_forward * ACCELERATION_FORCE);
             for (unsigned int i = 0; i < 3; ++i) {
                 for (unsigned int j = 0; j < 100; ++j) {
                     _thrusters[i]->emit();
@@ -163,7 +155,6 @@ void Ship::fixedUpdate(float dt)
             }
             soundManager.playSound(_thrustersSound);
         } else if (_physics.isMoving()) {
-//            _physics.applyForce(-_physics.getVelocity() * DAMPENING_FORCE);
             soundManager.stopSound(_thrustersSound);
         }
         
