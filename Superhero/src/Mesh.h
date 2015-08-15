@@ -28,6 +28,7 @@ using namespace glm;
 
 #include "SceneNode.h"
 #include "RenderComponent.h"
+#include "BoundingBox.h"
 
 class Mesh : public SceneNode {
 private:
@@ -41,19 +42,22 @@ private:
 
     std::vector<MeshEntry*> _entries;
     std::vector<std::shared_ptr<TextureComponent>> _textures;
+    BoundingBox _boundingBox;
     
-    void initMesh(unsigned int index, const aiMesh* mesh);
+    void initMesh(unsigned int index, const aiMesh* mesh, float unitConversion);
     void initMaterials(const aiScene* scene, std::string filename);
     
     
 public:
     Mesh(std::string filename,
+         float unitConversion,
          vec3 position = vec3(0.0f),
          quat rotation = quat(vec3(0.0f)),
          vec3 scale = vec3(1.0f));
     virtual ~Mesh();
     
     virtual void render();
+    BoundingBox& getBoundingBox();
 };
 
 

@@ -24,12 +24,12 @@ _buildingsGrid(gridWidth * gridHeight)
         for (int j = 0; j < gridHeight; ++j) {
             float gridSpacing = BUILDING_WIDTH + STREET_WIDTH;
             float buildingX = gridSpacing * i;
-            float buildingY = gridSpacing * j;
+            float buildingZ = gridSpacing * j;
             
             // Create random height
-            float height = randutils::randomRange(BUILDING_MIN_HEIGHT, BUILDING_MAX_HEIGHT);
+//            float height = randutils::randomRange(BUILDING_MIN_HEIGHT, BUILDING_MAX_HEIGHT);
             
-            _buildingsGrid[i] = new Building(vec3(buildingX, buildingY, 0.0f), BUILDING_WIDTH, height);
+            _buildingsGrid[i] = new Building(vec3(buildingX, 0.0f, buildingZ));
             addChild(_buildingsGrid[i]);
         }
     }

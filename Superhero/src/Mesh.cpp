@@ -19,9 +19,9 @@ Mesh::MeshEntry::~MeshEntry()
 {
 }
 
-Mesh::Mesh(std::string filename, vec3 position, quat rotation, vec3 scale) :
+Mesh::Mesh(std::string filename, float unitConversion, vec3 position, quat rotation, vec3 scale) :
 SceneNode(position, rotation, scale),
-_entries(), _textures()
+_entries(), _textures(), _boundingBox()
 {
     Assimp::Importer importer;
     
@@ -53,7 +53,7 @@ _entries(), _textures()
     // Initialize the meshes in the scene one by one
     for (unsigned int i = 0 ;i < _entries.size() ;i++) {
         const aiMesh* mesh = scene->mMeshes[i];
-        initMesh(i, mesh);
+        initMesh(i, mesh, unitConversion);
     }
 }
 
@@ -65,7 +65,7 @@ Mesh::~Mesh()
     }
 }
 
-void Mesh::initMesh(unsigned int index, const aiMesh* mesh)
+void Mesh::initMesh(unsigned int index, const aiMesh* mesh, float unitConversion)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -78,11 +78,12 @@ void Mesh::initMesh(unsigned int index, const aiMesh* mesh)
         const aiVector3D* pNormal   = mesh->HasNormals() ? &(mesh->mNormals[i]) : &zero;
         const aiVector3D* pTexCoord = mesh->HasTextureCoords(0) ? &(mesh->mTextureCoords[0][i]) : &zero;
 
-        Vertex v(vec3(pPos->x, pPos->y, pPos->z),
+        Vertex v(vec3(pPos->x, pPos->y, pPos->z) * unitConversion,
                  vec2(pTexCoord->x, pTexCoord->y),
                  vec3(pNormal->x, pNormal->y, pNormal->z));
 
         vertices.push_back(v);
+        _boundingBox.includePoint(v.position);
     }
 
     for (unsigned int i = 0 ; i < mesh->mNumFaces ; i++) {
@@ -128,6 +129,11 @@ void Mesh::initMaterials(const aiScene* scene, std::string filename)
             if (material->GetTexture(aiTextureType_DIFFUSE, 0, &path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
                 std::string texturePath(path.data);
                 std::string::size_type slashIndex = texturePath.find_last_of("/");
+                // Fix for windows
+                if (slashIndex == std::string::npos) {
+                    slashIndex = texturePath.find_last_of("\\");
+                }
+                
                 std::string basename;
                 
                 if (slashIndex == std::string::npos) {
@@ -150,4 +156,8 @@ void Mesh::render()
         entry->setUniform<mat4, UNIFORM_MAT4>("normalRotation", toMat4(getWorldRotation()));
         entry->render(_worldTransform);
     }
+}
+
+BoundingBox& Mesh::getBoundingBox() {
+    return _boundingBox;
 }

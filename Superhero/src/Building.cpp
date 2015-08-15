@@ -9,85 +9,62 @@
 #include "Building.h"
 #include "RandUtils.h"
 
-
 static const std::string texturesLocation = "assets/buildings/";
-static const std::string textures[] = {
-    "building1.jpg",
-    "building2.jpg"
+static const std::string meshes[] = {
+    "building1/building1.obj",
+    "building2/building2.obj",
+    "building3/building3.obj",
+    "building4/building4.obj"
 };
 
-Building::Building(vec3 position, float width, float height) :
-RenderableSceneNode("BuildingShader", position),
-_width(width), _height(height)
+Building::Building(vec3 position) :
+SceneNode(position)
 {
-    // Initialize building vertices
-    static const GLfloat vertices[] = {
-        // Left wall
-        -0.5f, -0.5f, 0.5f, 1.0f,
-        -0.5f, 0.5f, 0.5f, 1.0f,
-        
-        -0.5f, -0.5f, -0.5f, 1.0f,
-        -0.5f, 0.5f, -0.5f, 1.0f,
-        
-        // Right wall
-        0.5f, -0.5f, 0.5f, 1.0f,
-        0.5f, 0.5f, 0.5f, 1.0f,
-        
-        0.5f, -0.5f, -0.5f, 1.0f,
-        0.5f, 0.5f, -0.5f, 1.0f
-    };
-    
-    
-    // Push VBO
-    std::vector<GLfloat> verticesVector(vertices, vertices + (sizeof(vertices) / sizeof(GLfloat)));
-    _renderComponent->setPositionsVBO(verticesVector);
-    
-    
-    static const GLuint indices[] = {
-        // Left
-        0, 1, 2,
-        1, 3, 2,
-        
-        // Front
-        2, 3, 6,
-        3, 7, 6,
-        
-        // Right
-        5, 4, 7,
-        4, 6, 7,
-        
-        // Back
-        4, 5, 0,
-        5, 1, 0,
-        
-        // Up
-        1, 5, 3,
-        3, 7, 5,
-        
-        // Down
-        4, 0, 6,
-        0, 2, 6
-    };
-    
-    std::vector<GLuint> indicesVector(indices, indices + (sizeof(indices) / sizeof(GLuint)));
-    _renderComponent->setIBO(indicesVector);
-    
-    // Initialize randomness
+    // Initialize random mesh
     {
-        // Height
-        setScale(vec3(width, height, width));
+        float unitConversion;
+        int buildingIndex = randutils::randomRange(0, 4);
+//        int buildingIndex = 2;
+        
+        std::string shipMesh = texturesLocation + "/" + meshes[buildingIndex];
+        switch (buildingIndex) {
+            case 0:
+                unitConversion = 0.0002f;
+                break;
+            case 1:
+                unitConversion = 0.01f;
+                break;
+            case 2:
+                unitConversion = 0.005f;
+                break;
+            case 3:
+                unitConversion = 0.005f;
+                break;
+            default:
+                unitConversion = 1.0f;
+                break;
+        }
+        
+        _mesh = new Mesh(shipMesh, unitConversion, vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f));
+        addChild(_mesh);
+    }
+    
+    // Set height
+    {
+        BoundingBox bb = _mesh->getBoundingBox();
+        _height = bb.maxY() - bb.minY();
         
         vec3 myPosition = getPosition();
         myPosition.y = _height / 2;
         setPosition(myPosition);
-        
-        // Texture
-        std::string texture = texturesLocation + "/" + textures[randutils::randomRange(0, 2)];
-        _renderComponent->addTexture(TextureComponent::createCubeTexture(texture, texture, texture, texture, texture, texture));
     }
 }
 
 Building::~Building()
 {
     
+}
+
+float Building::getHeight() {
+    return _height;
 }

@@ -10,14 +10,16 @@
 #define __CGP_Superhero__Building__
 
 #include <stdio.h>
-#include "RenderableSceneNode.h"
+#include "SceneNode.h"
+#include "Mesh.h"
 
-class Building : public RenderableSceneNode {
+class Building : public SceneNode {
 private:
-    float _width, _height;
+    Mesh *_mesh;
+    float _height;
     
 public:
-    Building(vec3 position, float width, float height);
+    Building(vec3 position);
     virtual ~Building();
     
     float getHeight();

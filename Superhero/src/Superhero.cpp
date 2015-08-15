@@ -36,7 +36,7 @@ _radius(radius)
         quat meshRotation = rotate(quat(vec3(0.0f)), pi<float>()/2.0f, vec3(0.0f, 1.0f, 0.0f));
         vec3 meshScale = vec3(1.0f);
         
-        _mesh = new Mesh(SUPERHERO_MESH, meshPosition, meshRotation, meshScale);
+        _mesh = new Mesh(SUPERHERO_MESH, 1.0f, meshPosition, meshRotation, meshScale);
         addChild(_mesh);
     }
     
