@@ -19,6 +19,7 @@ using namespace glm;
 
 // Key definitions
 #define KEY_ACTION (' ')
+#define KEY_ACTION_MOD ('c')
 #define KEY_UP ('w')
 #define KEY_DOWN ('s')
 #define KEY_LEFT ('a')

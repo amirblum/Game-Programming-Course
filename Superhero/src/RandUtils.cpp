@@ -15,4 +15,9 @@ namespace randutils {
     {
         return ((float)rand() / RAND_MAX) * (to - from) + from;
     }
+    
+    int randomRange(int from, int to)
+    {
+        return (rand() % (to - from)) + from;
+    }
 }

@@ -9,11 +9,10 @@
 #include <iostream>
 
 #include "World.h"
-#include "Ship.h"
-//#include "DummyObject.h"
-#include "Beacon.h"
-#include "AsteroidParticleSystem.h"
-#include "BlackHole.h"
+#include "Controller.h"
+#include "TargetFollow.h"
+#include "City.h"
+#include "Superhero.h"
 #include "InputManager.h"
 #include "CameraScripts.h"
 #include "Overlay.h"
@@ -37,28 +36,31 @@ _startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonC
 //    }
     
     // Camera
-    Camera *camera = new Camera(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
+    Camera *camera = new Camera(vec3(0.0f, 0.0f, -25.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
     Camera::setMainCamera(camera);
     
-//    DummyObject *dummy = new DummyObject(vec3(-1.0f, 0.0f, 1.0f), quat(vec3(0.0f)), vec3(1.0f));
-//    addChild(dummy);
+    // City
+    City *city = new City(4, 4);
+    
+    // Superhero
+    _superhero = new Superhero(vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.0f, 1.0f), /*radius*/1.6f);
     
     // Skybox (draw last to save on fragments that already have info in them)
     SkyBox *skybox = new SkyBox();
     
-    /**      -      Transparent things go below skybox        -      */
+    /**      -      Transparent things go below skybox        -      **/
     
-//    // Ship
-//    _ship = new Ship(vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.0f, 1.0f), /*radius*/1.6f);
     
     // Add children
     {
+        addChild(_superhero);
+        addChild(city);
         addChild(skybox);
-//        addChild(_ship);
     }
     
     // Scripts
-//    addScript(new CameraScripts(camera, _ship, skybox));
+//    addScript(new CameraScripts(camera, _superhero, skybox));
+    addScript(new Controller(camera));
     
     // Background music
     _backgroundMusic = SoundManager::Instance().loadSound(BACKGROUND_MUSIC, true);

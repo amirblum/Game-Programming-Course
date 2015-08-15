@@ -1,18 +1,14 @@
 //
-//  Ship.cpp
+//  Superhero.cpp
 //  cg-projects
 //
 //  Created by Amir Blum on 3/10/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
 
-#include "ShaderIO.h"
-#include "Ship.h"
+#include "Superhero.h"
 #include "InputManager.h"
 #include "GameState.h"
-#include "AsteroidRigidBody.h"
-#include "BlackHole.h"
-#include "Beacon.h"
 
 #include <iostream>
 
@@ -114,7 +110,7 @@ void Superhero::accelerate()
 }
 
 /**
- * Turn ship right/left
+ * Turn superhero right/left
  */
 void Superhero::turn(float angle)
 {
@@ -217,7 +213,7 @@ void Superhero::win()
     soundManager.stopSound(_flyingSound);
 }
 
-bool Ship::isDead()
+bool Superhero::isDead()
 {
     return _healthBar->getCurrentUnits() == 0;
 }

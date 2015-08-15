@@ -13,10 +13,10 @@
 
 #include "GameState.h"
 
-CameraScripts::CameraScripts(Camera *camera, Ship *ship, SkyBox *skyBox) :
-_cameraOpening(new CameraOpening(camera, ship, skyBox)),
-_cameraFollow(new CameraFollow(camera, ship, skyBox)),
-_cameraEnding(new CameraEnding(camera, ship, skyBox))
+CameraScripts::CameraScripts(Camera *camera, Superhero *superhero, SkyBox *skyBox) :
+_cameraOpening(new CameraOpening(camera, superhero, skyBox)),
+_cameraFollow(new CameraFollow(camera, superhero, skyBox)),
+_cameraEnding(new CameraEnding(camera, superhero, skyBox))
 {
 }
 
@@ -31,11 +31,16 @@ void CameraScripts::update(float dt)
 {
     GameState &state = GameState::Instance();
     
-    if (!state.gameStarted) {
-        _cameraOpening->update(dt);
-    } else if (!state.gameOver) {
-        _cameraFollow->update(dt);
-    } else {
-        _cameraEnding->update(dt);
+    switch (state.winState) {
+        case NOT_STARTED:
+            _cameraOpening->update(dt);
+            break;
+        case STARTED:
+            _cameraFollow->update(dt);
+            break;
+        case WON:
+        case LOST:
+            _cameraEnding->update(dt);
+            break;
     }
 }

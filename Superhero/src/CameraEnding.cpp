@@ -12,8 +12,8 @@
 #define CAMERA_DISTANCE (2.5f)
 #define TRAVEL_TIME (1.0f)
 
-CameraEnding::CameraEnding(Camera *camera, Ship *ship, SkyBox *skyBox) :
-_camera(camera), _ship(ship), _skyBox(skyBox),
+CameraEnding::CameraEnding(Camera *camera, Superhero *superhero, SkyBox *skyBox) :
+_camera(camera), _superhero(superhero), _skyBox(skyBox),
 _startOffset(0.0f),
 _endOffset(0.0f),
 _startingUp(0.0f),
@@ -28,19 +28,19 @@ CameraEnding::~CameraEnding()
 void CameraEnding::update(float dt)
 {
     if (!_started) {
-        _startOffset = _camera->getPosition() - _ship->getPosition();
-        _endOffset = -_ship->getRight() * CAMERA_DISTANCE;
+        _startOffset = _camera->getPosition() - _superhero->getPosition();
+        _endOffset = -_superhero->getRight() * CAMERA_DISTANCE;
         _startingUp = _camera->getUp();
         _started = true;
     }
     
     // Get current
     vec3 cameraPosition = _camera->getPosition();
-    vec3 shipPosition = _ship->getPosition();
+    vec3 superheroPosition = _superhero->getPosition();
     
     // Calculate relative start/end
-    vec3 startPosition = shipPosition + _startOffset;
-    vec3 endPosition = shipPosition + _endOffset;
+    vec3 startPosition = superheroPosition + _startOffset;
+    vec3 endPosition = superheroPosition + _endOffset;
     
     _currentTravelTime += dt;
     if (_currentTravelTime > TRAVEL_TIME) {
@@ -50,14 +50,14 @@ void CameraEnding::update(float dt)
     
     cameraPosition = mix(startPosition, endPosition, travelPercent);
     
-    vec3 cameraToShip = shipPosition - cameraPosition;
-    if (length(cameraToShip) < CAMERA_DISTANCE) {
-        cameraPosition = shipPosition - normalize(cameraToShip) * CAMERA_DISTANCE;
+    vec3 cameraToSuperhero = superheroPosition - cameraPosition;
+    if (length(cameraToSuperhero) < CAMERA_DISTANCE) {
+        cameraPosition = superheroPosition - normalize(cameraToSuperhero) * CAMERA_DISTANCE;
     }
     
     _camera->setPosition(cameraPosition);
-    _camera->setDirection(normalize(_ship->getPosition() - cameraPosition));
-    _camera->setUp(mix(_startingUp, cross(_ship->getForward(), _ship->getRight()), travelPercent));
+    _camera->setDirection(normalize(_superhero->getPosition() - cameraPosition));
+    _camera->setUp(mix(_startingUp, cross(_superhero->getForward(), _superhero->getRight()), travelPercent));
     
     // Also, move the skybox
     _skyBox->setPosition(cameraPosition);

@@ -16,6 +16,8 @@ class SkyBox : public RenderableSceneNode {
 public:
     SkyBox();
     virtual ~SkyBox();
+    
+    void update(float dt);
 };
 
 #endif /* defined(__CGP_Superhero__SkyBox__) */

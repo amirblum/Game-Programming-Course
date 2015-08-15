@@ -11,14 +11,14 @@
 
 #define CAMERA_DISTANCE (2.5f)
 
-CameraOpening::CameraOpening(Camera *camera, Ship *ship, SkyBox *skyBox) :
-_camera(camera), _ship(ship), _skyBox(skyBox),
-_startPosition(_ship->getPosition() + _ship->getForward() * CAMERA_DISTANCE),
-_endPosition(_ship->getPosition() - _ship->getForward() * CAMERA_DISTANCE),
+CameraOpening::CameraOpening(Camera *camera, Superhero *superhero, SkyBox *skyBox) :
+_camera(camera), _superhero(superhero), _skyBox(skyBox),
+_startPosition(_superhero->getPosition() + _superhero->getForward() * CAMERA_DISTANCE),
+_endPosition(_superhero->getPosition() - _superhero->getForward() * CAMERA_DISTANCE),
 _started(false)
 {
     _camera->setPosition(_startPosition);
-    _camera->setDirection(-_ship->getForward());
+    _camera->setDirection(-_superhero->getForward());
 }
 
 CameraOpening::~CameraOpening()
@@ -44,7 +44,7 @@ void CameraOpening::update(float dt)
     cameraPosition.y = 0.5f * CAMERA_DISTANCE * sin(pi<float>() * travelPercent);
     
     _camera->setPosition(cameraPosition);
-    _camera->setDirection(normalize(_ship->getPosition() - cameraPosition));
+    _camera->setDirection(normalize(_superhero->getPosition() - cameraPosition));
     
     
     // Also, move the skybox

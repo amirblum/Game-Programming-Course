@@ -19,7 +19,7 @@
  */
 DummyObject::DummyObject(vec3 position, quat rotation, vec3 scale) :
 SceneNode(position, rotation, scale),
-_renderComponent("ShipShader")
+_renderComponent("SuperheroShader")
 {
     // Initialize DummyObject
     static const GLfloat vertices[] = {

@@ -2,8 +2,8 @@
 //  Camera.h
 //  CGP-Superhero
 //
-//  Camera class. Doesn't do much on it's own, but is easily accesible in
-//  the rest of the project via ability to set "MainCamera" singleton-ish.
+//  Camera class. Is easily accesible in the rest of the project via ability to
+//  set "MainCamera" singleton-ish.
 //
 //  Created by Amir Blum on 3/10/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
@@ -26,8 +26,9 @@
 using namespace glm;
 
 #include "InputManager.h"
+#include "SceneNode.h"
 
-class Camera {
+class Camera : public SceneNode {
 private:
     float _frustumAngle;
     float _nearPlane, _farPlane;

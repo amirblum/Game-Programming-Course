@@ -1,5 +1,5 @@
 //
-//  Ship.h
+//  Superhero.h
 //  cg-projects
 //
 //  The main character of our game
@@ -8,8 +8,8 @@
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
 
-#ifndef __CGP_Superhero__Ship__
-#define __CGP_Superhero__Ship__
+#ifndef __CGP_Superhero__Superhero__
+#define __CGP_Superhero__Superhero__
 
 #include "SceneNode.h"
 #include "Mesh.h"
@@ -25,7 +25,7 @@ class Beacon;
 
 #define GRID_ELEMENT_SIZE (1.0f)
 
-class Superhero : public SceneNode{
+class Superhero : public SceneNode {
 private:
     bool _dead;
     
@@ -72,4 +72,4 @@ public:
     bool isDead();
 };
 
-#endif /* defined(__CGP_Superhero__Ship__) */
+#endif /* defined(__CGP_Superhero__Superhero__) */

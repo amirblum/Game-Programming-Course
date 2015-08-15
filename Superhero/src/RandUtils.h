@@ -11,6 +11,7 @@
 
 namespace randutils {
     float randomRange(float from, float to);
+    int randomRange(int from, int to);
 }
 
 #endif

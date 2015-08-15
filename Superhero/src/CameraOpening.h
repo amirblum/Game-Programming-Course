@@ -2,7 +2,7 @@
 //  CameraOpening.h
 //  CGP-Superhero
 //
-//  Script to force the camera to follow the ship
+//  Script to force the camera to follow the superhero
 //
 //  Created by Amir Blum on 4/27/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
@@ -14,13 +14,13 @@
 #include <stdio.h>
 #include "Script.h"
 #include "Camera.h"
-#include "Ship.h"
+#include "Superhero.h"
 #include "SkyBox.h"
 
 class CameraOpening : public Script {
 private:
     Camera *_camera;
-    Ship *_ship;
+    Superhero *_superhero;
     SkyBox *_skyBox;
     
     vec3 _startPosition;
@@ -29,7 +29,7 @@ private:
     bool _started;
     
 public:
-    CameraOpening(Camera *camera, Ship *ship, SkyBox *skyBox);
+    CameraOpening(Camera *camera, Superhero *superhero, SkyBox *skyBox);
     virtual ~CameraOpening();
     
     virtual void update(float dt);

@@ -25,8 +25,12 @@ using namespace glm;
 #include "SceneNode.h"
 #include "SoundManager.h"
 
+class Superhero;
+
 class World : public SceneNode {
 private:
+    Superhero *_superhero;
+    
     ALuint _backgroundMusic;
     
     vec3 _startPosition;

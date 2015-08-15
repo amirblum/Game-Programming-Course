@@ -7,6 +7,7 @@
 //
 
 #include "SkyBox.h"
+#include "Camera.h"
 
 static const std::string skyboxLF = "assets/skybox/skyboxLF.png";
 static const std::string skyboxFT = "assets/skybox/skyboxFT.png";
@@ -78,4 +79,9 @@ RenderableSceneNode("SkyBoxShader", vec3(0.0f), quat(vec3(0.0f)), vec3(20.0f))
 
 SkyBox::~SkyBox()
 {
+}
+
+void SkyBox::update(float dt)
+{
+    setPosition(Camera::MainCamera()->getPosition());
 }

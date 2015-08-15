@@ -12,7 +12,6 @@
 class Script {
 public:
     virtual ~Script() {}
-    virtual void fixedUpdate(float dt) {}
     virtual void update(float dt) {}
 };
 

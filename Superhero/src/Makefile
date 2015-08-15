@@ -30,7 +30,7 @@ SRCS	=  	main.cpp		\
 		Mesh.cpp \
 		SceneNode.cpp \
 		RenderableSceneNode.cpp \
-		Ship.cpp 	\
+		Superhero.cpp 	\
 		HealthBar.cpp \
         Shield.cpp \
         BlackHole.cpp \
@@ -64,7 +64,7 @@ HDRS	=  	\
 		Mesh.h \
 		SceneNode.h \
 		RenderableSceneNode.h \
-		Ship.h 	\
+		Superhero.h 	\
 		HealthBar.h \
         Shield.h \
         BlackHole.h \

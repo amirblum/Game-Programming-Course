@@ -11,7 +11,6 @@
 
 #include <stdio.h>
 #include "ParticleSystem.h"
-#include "RigidBody.h"
 
 typedef ParticleAttributeDerived<vec3> VelocityAttribute;
 

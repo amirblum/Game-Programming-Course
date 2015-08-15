@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include "Script.h"
 #include "Camera.h"
-#include "Ship.h"
+#include "Superhero.h"
 #include "SkyBox.h"
 #include <vector>
 
@@ -22,7 +22,7 @@ private:
     Script *_cameraFollow;
     Script *_cameraEnding;
 public:
-    CameraScripts(Camera *camera, Ship *ship, SkyBox *skyBox);
+    CameraScripts(Camera *camera, Superhero *superhero, SkyBox *skyBox);
     virtual ~CameraScripts();
     
     virtual void update(float dt);
