@@ -36,11 +36,11 @@ _startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonC
 //    }
     
     // Camera
-    Camera *camera = new Camera(vec3(0.0f, 0.0f, -25.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
+    Camera *camera = new Camera(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f), vec3(0.0f, 1.0f, 0.0f));
     Camera::setMainCamera(camera);
     
     // City
-    City *city = new City(4, 4);
+    City *city = new City(2, 2);
     
     // Superhero
     _superhero = new Superhero(vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.0f, 1.0f), /*radius*/1.6f);

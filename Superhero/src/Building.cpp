@@ -22,14 +22,17 @@ SceneNode(position)
 {
     // Initialize random mesh
     {
-        float unitConversion;
-        int buildingIndex = randutils::randomRange(0, 4);
-//        int buildingIndex = 2;
+//        int buildingIndex = randutils::randomRange(0, 4);
+        int buildingIndex = 0;
         
-        std::string shipMesh = texturesLocation + "/" + meshes[buildingIndex];
+        std::string buildingMesh = texturesLocation + "/" + meshes[buildingIndex];
+        
+        float unitConversion;
+        vec3 manualOffset = vec3(0.0f);
         switch (buildingIndex) {
             case 0:
                 unitConversion = 0.0002f;
+//                manualOffset = vec3(0.5f, 0.0f, 10.0f);
                 break;
             case 1:
                 unitConversion = 0.01f;
@@ -45,14 +48,14 @@ SceneNode(position)
                 break;
         }
         
-        _mesh = new Mesh(shipMesh, unitConversion, vec3(0.0f), quat(vec3(0.0f)), vec3(1.0f));
+        _mesh = new Mesh(buildingMesh, unitConversion);
         addChild(_mesh);
     }
     
     // Set height
     {
         BoundingBox bb = _mesh->getBoundingBox();
-        _height = bb.maxY() - bb.minY();
+        _height = bb.getSize().y;
         
         vec3 myPosition = getPosition();
         myPosition.y = _height / 2;
@@ -67,4 +70,8 @@ Building::~Building()
 
 float Building::getHeight() {
     return _height;
+}
+
+void Building::stretchToFill(vec3 size) {
+    _mesh->stretchToFill(size);
 }

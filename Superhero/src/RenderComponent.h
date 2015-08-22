@@ -123,7 +123,7 @@ public:
     RenderComponent(std::string shaderProgram);
     virtual ~RenderComponent();
     
-    void render(mat4 worldView);
+    virtual void render(mat4 worldView);
     void render(mat4 worldView, int numInstances);
     
     void setPolygonFace(GLenum face);

@@ -20,9 +20,9 @@ void BoundingBox::includePoint(vec3 point) {
     _min.x = glm::min(_min.x, point.x);
     _min.y = glm::min(_min.y, point.y);
     _min.z = glm::min(_min.z, point.z);
-    _max.x = glm::max(_min.x, point.x);
-    _max.y = glm::max(_min.y, point.y);
-    _max.z = glm::max(_min.z, point.z);
+    _max.x = glm::max(_max.x, point.x);
+    _max.y = glm::max(_max.y, point.y);
+    _max.z = glm::max(_max.z, point.z);
 }
 
 float BoundingBox::minX() {
@@ -47,4 +47,8 @@ float BoundingBox::minZ() {
 
 float BoundingBox::maxZ() {
     return _max.z;
+}
+
+vec3 BoundingBox::getSize() {
+    return _max - _min;
 }

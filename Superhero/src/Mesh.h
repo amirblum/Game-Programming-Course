@@ -2,6 +2,9 @@
 //  Mesh.h
 //  CGP-Superhero
 //
+//  Wrapper class for meshes with added features such as drawing a bounding box.
+//  The mesh will be centered within this wrappers coordinates.
+//
 //  Created by Amir Blum on 5/9/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
 //
@@ -20,33 +23,15 @@
 #include <glm/glm.hpp>
 using namespace glm;
 
-#include <map>
-#include <vector>
-#include <assimp/Importer.hpp>      // C++ importer interface
-#include <assimp/scene.h>       // Output data structure
-#include <assimp/postprocess.h> // Post processing flags
-
 #include "SceneNode.h"
-#include "RenderComponent.h"
-#include "BoundingBox.h"
+#include "MeshRenderer.h"
+#include "BoundingBoxRenderer.h"
 
 class Mesh : public SceneNode {
 private:
-    class MeshEntry : public RenderComponent {
-    public:
-        MeshEntry(std::vector<Vertex> vertices,
-                  std::vector<GLuint> indices,
-                  std::vector<std::shared_ptr<TextureComponent>> textures);
-        virtual ~MeshEntry();
-    };
-
-    std::vector<MeshEntry*> _entries;
-    std::vector<std::shared_ptr<TextureComponent>> _textures;
-    BoundingBox _boundingBox;
-    
-    void initMesh(unsigned int index, const aiMesh* mesh, float unitConversion);
-    void initMaterials(const aiScene* scene, std::string filename);
-    
+    MeshRenderer *_mesh;
+    bool _drawBoundingBox;
+    BoundingBoxRenderer *_bbRenderer;
     
 public:
     Mesh(std::string filename,
@@ -56,8 +41,12 @@ public:
          vec3 scale = vec3(1.0f));
     virtual ~Mesh();
     
-    virtual void render();
+    virtual void update(float dt);
     BoundingBox& getBoundingBox();
+    void setCustomBoundingBox(BoundingBox bb);
+    void drawBoundingBox(bool draw);
+    
+    void stretchToFill(vec3 size);
 };
 
 
