@@ -22,26 +22,29 @@ SceneNode(position)
 {
     // Initialize random mesh
     {
-//        int buildingIndex = randutils::randomRange(0, 4);
-        int buildingIndex = 0;
+        int buildingIndex = randutils::randomRange(0, 4);
+//        int buildingIndex = 3;
         
         std::string buildingMesh = texturesLocation + "/" + meshes[buildingIndex];
         
         float unitConversion;
-        vec3 manualOffset = vec3(0.0f);
+        vec3 bbSizeDiff = vec3(0.0f);
         switch (buildingIndex) {
             case 0:
                 unitConversion = 0.0002f;
-//                manualOffset = vec3(0.5f, 0.0f, 10.0f);
+                bbSizeDiff = vec3(-0.65f, 0.0f, -0.65f);
                 break;
             case 1:
                 unitConversion = 0.01f;
+                bbSizeDiff = vec3(-0.75f, 0.0f, -0.75f);
                 break;
             case 2:
                 unitConversion = 0.005f;
+                bbSizeDiff = vec3(-0.85f, 0.0f, -0.3f);
                 break;
             case 3:
                 unitConversion = 0.005f;
+                bbSizeDiff = vec3(-0.5f, 0.0f, -0.95f);
                 break;
             default:
                 unitConversion = 1.0f;
@@ -49,6 +52,10 @@ SceneNode(position)
         }
         
         _mesh = new Mesh(buildingMesh, unitConversion);
+        
+        BoundingBox customBB(_mesh->getBoundingBox().getSize() + bbSizeDiff);
+        _mesh->setCustomBoundingBox(customBB);
+        
         addChild(_mesh);
     }
     

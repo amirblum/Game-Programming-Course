@@ -34,7 +34,6 @@ private:
     float _nearPlane, _farPlane;
     float _aspectRatio;
     
-    vec3 _position;
     vec3 _direction;
     vec3 _up;
     
@@ -51,7 +50,9 @@ public:
     static void setMainCamera(Camera *camera);
     
     // Constructor
-    Camera(vec3 position, vec3 direction, vec3 up);
+    Camera(vec3 position = vec3(0.0f, 0.0f, 0.0f),
+           vec3 direction = vec3(0.0f, 0.0f, 1.0f),
+           vec3 up = vec3(0.0f, 1.0f, 0.0f));
     virtual ~Camera();
     
     // Getters
@@ -59,7 +60,6 @@ public:
     float getNearPlane();
     float getFarPlane();
     float getAspectRatio();
-    vec3 getPosition();
     vec3 getDirection();
     vec3 getUp();
     mat4 getView();
@@ -67,7 +67,7 @@ public:
     mat4 getViewProjection();
     
     // Setters
-    void setPosition(vec3 position);
+    virtual void setPosition(vec3 position);
     void setDirection(vec3 direction);
     void setUp(vec3 up);
     

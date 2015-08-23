@@ -14,10 +14,9 @@
 #define POSITION_FOLLOW_PERCENT (0.085f)
 #define ROTATION_FOLLOW_PERCENT (0.07f)
 
-CameraFollow::CameraFollow(Camera *camera, Superhero *superhero, SkyBox *skybox) :
+CameraFollow::CameraFollow(Camera *camera, Superhero *superhero) :
 _camera(camera), _superhero(superhero),
-_previousFromSuperhero(camera->getPosition() - superhero->getWorldPosition()),
-_skybox(skybox)
+_previousFromSuperhero(camera->getPosition() - superhero->getWorldPosition())
 {
 }
 
@@ -29,17 +28,13 @@ void CameraFollow::update(float dt)
     // Get current
     vec3 cameraPosition = _camera->getPosition();
     vec3 cameraDirection = _camera->getDirection();
-    vec3 cameraUp = _camera->getUp();
     
     // Get target
     vec3 superheroPosition = _superhero->getPosition();
     vec3 superheroForward = _superhero->getForward();
-    vec3 superheroRight = _superhero->getRight();
     
-//    vec3 cameraPositionTarget;
     vec3 fromSuperheroTarget;
     vec3 cameraDirectionTarget;
-    vec3 cameraUpTarget = cross(superheroForward, superheroRight);
     
     vec3 vecToSuperhero = superheroPosition - cameraPosition;
     float distanceFromSuperhero = length(vecToSuperhero);
@@ -57,7 +52,6 @@ void CameraFollow::update(float dt)
 //            float targetOffset = distanceFromTarget - distanceFromSuperhero;
 //            cameraPositionTarget = superheroPosition + superheroForward * targetOffset;
             fromSuperheroTarget = -superheroForward * desiredDistanceFromSuperhero;
-            
             cameraDirectionTarget = superheroForward;
         }
     }
@@ -70,12 +64,7 @@ void CameraFollow::update(float dt)
     
     vec3 cameraPositionInterpolated = superheroPosition + fromSuperheroInterpolated;
     vec3 cameraDirectionInterpolated = mix(cameraDirection, cameraDirectionTarget, ROTATION_FOLLOW_PERCENT);
-    vec3 cameraUpInterpolated = mix(cameraUp, cameraUpTarget, ROTATION_FOLLOW_PERCENT);
         
     _camera->setPosition(cameraPositionInterpolated);
     _camera->setDirection(cameraDirectionInterpolated);
-    _camera->setUp(cameraUpInterpolated);
-    
-    // Also, move the skybox
-    _skybox->setPosition(cameraPositionInterpolated);
 }

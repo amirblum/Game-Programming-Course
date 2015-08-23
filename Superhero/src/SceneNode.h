@@ -74,7 +74,7 @@ public:
     mat4 getWorldTransform() const;
     
     // Setters
-    void setPosition(vec3 position);
+    virtual void setPosition(vec3 position);
     void setRotation(quat rotation);
     void setScale(vec3 scale);
     void setVisibility(bool visible);

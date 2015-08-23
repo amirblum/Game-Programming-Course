@@ -13,10 +13,10 @@
 
 #include "GameState.h"
 
-CameraScripts::CameraScripts(Camera *camera, Superhero *superhero, SkyBox *skyBox) :
-_cameraOpening(new CameraOpening(camera, superhero, skyBox)),
-_cameraFollow(new CameraFollow(camera, superhero, skyBox)),
-_cameraEnding(new CameraEnding(camera, superhero, skyBox))
+CameraScripts::CameraScripts(Camera *camera, Superhero *superhero) :
+_cameraOpening(new CameraOpening(camera, superhero)),
+_cameraFollow(new CameraFollow(camera, superhero)),
+_cameraEnding(new CameraEnding(camera, superhero))
 {
 }
 
@@ -33,7 +33,8 @@ void CameraScripts::update(float dt)
     
     switch (state.winState) {
         case NOT_STARTED:
-            _cameraOpening->update(dt);
+//            _cameraOpening->update(dt);
+            state.winState = STARTED;
             break;
         case STARTED:
             _cameraFollow->update(dt);

@@ -83,5 +83,5 @@ SkyBox::~SkyBox()
 
 void SkyBox::update(float dt)
 {
-    setPosition(Camera::MainCamera()->getPosition());
+//    setPosition(Camera::MainCamera()->getPosition());
 }

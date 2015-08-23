@@ -14,10 +14,11 @@
 #define FAR_PLANE (10000.0f)
 
 Camera::Camera(vec3 position, vec3 direction, vec3 up) :
+SceneNode(position),
 _frustumAngle(FRUSTUM_ANGLE),
 _nearPlane(NEAR_PLANE), _farPlane(FAR_PLANE),
 _aspectRatio(1.0f),
-_position(position), _direction(direction), _up(up),
+_direction(direction), _up(up),
 _view(lookAt(position, position + _direction, _up)),
 _projection(perspective(_frustumAngle, 1.0f, _nearPlane, _farPlane)),
 _viewProjection(_projection * _view)
@@ -62,14 +63,6 @@ float Camera::getAspectRatio()
 }
 
 /**
- * Get the position
- */
-vec3 Camera::getPosition()
-{
-    return _position;
-}
-
-/**
  * Get the looking direction
  */
 vec3 Camera::getDirection()
@@ -90,7 +83,7 @@ vec3 Camera::getUp()
  */
 void Camera::setPosition(vec3 position)
 {
-    _position = position;
+    SceneNode::setPosition(position);
     updateViewProjection();
 }
 
@@ -117,7 +110,8 @@ void Camera::setUp(vec3 up)
  */
 void Camera::updateViewProjection()
 {
-    _view = lookAt(_position, _position + _direction, _up);
+    vec3 worldPosition = getWorldPosition();
+    _view = lookAt(worldPosition, worldPosition + _direction, _up);
     // No need to update the projection every time
     _viewProjection = _projection * _view;
 }

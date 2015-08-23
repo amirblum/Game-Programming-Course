@@ -17,13 +17,11 @@
 #include "Script.h"
 #include "Camera.h"
 #include "Superhero.h"
-#include "SkyBox.h"
 
 class CameraEnding : public Script {
 private:
     Camera *_camera;
     Superhero *_superhero;
-    SkyBox *_skyBox;
     
     vec3 _startOffset;
     vec3 _endOffset;
@@ -32,7 +30,7 @@ private:
     bool _started;
     
 public:
-    CameraEnding(Camera *camera, Superhero *superhero, SkyBox *skyBox);
+    CameraEnding(Camera *camera, Superhero *superhero);
     virtual ~CameraEnding();
     
     void update(float dt);

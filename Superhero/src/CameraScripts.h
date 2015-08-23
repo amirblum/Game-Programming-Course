@@ -13,7 +13,6 @@
 #include "Script.h"
 #include "Camera.h"
 #include "Superhero.h"
-#include "SkyBox.h"
 #include <vector>
 
 class CameraScripts : public Script {
@@ -22,7 +21,7 @@ private:
     Script *_cameraFollow;
     Script *_cameraEnding;
 public:
-    CameraScripts(Camera *camera, Superhero *superhero, SkyBox *skyBox);
+    CameraScripts(Camera *camera, Superhero *superhero);
     virtual ~CameraScripts();
     
     virtual void update(float dt);

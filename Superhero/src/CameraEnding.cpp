@@ -12,8 +12,8 @@
 #define CAMERA_DISTANCE (2.5f)
 #define TRAVEL_TIME (1.0f)
 
-CameraEnding::CameraEnding(Camera *camera, Superhero *superhero, SkyBox *skyBox) :
-_camera(camera), _superhero(superhero), _skyBox(skyBox),
+CameraEnding::CameraEnding(Camera *camera, Superhero *superhero) :
+_camera(camera), _superhero(superhero),
 _startOffset(0.0f),
 _endOffset(0.0f),
 _startingUp(0.0f),
@@ -29,7 +29,7 @@ void CameraEnding::update(float dt)
 {
     if (!_started) {
         _startOffset = _camera->getPosition() - _superhero->getPosition();
-        _endOffset = -_superhero->getRight() * CAMERA_DISTANCE;
+        _endOffset = vec3(1.0f, 0.0f, 0.0f) * CAMERA_DISTANCE;
         _startingUp = _camera->getUp();
         _started = true;
     }
@@ -57,8 +57,4 @@ void CameraEnding::update(float dt)
     
     _camera->setPosition(cameraPosition);
     _camera->setDirection(normalize(_superhero->getPosition() - cameraPosition));
-    _camera->setUp(mix(_startingUp, cross(_superhero->getForward(), _superhero->getRight()), travelPercent));
-    
-    // Also, move the skybox
-    _skyBox->setPosition(cameraPosition);
 }

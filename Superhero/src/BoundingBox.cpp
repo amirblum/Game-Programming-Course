@@ -14,7 +14,10 @@ _min(0.0f), _max(0.0f) {}
 BoundingBox::BoundingBox(vec3 min, vec3 max) :
 _min(min), _max(max) { }
 
-BoundingBox::~BoundingBox() {}
+BoundingBox::BoundingBox(vec3 size) :
+_min(-size * 0.5f), _max(size * 0.5f) { }
+
+BoundingBox::~BoundingBox() { }
 
 void BoundingBox::includePoint(vec3 point) {
     _min.x = glm::min(_min.x, point.x);

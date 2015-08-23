@@ -24,9 +24,7 @@ BoundingBox& Mesh::getBoundingBox() {
 }
 
 void Mesh::setCustomBoundingBox(BoundingBox bb) {
-    _mesh->setCustomBoundingBox(bb);
-    _mesh->centerMesh();
-    
+    _mesh->setCustomBoundingBox(bb);    
     _bbRenderer->setBoundingBox(bb);
 }
 

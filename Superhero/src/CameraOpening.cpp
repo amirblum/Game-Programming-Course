@@ -11,8 +11,8 @@
 
 #define CAMERA_DISTANCE (2.5f)
 
-CameraOpening::CameraOpening(Camera *camera, Superhero *superhero, SkyBox *skyBox) :
-_camera(camera), _superhero(superhero), _skyBox(skyBox),
+CameraOpening::CameraOpening(Camera *camera, Superhero *superhero) :
+_camera(camera), _superhero(superhero),
 _startPosition(_superhero->getPosition() + _superhero->getForward() * CAMERA_DISTANCE),
 _endPosition(_superhero->getPosition() - _superhero->getForward() * CAMERA_DISTANCE),
 _started(false)
@@ -45,10 +45,6 @@ void CameraOpening::update(float dt)
     
     _camera->setPosition(cameraPosition);
     _camera->setDirection(normalize(_superhero->getPosition() - cameraPosition));
-    
-    
-    // Also, move the skybox
-    _skyBox->setPosition(cameraPosition);
     
     float distanceFromEnd = cameraPosition.z - _endPosition.z;
     if (distanceFromEnd < 0.01f || actionPressed) {

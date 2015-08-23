@@ -2,7 +2,7 @@
 //  BoundingBox.h
 //  CGP-Superhero
 //
-//  A *CENTERED* axis-aligned bounding-box
+//  An axis-aligned bounding-box
 //
 //  Created by Amir Blum on 8/15/15.
 //  Copyright (c) 2015 Amir Blum. All rights reserved.
@@ -23,6 +23,7 @@ private:
     vec3 _min, _max;
 public:
     BoundingBox();
+    BoundingBox(vec3 size);
     BoundingBox(vec3 min, vec3 max);
     ~BoundingBox();
     

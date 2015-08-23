@@ -26,7 +26,7 @@ static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
 Superhero::Superhero(vec3 position, quat rotation, vec3 scale, float radius) :
 SceneNode(position, rotation, scale),
 _dead(false),
-_forward(FORWARD_VECTOR), _right(RIGHT_VECTOR),
+_forward(FORWARD_VECTOR),
 _radius(radius)
 {
     // Initialize mesh
@@ -53,9 +53,6 @@ _radius(radius)
     {
         SoundManager &soundManager = SoundManager::Instance();
         _flyingSound = soundManager.loadSound(FLYING_SOUND, true);
-        
-        // Play the dradis sound on init
-//        soundManager.playSound(_dradisSound);
     }
 }
 
@@ -73,27 +70,38 @@ void Superhero::update(float dt)
 {
     GameState &state = GameState::Instance();
     if (state.winState == STARTED) {
-        
         InputManager &input = InputManager::Instance();
-        
-        // Accelerating
         SoundManager &soundManager = SoundManager::Instance();
-        if (input.isPressed(KEY_ACTION)) {
-            accelerate();
-            soundManager.playSound(_flyingSound);
-        } else if (length(_velocity) > 0) {
-            soundManager.stopSound(_flyingSound);
-        }
         
         // Turning
         if (input.isPressed(KEY_LEFT))
         {
-            turn(-TURN_SPEED * dt);
+            turn(true, dt);
         }
         else if (input.isPressed(KEY_RIGHT))
         {
-            turn(TURN_SPEED * dt);
+            turn(false, dt);
         }
+        
+        // Accelerating
+        if (input.isPressed(KEY_UP))
+        {
+            accelerate(true, dt);
+            soundManager.playSound(_flyingSound);
+        }
+        else if (input.isPressed(KEY_DOWN))
+        {
+            accelerate(false, dt);
+            soundManager.playSound(_flyingSound);
+        } else {
+            dampen(dt);
+            soundManager.stopSound(_flyingSound);
+        }
+    }
+    
+    // Clamp velocity
+    if (length(_velocity) > MAX_VELOCITY) {
+        _velocity = normalize(_velocity) * MAX_VELOCITY;
     }
     
     // Update position
@@ -104,20 +112,28 @@ void Superhero::update(float dt)
 /**
  * Accelerate in the _forward direction
  */
-void Superhero::accelerate()
+void Superhero::accelerate(bool forward, float dt)
 {
-    _velocity = _forward * ACCELERATION_SPEED;
+    _velocity += _forward * ACCELERATION_SPEED * (forward ? 1.0f : -1.0f) * dt;
+}
+
+void Superhero::dampen(float dt)
+{
+    _velocity *= 0.5f * dt;
+    if (length(_velocity) < epsilon<float>()) {
+        _velocity = vec3(0.0f);
+    }
 }
 
 /**
  * Turn superhero right/left
  */
-void Superhero::turn(float angle)
+void Superhero::turn(bool left, float dt)
 {
-    setRotation(rotate(_rotation, angle, FORWARD_VECTOR));
+    float angle = TURN_SPEED * (left ? 1.0f : -1.0f) * dt;
+    setRotation(rotate(_rotation, angle, UP_VECTOR));
     
-    // No need to recompute forward vector, as it didn't change.
-    _right = _rotation * RIGHT_VECTOR;
+    _forward = _rotation * FORWARD_VECTOR;
 }
 
 void Superhero::onCollision()
@@ -158,14 +174,6 @@ void Superhero::collideWithBuilding()
 vec3 Superhero::getForward()
 {
     return _forward;
-}
-
-/**
- * Return the right-facing vector
- */
-vec3 Superhero::getRight()
-{
-    return _right;
 }
 
 /**

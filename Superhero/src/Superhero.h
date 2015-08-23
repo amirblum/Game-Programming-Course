@@ -37,7 +37,6 @@ private:
     
     // Movement/collision info
     vec3 _forward;
-    vec3 _right;
     float _radius;
     vec3 _velocity;
     
@@ -45,8 +44,9 @@ private:
     HealthBar *_healthBar;
     
     // Movement
-    void accelerate();
-    void turn(float angle);
+    void accelerate(bool forward, float dt);
+    void dampen(float dt);
+    void turn(bool left, float dt);
     
     // Collisions
     void collideWithBuilding();
@@ -61,7 +61,6 @@ public:
     
     // Getters
     vec3 getForward();
-    vec3 getRight();
     vec3 getMovementDirection();
     float getSpeed();
     float getMaxSpeed();

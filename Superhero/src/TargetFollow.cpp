@@ -18,5 +18,6 @@ TargetFollow::~TargetFollow()
 
 void TargetFollow::update(float dt)
 {
-    _object->setPosition(_target->getPosition());
+    vec3 targetPosition = _target->getPosition();
+    _object->setPosition(targetPosition);
 }

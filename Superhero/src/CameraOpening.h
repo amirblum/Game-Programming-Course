@@ -15,13 +15,11 @@
 #include "Script.h"
 #include "Camera.h"
 #include "Superhero.h"
-#include "SkyBox.h"
 
 class CameraOpening : public Script {
 private:
     Camera *_camera;
     Superhero *_superhero;
-    SkyBox *_skyBox;
     
     vec3 _startPosition;
     vec3 _endPosition;
@@ -29,7 +27,7 @@ private:
     bool _started;
     
 public:
-    CameraOpening(Camera *camera, Superhero *superhero, SkyBox *skyBox);
+    CameraOpening(Camera *camera, Superhero *superhero);
     virtual ~CameraOpening();
     
     virtual void update(float dt);

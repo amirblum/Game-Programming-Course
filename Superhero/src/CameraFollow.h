@@ -15,7 +15,6 @@
 #include "Script.h"
 #include "Camera.h"
 #include "Superhero.h"
-#include "SkyBox.h"
 
 class CameraFollow : public Script {
 private:
@@ -24,11 +23,8 @@ private:
     
     vec3 _previousFromSuperhero;
     
-    // Also, handle skyboxiness here
-    SkyBox *_skybox;
-    
 public:
-    CameraFollow(Camera *camera, Superhero *superhero, SkyBox *skybox);
+    CameraFollow(Camera *camera, Superhero *superhero);
     virtual ~CameraFollow();
     
     virtual void update(float dt);
