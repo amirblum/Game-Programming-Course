@@ -34,6 +34,7 @@ using namespace glm;
 #include "World.h"
 
 #include "ShaderIO.h"
+#include "PPBuffer.h"
 #include "InputManager.h"
 #include "GameState.h"
 #include "Camera.h"
@@ -81,6 +82,7 @@ void motion(int x, int y) ;
 
 // Game-related objects
 World *_world;
+PPBuffer *_blurEffect;
 
 /** main function */
 int main(int argc, char* argv[])
@@ -143,6 +145,7 @@ int main(int argc, char* argv[])
     
     // Set up game
     _world = new World();
+    _blurEffect = new PPBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
     
     // Set clear color to black:
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -190,8 +193,10 @@ void display()
     // Update the game state
     _world->recursiveUpdate(dt);
     
-    
     // Drawing time
+    
+    // Set up blur effect
+    _blurEffect->setup();
     
     // Clear the screen buffer
     glClearColor(0.15f, 0.0f, 0.2f, 1.0f);
@@ -199,6 +204,8 @@ void display()
     
     // Tell the world to draw itself
     _world->recursiveRender();
+    
+    _blurEffect->render(true);
     
     // Print fps
     frames++;
@@ -228,6 +235,7 @@ void windowResize(int w, int h)
     
     // set the perspective of the camera
     Camera::MainCamera()->resize(w, h);
+    _blurEffect->resize(w, h);
     
     // Refresh the display //
     glutPostRedisplay();

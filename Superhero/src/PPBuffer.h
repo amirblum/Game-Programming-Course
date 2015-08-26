@@ -25,20 +25,11 @@ using namespace glm;
 class PPBuffer {
     GLuint _vao;
     GLuint vbo_fbo_vertices;
-    GLuint fbo, fbo_texture, rbo_depth;
-    GLuint program_postproc, attribute_v_coord_postproc, uniform_fbo_texture;
-
-    float _width, _height, _offsetX, _offsetY;
+    GLuint fbo, fbo_color_texture, fbo_depth_texture;
+    GLuint program_postproc, attribute_v_coord_postproc;
+    GLuint uniform_fbo_color_texture, uniform_fbo_depth_texture, uniform_inverseViewProj, uniform_prevViewProj;
     
-    // Glow
-    GLuint _glowUniform, _applyGlowUniform;
-    
-    // Convolution
-    mat3 _convoKernel;
-    GLuint _convoKernelUniform;
-    
-    // Pixel-based PP
-    GLuint _uStepUniform, _vStepUniform;
+    mat4 _inverseViewProj, _prevViewProj;
 
  public:
     PPBuffer(int screen_width, int screen_height);
@@ -46,15 +37,7 @@ class PPBuffer {
     void setup();
     GLuint getTexture();
     
-    void switchConvolutionKernel(int kernel);
-    void setConvolutionKernel(mat3 kernel);
-    mat3 getIdentityConvolution();
-    mat3 getGaussianBlurConvolution();
-    mat3 getSharpenConvolution();
-    mat3 getEdgeDetectConvolution();
-    mat3 getEmbossConvolution();
-    
-    void render(bool toScreen, bool applyGlow, GLuint glow_texture);
+    void render(bool toScreen);
     void resize(int width, int height);
 };
 
