@@ -14,7 +14,8 @@
 
 //static const std::string SUPERHERO_MESH = "assets/vipermk2/vipermk2_LW7.obj";
 //static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
-static const std::string SUPERHERO_MESH = "assets/buzz/Creature.obj";
+//static const std::string SUPERHERO_MESH = "assets/buzz/Creature.obj";
+static const std::string SUPERHERO_MESH = "assets/superman/Superman.obj";
 static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
 
 
@@ -37,10 +38,19 @@ _radius(radius)
         // Scale for viper
         vec3 meshPosition = vec3(0.0f);
 //        quat meshRotation = rotate(quat(vec3(0.0f)), pi<float>()/2.0f, vec3(0.0f, 1.0f, 0.0f));
-        quat meshRotation = quat(vec3(pi<float>() / 8.0f, 0.0f, pi<float>()));
-        vec3 meshScale = vec3(1.0f);
+        // buzz
+//        quat meshRotation = quat(vec3(pi<float>() / 8.0f, 0.0f, pi<float>()));
+        quat meshRotation = quat(vec3(pi<float>() / 3.5f, 0.0f, 0.0f));
+        // superman
         
-        _mesh = new Mesh(SUPERHERO_MESH, 0.05f, meshPosition, meshRotation, meshScale);
+        
+        vec3 meshScale = vec3(1.0f);
+
+        // buzz
+//        _mesh = new Mesh(SUPERHERO_MESH, 0.05f, meshPosition, meshRotation, meshScale);
+        
+        // superman
+        _mesh = new Mesh(SUPERHERO_MESH, 1.0f, meshPosition, meshRotation, meshScale);
         addChild(_mesh);
     }
     
