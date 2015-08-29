@@ -196,16 +196,17 @@ void display()
     // Drawing time
     
     // Set up blur effect
-    _blurEffect->setup();
+//    _blurEffect->setup();
     
     // Clear the screen buffer
-    glClearColor(0.15f, 0.0f, 0.2f, 1.0f);
+//    glClearColor(0.15f, 0.0f, 0.2f, 1.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
     // Tell the world to draw itself
     _world->recursiveRender();
     
-    _blurEffect->render(true);
+//    _blurEffect->render(true);
     
     // Print fps
     frames++;

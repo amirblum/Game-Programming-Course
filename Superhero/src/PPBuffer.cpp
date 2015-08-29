@@ -60,14 +60,22 @@ PPBuffer::PPBuffer(int screen_width, int screen_height) {
     // Done with textures
     glBindTexture(GL_TEXTURE_2D, 0);
     
+    // Set the render buffer
+    glGenRenderbuffers(1, &rbo_depth);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, screen_width, screen_height );
+    
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    
     /* Framebuffer to link everything together */
     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, fbo_color_texture, 0); //use more of these for MRT
 //     glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, fbo_color_texture1, 0);
-    
     glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, fbo_depth_texture, 0);
     
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
+    
     // Set the list of draw buffers.
-    GLenum DrawBuffers[2] = {GL_COLOR_ATTACHMENT0};
+    GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
     
     glDrawBuffers(1, DrawBuffers);
     
@@ -117,7 +125,7 @@ PPBuffer::PPBuffer(int screen_width, int screen_height) {
 }
 
 PPBuffer::~PPBuffer() {
-//    glDeleteRenderbuffers(1, &fbo_depth_texture);
+    glDeleteRenderbuffers(1, &fbo_depth_texture);
     glDeleteTextures(1, &fbo_depth_texture);
     glDeleteTextures(1, &fbo_color_texture);
     glDeleteFramebuffers(1, &fbo);
@@ -192,4 +200,8 @@ void PPBuffer::resize(int screen_width, int screen_height) {
     glBindTexture(GL_TEXTURE_2D, fbo_depth_texture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, screen_width, screen_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glBindTexture(GL_TEXTURE_2D, 0);
+    
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, screen_width, screen_height);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }

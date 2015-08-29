@@ -12,8 +12,11 @@
 
 #include <iostream>
 
-static const std::string SUPERHERO_MESH = "assets/vipermk2/vipermk2_LW7.obj";
+//static const std::string SUPERHERO_MESH = "assets/vipermk2/vipermk2_LW7.obj";
+//static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
+static const std::string SUPERHERO_MESH = "assets/buzz/Creature.obj";
 static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
+
 
 #define ACCELERATION_SPEED (30.0f)
 #define TURN_SPEED (pi<float>() / 2.0f)
@@ -33,10 +36,11 @@ _radius(radius)
     {
         // Scale for viper
         vec3 meshPosition = vec3(0.0f);
-        quat meshRotation = rotate(quat(vec3(0.0f)), pi<float>()/2.0f, vec3(0.0f, 1.0f, 0.0f));
+//        quat meshRotation = rotate(quat(vec3(0.0f)), pi<float>()/2.0f, vec3(0.0f, 1.0f, 0.0f));
+        quat meshRotation = quat(vec3(pi<float>() / 8.0f, 0.0f, pi<float>()));
         vec3 meshScale = vec3(1.0f);
         
-        _mesh = new Mesh(SUPERHERO_MESH, 1.0f, meshPosition, meshRotation, meshScale);
+        _mesh = new Mesh(SUPERHERO_MESH, 0.05f, meshPosition, meshRotation, meshScale);
         addChild(_mesh);
     }
     

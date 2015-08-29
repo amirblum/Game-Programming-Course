@@ -25,7 +25,7 @@ using namespace glm;
 class PPBuffer {
     GLuint _vao;
     GLuint vbo_fbo_vertices;
-    GLuint fbo, fbo_color_texture, fbo_depth_texture;
+    GLuint fbo, rbo_depth, fbo_color_texture, fbo_depth_texture;
     GLuint program_postproc, attribute_v_coord_postproc;
     GLuint uniform_fbo_color_texture, uniform_fbo_depth_texture, uniform_inverseViewProj, uniform_prevViewProj;
     
