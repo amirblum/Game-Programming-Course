@@ -39,6 +39,7 @@ private:
     vec3 _forward;
     float _radius;
     vec3 _velocity;
+    float _holdTurnTime;
     
     // Children
     HealthBar *_healthBar;

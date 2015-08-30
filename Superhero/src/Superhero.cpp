@@ -14,14 +14,17 @@
 
 //static const std::string SUPERHERO_MESH = "assets/vipermk2/vipermk2_LW7.obj";
 //static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
-//static const std::string SUPERHERO_MESH = "assets/buzz/Creature.obj";
-static const std::string SUPERHERO_MESH = "assets/superman/Superman.obj";
+static const std::string SUPERHERO_MESH = "assets/buzz/Creature.obj";
+//static const std::string SUPERHERO_MESH = "assets/superman/Superman.obj";
 static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
 
 
-#define ACCELERATION_SPEED (30.0f)
-#define TURN_SPEED (pi<float>() / 2.0f)
-#define MAX_VELOCITY (300.0f)
+#define ACCELERATION_SPEED (10.0f)
+#define MAX_TURN_SPEED (pi<float>() * 1.25f)
+#define MIN_TURN_SPEED (pi<float>() / 2.0f)
+#define HOLD_TO_TURN_TIME (0.15f)
+#define STRAFE_SPEED (5.0f)
+#define MAX_VELOCITY (50.0f)
 #define MAX_HEALTH (5)
 
 /**
@@ -31,7 +34,8 @@ Superhero::Superhero(vec3 position, quat rotation, vec3 scale, float radius) :
 SceneNode(position, rotation, scale),
 _dead(false),
 _forward(FORWARD_VECTOR),
-_radius(radius)
+_radius(radius),
+_holdTurnTime(0.0f)
 {
     // Initialize mesh
     {
@@ -39,18 +43,18 @@ _radius(radius)
         vec3 meshPosition = vec3(0.0f);
 //        quat meshRotation = rotate(quat(vec3(0.0f)), pi<float>()/2.0f, vec3(0.0f, 1.0f, 0.0f));
         // buzz
-//        quat meshRotation = quat(vec3(pi<float>() / 8.0f, 0.0f, pi<float>()));
-        quat meshRotation = quat(vec3(pi<float>() / 3.5f, 0.0f, 0.0f));
+        quat meshRotation = quat(vec3(pi<float>() / 8.0f, 0.0f, pi<float>()));
         // superman
+//        quat meshRotation = quat(vec3(pi<float>() / 3.5f, 0.0f, 0.0f));
         
         
         vec3 meshScale = vec3(1.0f);
 
         // buzz
-//        _mesh = new Mesh(SUPERHERO_MESH, 0.05f, meshPosition, meshRotation, meshScale);
+        _mesh = new Mesh(SUPERHERO_MESH, 0.05f, meshPosition, meshRotation, meshScale);
         
         // superman
-        _mesh = new Mesh(SUPERHERO_MESH, 1.0f, meshPosition, meshRotation, meshScale);
+//        _mesh = new Mesh(SUPERHERO_MESH, 1.0f, meshPosition, meshRotation, meshScale);
         addChild(_mesh);
     }
     
@@ -95,6 +99,8 @@ void Superhero::update(float dt)
         else if (input.isPressed(KEY_RIGHT))
         {
             turn(false, dt);
+        } else {
+            _holdTurnTime = 0;
         }
         
         // Accelerating
@@ -144,10 +150,25 @@ void Superhero::dampen(float dt)
  */
 void Superhero::turn(bool left, float dt)
 {
-    float angle = TURN_SPEED * (left ? 1.0f : -1.0f) * dt;
+    float currentSpeed = getSpeed();
+    float relativeSpeed = currentSpeed / MAX_VELOCITY;
+    float turnSpeed = mix(MIN_TURN_SPEED, MAX_TURN_SPEED, relativeSpeed);
+    float angle = turnSpeed * (left ? 1.0f : -1.0f) * dt;
+    
+    float newSpeed = currentSpeed;
+    if (currentSpeed > MAX_VELOCITY * 0.5f) {
+        if (_holdTurnTime > HOLD_TO_TURN_TIME) {
+            newSpeed *= mix(1.0f, 0.5f, relativeSpeed);
+        } else {
+            angle *= mix(0.5f, 1.0f, _holdTurnTime / HOLD_TO_TURN_TIME);
+            _holdTurnTime += dt;
+        }
+    }
+    
     setRotation(rotate(_rotation, angle, UP_VECTOR));
     
     _forward = _rotation * FORWARD_VECTOR;
+    _velocity = _forward * newSpeed;
 }
 
 void Superhero::onCollision()
