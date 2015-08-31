@@ -7,6 +7,7 @@
 //
 
 #include "Superhero.h"
+#include "Building.h"
 #include "InputManager.h"
 #include "GameState.h"
 
@@ -60,8 +61,8 @@ _holdTurnTime(0.0f)
     
     // Construct healthbar
     {
-        vec3 healthPosition = vec3(0.0f, -0.3f, -1.225f);
-        quat healthRotation = quat(vec3(0.0f));
+        vec3 healthPosition = vec3(0.33f, -0.54f, -1.0f);
+        quat healthRotation = quat(vec3(-0.1f, 0.0f, -1.2f));
         vec3 healthScale = vec3(0.2f, 0.06f, 1.0f);
         _healthBar = new HealthBar(MAX_HEALTH, healthPosition, healthRotation, healthScale);
         addChild(_healthBar);
@@ -125,8 +126,7 @@ void Superhero::update(float dt)
     }
     
     // Update position
-    setPosition(_position + _velocity * dt);
-    
+    updatePosition(dt);
 }
 
 /**
@@ -171,18 +171,24 @@ void Superhero::turn(bool left, float dt)
     _velocity = _forward * newSpeed;
 }
 
-void Superhero::onCollision()
+void Superhero::updatePosition(float dt)
 {
-    // Building
-//    AsteroidRigidBody *asteroid = dynamic_cast<AsteroidRigidBody*>(collided);
-//    if (asteroid != nullptr) {
-//        collideWithAsteroid(asteroid);
-//        return;
+//    vec3 newWorldPosition = getWorldPosition() + _velocity * dt;
+//    Building *closestBuilding = _city->getClosestBuilding(newWorldPosition);
+//    if (!closestBuilding->isInside(newWorldPosition)) {
 //    }
+//    setPosition(_position + _velocity * dt);
 }
 
 void Superhero::collideWithBuilding()
 {
+    if (getSpeed() < MAX_VELOCITY * 0.5f) {
+        return;
+    }
+    
+    // Slow down
+    _velocity = normalize(_velocity) * MAX_VELOCITY * 0.5f;
+    
     // Health
     int health = _healthBar->getCurrentUnits();
     int newHealth = health - 1;
@@ -221,6 +227,11 @@ vec3 Superhero::getMovementDirection()
     } else {
         return normalize(_velocity);
     }
+}
+
+vec3 Superhero::getVelocity()
+{
+    return _velocity;
 }
 
 float Superhero::getSpeed()

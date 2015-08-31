@@ -15,6 +15,7 @@
 #include "City.h"
 #include "Superhero.h"
 #include "InputManager.h"
+#include "SuperheroPosition.h"
 #include "CameraScripts.h"
 #include "Overlay.h"
 #include "GameState.h"
@@ -44,7 +45,7 @@ _startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonC
     City *city = new City(4, 4);
     
     // Superhero
-    _superhero = new Superhero(vec3(15.0f, 10.0f, 0.0f), quat(vec3(0.0f)), vec3(1.0f, 1.0f, 1.0f), /*radius*/1.6f);
+    _superhero = new Superhero(vec3(25.0f, 10.0f, -25.0f), quat(vec3(0.0f)), vec3(1.0f, 1.0f, 1.0f), /*radius*/1.2f);
     
     // Skybox (draw last to save on fragments that already have info in them)
     SkyBox *skybox = new SkyBox();
@@ -60,6 +61,7 @@ _startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonC
     
     // Scripts
     {
+        addScript(new SuperheroPosition(city, _superhero));
         addScript(new CameraScripts(camera, _superhero));
 //        addScript(new TargetFollow(skybox, camera));
     //    addScript(new Controller(camera));

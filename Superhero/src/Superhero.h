@@ -14,6 +14,7 @@
 #include "SceneNode.h"
 #include "Mesh.h"
 #include "HealthBar.h"
+#include "City.h"
 #include "SoundManager.h"
 
 // Rigidbodies forward decleration
@@ -48,9 +49,8 @@ private:
     void accelerate(bool forward, float dt);
     void dampen(float dt);
     void turn(bool left, float dt);
+    void updatePosition(float dt);
     
-    // Collisions
-    void collideWithBuilding();
     
 public:
     Superhero(vec3 position, quat rotation, vec3 scale, float radius);
@@ -58,11 +58,13 @@ public:
     
     virtual void update(float dt);
     
-    virtual void onCollision();
+    // Collisions
+    void collideWithBuilding();
     
     // Getters
     vec3 getForward();
     vec3 getMovementDirection();
+    vec3 getVelocity();
     float getSpeed();
     float getMaxSpeed();
     float getRadius();
