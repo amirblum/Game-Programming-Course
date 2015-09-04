@@ -26,6 +26,9 @@ static const std::string GAME_OVER_TEXTURE = "assets/gameover.png";
 
 static const vec3 BEACON_POS = vec3(-50.0f, 15.0f, 3500.0f);
 
+#define DOLLY_FRUSTUM_INCREASE (pi<float>() / 6.0f)
+#define DOLLY_FRUSTUM_RETURN_SPEED (10.0f)
+
 World::World() :
 SceneNode(),
 _startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonCheck(false)
@@ -38,8 +41,8 @@ _startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonC
 //    }
     
     // Camera
-    Camera *camera = new Camera();
-    Camera::setMainCamera(camera);
+    _camera = new Camera();
+    Camera::setMainCamera(_camera);
     
     // City
     City *city = new City(4, 4);
@@ -54,15 +57,15 @@ _startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonC
     {
         addChild(city);
         addChild(_superhero);
-        addChild(camera);
-        camera->addChild(skybox);
+        addChild(_camera);
+        _camera->addChild(skybox);
         // Transparent things should be rendered after skybox
     }
     
     // Scripts
     {
         addScript(new SuperheroPosition(city, _superhero));
-        addScript(new CameraScripts(camera, _superhero));
+        addScript(new CameraScripts(_camera, _superhero));
 //        addScript(new TargetFollow(skybox, camera));
     //    addScript(new Controller(camera));
     }
@@ -115,6 +118,15 @@ void World::update(float dt)
         default:
             break;
     }
+    
+    state.zooming = InputManager::Instance().isPressed(KEY_ACTION);
+    float newFrustumAngle;
+    if (state.zooming) {
+        newFrustumAngle = min(_camera->getFrustumAngle() + DOLLY_FRUSTUM_INCREASE * dt, pi<float>() / 2.0f);
+    } else {
+        newFrustumAngle = mix(_camera->getFrustumAngle(), _camera->getDefaultFrustumAngle(), DOLLY_FRUSTUM_RETURN_SPEED * dt);
+    }
+    _camera->setFrustumAngle(newFrustumAngle);
 }
 
 /**

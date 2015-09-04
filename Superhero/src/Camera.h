@@ -57,6 +57,7 @@ public:
     
     // Getters
     float getFrustumAngle();
+    float getDefaultFrustumAngle();
     float getNearPlane();
     float getFarPlane();
     float getAspectRatio();
@@ -67,6 +68,7 @@ public:
     mat4 getViewProjection();
     
     // Setters
+    void setFrustumAngle(float frustumAngle);
     virtual void setPosition(vec3 position);
     void setDirection(vec3 direction);
     void setUp(vec3 up);

@@ -26,9 +26,11 @@ using namespace glm;
 #include "SoundManager.h"
 
 class Superhero;
+class Camera;
 
 class World : public SceneNode {
 private:
+    Camera *_camera;
     Superhero *_superhero;
     
     ALuint _backgroundMusic;

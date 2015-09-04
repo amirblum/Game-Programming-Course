@@ -26,6 +26,7 @@ struct GameState {
     }
     
     WinState winState;
+    bool zooming;
     
     void reset();
     

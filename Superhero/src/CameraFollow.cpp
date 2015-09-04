@@ -7,6 +7,7 @@
 //
 
 #include "CameraFollow.h"
+#include "GameState.h"
 
 #define MIN_CAMERA_DISTANCE (4.0f)
 #define MAX_CAMERA_DISTANCE (10.0f)
@@ -33,38 +34,36 @@ void CameraFollow::update(float dt)
     vec3 superheroPosition = _superhero->getPosition();
     vec3 superheroForward = _superhero->getForward();
     
-    vec3 fromSuperheroTarget;
-    vec3 cameraDirectionTarget;
-    
+    // Calculate desired distance
     vec3 vecToSuperhero = superheroPosition - cameraPosition;
     float distanceFromSuperhero = length(vecToSuperhero);
+    float desiredDistanceFromSuperhero = distanceFromSuperhero;
     if (distanceFromSuperhero > 0) {
-//        float cosCameraAngle = dot(superheroForward, normalize(vecToSuperhero));
-//        float relativeDistanceFromSuperhero = distanceFromSuperhero * cosCameraAngle;
         if (distanceFromSuperhero < MIN_CAMERA_DISTANCE){
-            fromSuperheroTarget = -superheroForward * MIN_CAMERA_DISTANCE;
-            cameraDirectionTarget = superheroForward;
+            desiredDistanceFromSuperhero = MIN_CAMERA_DISTANCE;
         } else {
-            float desiredDistanceFromSuperhero = mix(MIN_CAMERA_DISTANCE, MAX_CAMERA_DISTANCE, _superhero->getSpeed() / _superhero->getMaxSpeed());
-//            float distanceFromDesiredDistance = relativeDistanceFromSuperhero - desiredDistanceFromSuperhero;
-//            float distanceFromTarget = distanceFromDesiredDistance / POSITION_FOLLOW_PERCENT;
-//            
-//            float targetOffset = distanceFromTarget - distanceFromSuperhero;
-//            cameraPositionTarget = superheroPosition + superheroForward * targetOffset;
-            fromSuperheroTarget = -superheroForward * desiredDistanceFromSuperhero;
-            cameraDirectionTarget = superheroForward;
+            desiredDistanceFromSuperhero = mix(MIN_CAMERA_DISTANCE, MAX_CAMERA_DISTANCE, _superhero->getSpeed() / _superhero->getMaxSpeed());
         }
     }
     
+    // Correct for frustum (dolly zoom)
+    float currentFrustum = _camera->getFrustumAngle();
+    float defaultFrustum = _camera->getDefaultFrustumAngle();
+//    if (currentFrustum != defaultFrustum) {
+    if(GameState::Instance().zooming) {
+        float desiredHalfWidth = desiredDistanceFromSuperhero * tan(defaultFrustum / 2.0f);
+        desiredDistanceFromSuperhero = desiredHalfWidth / tan(currentFrustum / 2.0f);
+    }
     
     // Interpolate
-//    vec3 cameraPositionInterpolated = mix(cameraPosition, cameraPositionTarget, POSITION_FOLLOW_PERCENT);
+    vec3 fromSuperheroTarget = -superheroForward * desiredDistanceFromSuperhero;
     vec3 fromSuperheroInterpolated = mix(_previousFromSuperhero, fromSuperheroTarget, POSITION_FOLLOW_PERCENT);
     _previousFromSuperhero = fromSuperheroInterpolated;
     
     vec3 cameraPositionInterpolated = superheroPosition + fromSuperheroInterpolated;
-    vec3 cameraDirectionInterpolated = mix(cameraDirection, cameraDirectionTarget, ROTATION_FOLLOW_PERCENT);
-        
+    vec3 cameraDirectionInterpolated = mix(cameraDirection, superheroForward, ROTATION_FOLLOW_PERCENT);
+    
+    // Set
     _camera->setPosition(cameraPositionInterpolated);
     _camera->setDirection(cameraDirectionInterpolated);
 }

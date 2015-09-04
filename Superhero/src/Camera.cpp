@@ -9,7 +9,7 @@
 #include "Camera.h"
 #include <iostream>
 
-#define FRUSTUM_ANGLE (45.0f)
+#define FRUSTUM_ANGLE (1.0f)
 #define NEAR_PLANE (0.1f)
 #define FAR_PLANE (10000.0f)
 
@@ -47,6 +47,12 @@ float Camera::getFrustumAngle()
     return _frustumAngle;
 }
 
+float Camera::getDefaultFrustumAngle()
+{
+    return FRUSTUM_ANGLE;
+}
+
+
 float Camera::getNearPlane()
 {
     return _nearPlane;
@@ -76,6 +82,14 @@ vec3 Camera::getDirection()
 vec3 Camera::getUp()
 {
     return _up;
+}
+
+void Camera::setFrustumAngle(float frustumAngle) {
+    if (frustumAngle != _frustumAngle) {
+        _frustumAngle = frustumAngle;
+        _projection = perspective(_frustumAngle, _aspectRatio, _nearPlane, _farPlane);
+        updateViewProjection();
+    }
 }
 
 /**
@@ -142,7 +156,7 @@ mat4 Camera::getProjection()
 
 void Camera::resize(int screenWidth, int screenHeight)
 {
-    _projection = perspective(_frustumAngle, (float)screenWidth/screenHeight, _nearPlane, _farPlane);
-    updateViewProjection();
     _aspectRatio = (float)screenWidth / screenHeight;
+    _projection = perspective(_frustumAngle, _aspectRatio, _nearPlane, _farPlane);
+    updateViewProjection();
 }
