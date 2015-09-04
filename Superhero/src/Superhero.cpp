@@ -13,19 +13,19 @@
 
 #include <iostream>
 
-//static const std::string SUPERHERO_MESH = "assets/vipermk2/vipermk2_LW7.obj";
-//static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
 static const std::string SUPERHERO_MESH = "assets/buzz/Creature.obj";
 //static const std::string SUPERHERO_MESH = "assets/superman/Superman.obj";
 static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
 
 
-#define ACCELERATION_SPEED (10.0f)
+#define ACCELERATION_SPEED (15.0f)
 #define MAX_TURN_SPEED (pi<float>() * 1.25f)
 #define MIN_TURN_SPEED (pi<float>() / 2.0f)
 #define HOLD_TO_TURN_TIME (0.15f)
 #define STRAFE_SPEED (5.0f)
 #define MAX_VELOCITY (50.0f)
+#define BOOSTING_VELOCITY (100.0f)
+#define DAMPEN_PERCENT (0.5f)
 #define MAX_HEALTH (5)
 
 /**
@@ -36,11 +36,11 @@ SceneNode(position, rotation, scale),
 _dead(false),
 _forward(FORWARD_VECTOR),
 _radius(radius),
-_holdTurnTime(0.0f)
+_velocity(0.0f), _velocityMultiplier(1.0f), _rotationMulitplier(1.0f),
+_holdTurnTime(0.0f), _movingForward(false), _boosting(false)
 {
     // Initialize mesh
     {
-        // Scale for viper
         vec3 meshPosition = vec3(0.0f);
 //        quat meshRotation = rotate(quat(vec3(0.0f)), pi<float>()/2.0f, vec3(0.0f, 1.0f, 0.0f));
         // buzz
@@ -105,7 +105,7 @@ void Superhero::update(float dt)
         }
         
         // Accelerating
-        if (input.isPressed(KEY_UP))
+        if (!_boosting && input.isPressed(KEY_UP))
         {
             accelerate(true, dt);
             soundManager.playSound(_flyingSound);
@@ -121,12 +121,9 @@ void Superhero::update(float dt)
     }
     
     // Clamp velocity
-    if (length(_velocity) > MAX_VELOCITY) {
-        _velocity = normalize(_velocity) * MAX_VELOCITY;
+    if (!_boosting && getSpeed() > MAX_VELOCITY) {
+        setSpeed(MAX_VELOCITY);
     }
-    
-    // Update position
-    updatePosition(dt);
 }
 
 /**
@@ -134,15 +131,25 @@ void Superhero::update(float dt)
  */
 void Superhero::accelerate(bool forward, float dt)
 {
-    _velocity += _forward * ACCELERATION_SPEED * (forward ? 1.0f : -1.0f) * dt;
+    float speedModifier = _movingForward ? 1.0f : -1.0f;
+    float forwardModifier = forward ? 1.0f : -1.0f;
+    
+    
+    float newSpeed = getSpeed() * speedModifier + ACCELERATION_SPEED * forwardModifier * dt;
+    std::cout << "Accelerating at speed " << newSpeed << std::endl;
+    setSpeed(newSpeed);
 }
 
 void Superhero::dampen(float dt)
 {
-    _velocity *= 0.5f * dt;
-    if (length(_velocity) < epsilon<float>()) {
-        _velocity = vec3(0.0f);
+    float newSpeed = getSpeed();
+    float dampenAmount = newSpeed * DAMPEN_PERCENT * dt;
+    if (_movingForward) {
+        newSpeed = max(newSpeed - dampenAmount, 0.0f);
+    } else {
+        newSpeed = min(-newSpeed + dampenAmount, 0.0f);
     }
+    setSpeed(newSpeed);
 }
 
 /**
@@ -165,19 +172,22 @@ void Superhero::turn(bool left, float dt)
         }
     }
     
-    setRotation(rotate(_rotation, angle, UP_VECTOR));
+    if (InputManager::Instance().isPressed(KEY_DOWN)) {
+        newSpeed = -newSpeed;
+    }
+    
+    setRotation(rotate(_rotation, angle * _rotationMulitplier, UP_VECTOR));
     
     _forward = _rotation * FORWARD_VECTOR;
-    _velocity = _forward * newSpeed;
+    setSpeed(newSpeed);
 }
 
-void Superhero::updatePosition(float dt)
-{
-//    vec3 newWorldPosition = getWorldPosition() + _velocity * dt;
-//    Building *closestBuilding = _city->getClosestBuilding(newWorldPosition);
-//    if (!closestBuilding->isInside(newWorldPosition)) {
-//    }
-//    setPosition(_position + _velocity * dt);
+void Superhero::setSpeed(float speed) {
+    _velocity = _forward * speed * _velocityMultiplier;
+    _movingForward = speed > 0;
+    if (speed <= MAX_VELOCITY) {
+        _boosting = false;
+    }
 }
 
 void Superhero::collideWithBuilding()
@@ -187,7 +197,8 @@ void Superhero::collideWithBuilding()
     }
     
     // Slow down
-    _velocity = normalize(_velocity) * MAX_VELOCITY * 0.5f;
+    setSpeed(MAX_VELOCITY * 0.5f);
+    _boosting = false;
     
     // Health
     int health = _healthBar->getCurrentUnits();
@@ -265,6 +276,23 @@ void Superhero::win()
     
     SoundManager &soundManager = SoundManager::Instance();
     soundManager.stopSound(_flyingSound);
+}
+
+void Superhero::slowDown() {
+    _velocityMultiplier = 0.9f;
+    _rotationMulitplier = 0.2f;
+}
+
+void Superhero::boost() {
+    _velocityMultiplier = 1.0f;
+    _rotationMulitplier = 1.0f;
+    setSpeed(BOOSTING_VELOCITY);
+    _boosting = true;
+}
+
+bool Superhero::isBoosting()
+{
+    return _boosting;
 }
 
 bool Superhero::isDead()

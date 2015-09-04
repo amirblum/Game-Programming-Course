@@ -39,6 +39,7 @@ private:
     bool _gameStartedCheck;
     bool _gameOverCheck;
     bool _gameWonCheck;
+    bool _wasZooming;
     
 public:
     World();

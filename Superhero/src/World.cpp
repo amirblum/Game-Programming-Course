@@ -31,7 +31,8 @@ static const vec3 BEACON_POS = vec3(-50.0f, 15.0f, 3500.0f);
 
 World::World() :
 SceneNode(),
-_startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonCheck(false)
+_startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonCheck(false),
+_wasZooming(false)
 {
 //    GLenum error;
 //    error = glGetError();
@@ -119,14 +120,23 @@ void World::update(float dt)
             break;
     }
     
-    state.zooming = InputManager::Instance().isPressed(KEY_ACTION);
-    float newFrustumAngle;
-    if (state.zooming) {
-        newFrustumAngle = min(_camera->getFrustumAngle() + DOLLY_FRUSTUM_INCREASE * dt, pi<float>() / 2.0f);
-    } else {
-        newFrustumAngle = mix(_camera->getFrustumAngle(), _camera->getDefaultFrustumAngle(), DOLLY_FRUSTUM_RETURN_SPEED * dt);
+    if (!_superhero->isBoosting()) {
+        state.zooming = InputManager::Instance().isPressed(KEY_ACTION);
+        float newFrustumAngle;
+        if (state.zooming) {
+            newFrustumAngle = min(_camera->getFrustumAngle() + DOLLY_FRUSTUM_INCREASE * dt, pi<float>() / 2.0f);
+            if (!_wasZooming) {
+                _superhero->slowDown();
+            }
+        } else {
+            newFrustumAngle = mix(_camera->getFrustumAngle(), _camera->getDefaultFrustumAngle(), DOLLY_FRUSTUM_RETURN_SPEED * dt);
+            if (_wasZooming) {
+                _superhero->boost();
+            }
+        }
+        _camera->setFrustumAngle(newFrustumAngle);
+        _wasZooming = state.zooming;
     }
-    _camera->setFrustumAngle(newFrustumAngle);
 }
 
 /**

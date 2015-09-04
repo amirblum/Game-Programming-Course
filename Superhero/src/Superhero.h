@@ -40,15 +40,20 @@ private:
     vec3 _forward;
     float _radius;
     vec3 _velocity;
+    float _velocityMultiplier;
+    float _rotationMulitplier;
     float _holdTurnTime;
+    bool _movingForward;
+    bool _boosting;
     
     // Children
     HealthBar *_healthBar;
     
-    // Movement
+    // Movement functions
     void accelerate(bool forward, float dt);
     void dampen(float dt);
     void turn(bool left, float dt);
+    void setSpeed(float speed);
     void updatePosition(float dt);
     
     
@@ -71,6 +76,9 @@ public:
     
     void die();
     void win();
+    void slowDown();
+    void boost();
+    bool isBoosting();
     bool isDead();
 };
 
