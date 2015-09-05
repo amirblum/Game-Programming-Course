@@ -103,54 +103,17 @@ void City::repositionBuildings(vec3 pos, vec3 dir)
     int row = pos.z / blockSize;
     int col = pos.x / blockSize;
     
-    int firstRow, firstCol;
-    int lastRow, lastCol;
-    
-    float angle = atan2f(dir.z, dir.x);
-    if (angle < 0) {
-        angle += 2.0f * pi<float>();
-    }
-    
-//    std::cout << "Looking at angle " << angle << std::endl;
-    
-    float halfPi = pi<float>() / 2.0f;
-    float quadrant2Begin = halfPi / 2.0f;
-    float quadrant3Begin = quadrant2Begin + halfPi;
-    float quadrant4Begin = quadrant3Begin + halfPi;
-    float quadrant1Begin = quadrant4Begin + halfPi;
-    
-    if (angle > quadrant2Begin && angle <= quadrant3Begin) {
-//        std::cout << "Looking forward" << std::endl;
-        firstRow = row - 1;
-        lastRow = row + _gridLength - 1;
-        firstCol = col - _gridWidth / 2;
-        lastCol = col + _gridWidth / 2 + 1;
-    } else if (angle > quadrant3Begin && angle <= quadrant4Begin) {
-//        std::cout << "Looking left" << std::endl;
-        firstRow = row - _gridLength / 2;
-        lastRow = row + _gridLength / 2 + 1;
-        firstCol = col - _gridWidth + 2;
-        lastCol = col + 2;
-    } else if (angle > quadrant4Begin && angle <= quadrant1Begin) {
-//        std::cout << "Looking back" << std::endl;
-        firstRow = row - _gridLength + 2;
-        lastRow = row + 2;
-        firstCol = col - _gridWidth / 2;
-        lastCol = col + _gridWidth / 2 + 1;
-    } else {
-//        std::cout << "Looking right" << std::endl;
-        firstRow = row - _gridWidth / 2;
-        lastRow = row + _gridWidth / 2 + 1;
-        firstCol = col - 1;
-        lastCol = col + _gridWidth - 1;
-    }
+    float firstRow = row - _gridLength / 2;
+    float lastRow = row + _gridLength / 2;
+    float firstCol = col - _gridWidth / 2;
+    float lastCol = col + _gridWidth / 2;
     
     float gridSpacing = BUILDING_WIDTH + ROAD_WIDTH;
     float halfBuildingWidth = BUILDING_WIDTH / 2.0f;
     float halfStreetWidth = ROAD_WIDTH / 2.0f;
     float roadOffset = halfBuildingWidth + halfStreetWidth;
-    for (int i = firstRow; i < lastRow; ++i) {
-        for (int j = firstCol; j < lastCol; ++j) {
+    for (int i = firstRow; i < lastRow + 1; ++i) {
+        for (int j = firstCol; j < lastCol + 1; ++j) {
             float buildingX = gridSpacing * j + halfBuildingWidth;
             float buildingZ = gridSpacing * i + halfBuildingWidth;
             
