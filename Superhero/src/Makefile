@@ -21,7 +21,7 @@ CameraFollow.cpp \
 CameraOpening.cpp \
 CameraEnding.cpp \
 CameraScripts.cpp \
-City.cpp
+City.cpp \
 CityBlock.cpp \
 GameState.cpp \
 HealthBar.cpp \
@@ -49,7 +49,7 @@ CameraFollow.h \
 CameraOpening.h \
 CameraEnding.h \
 CameraScripts.h \
-City.h
+City.h \
 CityBlock.h \
 GameState.h \
 HealthBar.h \
