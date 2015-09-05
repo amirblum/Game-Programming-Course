@@ -30,7 +30,7 @@ Mesh.cpp \
 MeshRenderer.cpp \
 Overlay.cpp \
 PPBuffer.cpp \
-RandUtils.cpp
+RandUtils.cpp \
 RenderableSceneNode.cpp \
 RenderComponent.cpp \
 SceneNode.cpp \
@@ -38,6 +38,7 @@ ShaderIO.cpp \
 SkyBox.cpp \
 SoundManager.cpp \
 Superhero.cpp \
+SuperheroPosition.cpp \
 TargetFollow.cpp \
 World.cpp
 
@@ -58,7 +59,7 @@ Mesh.h \
 MeshRenderer.h \
 Overlay.h \
 PPBuffer.h \
-RandUtils.h
+RandUtils.h \
 RenderableSceneNode.h \
 RenderComponent.h \
 SceneNode.h \
@@ -67,6 +68,7 @@ ShaderIO.h \
 SkyBox.h \
 SoundManager.h \
 Superhero.h \
+SuperheroPosition.h \
 TargetFollow.h \
 World.h
 
@@ -129,7 +131,7 @@ $(OBJS) : $(SRCS)
 
 
 tar:
-	tar czvf $(TAR) Makefile $(SRCS) $(HDRS) assets/ shaders/ include/ lib/ README 
+	tar czvf $(TAR) Makefile $(SRCS) $(HDRS) assets/ shaders/ include/ lib/ README.md 
 	
 
 .PHONY:
