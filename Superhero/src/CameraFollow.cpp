@@ -50,7 +50,7 @@ void CameraFollow::update(float dt)
     float currentFrustum = _camera->getFrustumAngle();
     float defaultFrustum = _camera->getDefaultFrustumAngle();
 //    if (currentFrustum != defaultFrustum) {
-    if(GameState::Instance().zooming) {
+    if(GameState::Instance().boostState == ZOOMING) {
         float desiredHalfWidth = desiredDistanceFromSuperhero * tan(defaultFrustum / 2.0f);
         desiredDistanceFromSuperhero = desiredHalfWidth / tan(currentFrustum / 2.0f);
     }

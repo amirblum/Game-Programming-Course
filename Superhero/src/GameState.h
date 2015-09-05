@@ -18,6 +18,12 @@ enum WinState {
     LOST
 };
 
+enum BoostState {
+    NONE,
+    ZOOMING,
+    BOOSTING
+};
+
 struct GameState {
     // Singleton implementation
     static GameState& Instance() {
@@ -26,7 +32,7 @@ struct GameState {
     }
     
     WinState winState;
-    bool zooming;
+    BoostState boostState;
     
     void reset();
     

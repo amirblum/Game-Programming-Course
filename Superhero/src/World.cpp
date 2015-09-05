@@ -121,21 +121,21 @@ void World::update(float dt)
     }
     
     // Doll zoom
-    state.zooming = InputManager::Instance().isPressed(KEY_ACTION);
     float newFrustumAngle;
-    if (state.zooming && !_superhero->isBoosting()) {
+    if (InputManager::Instance().isPressed(KEY_ACTION) && state.boostState != BOOSTING) {
         newFrustumAngle = min(_camera->getFrustumAngle() + DOLLY_FRUSTUM_INCREASE * dt, pi<float>() / 2.0f);
-        if (!_wasZooming) {
+        if (state.boostState == NONE) {
+            state.boostState = ZOOMING;
             _superhero->slowDown();
         }
     } else {
         newFrustumAngle = mix(_camera->getFrustumAngle(), _camera->getDefaultFrustumAngle(), DOLLY_FRUSTUM_RETURN_SPEED * dt);
-        if (_wasZooming && !_superhero->isBoosting()) {
+        if (state.boostState == ZOOMING) {
+            state.boostState = BOOSTING;
             _superhero->boost();
         }
     }
     _camera->setFrustumAngle(newFrustumAngle);
-    _wasZooming = state.zooming;
     
     // Endless city
     _city->repositionBuildings(_superhero->getPosition(), _superhero->getForward());

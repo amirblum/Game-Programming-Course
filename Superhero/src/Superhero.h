@@ -44,7 +44,6 @@ private:
     float _rotationMulitplier;
     float _holdTurnTime;
     bool _movingForward;
-    bool _boosting;
     
     // Children
     HealthBar *_healthBar;
@@ -79,7 +78,6 @@ public:
     void win();
     void slowDown();
     void boost();
-    bool isBoosting();
     bool isDead();
 };
 

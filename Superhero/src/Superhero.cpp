@@ -23,7 +23,7 @@ static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
 #define HOLD_TO_TURN_TIME (0.15f)
 #define STRAFE_SPEED (5.0f)
 #define MAX_VELOCITY (50.0f)
-#define BOOSTING_VELOCITY (100.0f)
+#define BOOSTING_VELOCITY (150.0f)
 #define DAMPEN_PERCENT (0.5f)
 #define MAX_HEALTH (5)
 
@@ -36,7 +36,7 @@ _dead(false),
 _forward(FORWARD_VECTOR),
 _radius(radius),
 _velocity(0.0f), _velocityMultiplier(1.0f), _rotationMulitplier(1.0f),
-_holdTurnTime(0.0f), _movingForward(false), _boosting(false)
+_holdTurnTime(0.0f), _movingForward(false)
 {
     // Initialize mesh
     {
@@ -104,7 +104,7 @@ void Superhero::update(float dt)
         }
         
         // Accelerating
-        if (!_boosting && input.isPressed(KEY_UP))
+        if (state.boostState != BOOSTING && input.isPressed(KEY_UP))
         {
             accelerate(true, dt);
             soundManager.playSound(_flyingSound);
@@ -120,7 +120,7 @@ void Superhero::update(float dt)
     }
     
     // Clamp velocity
-    if (!_boosting && getSpeed() > MAX_VELOCITY) {
+    if (state.boostState != BOOSTING && getSpeed() > MAX_VELOCITY) {
         setSpeed(MAX_VELOCITY);
     }
 }
@@ -184,8 +184,10 @@ void Superhero::turn(bool left, float dt)
 void Superhero::setSpeed(float speed) {
     _velocity = _forward * speed;
     _movingForward = speed > 0;
-    if (speed <= MAX_VELOCITY) {
-        _boosting = false;
+    
+    GameState &state = GameState::Instance();
+    if (state.boostState == BOOSTING && speed <= MAX_VELOCITY) {
+        state.boostState = NONE;
     }
 }
 
@@ -197,7 +199,7 @@ void Superhero::collideWithBuilding()
     
     // Slow down
     setSpeed(MAX_VELOCITY * 0.5f);
-    _boosting = false;
+    GameState::Instance().boostState = NONE;
     
     // Health
     int health = _healthBar->getCurrentUnits();
@@ -291,12 +293,6 @@ void Superhero::boost() {
     _velocityMultiplier = 1.0f;
     _rotationMulitplier = 1.0f;
     setSpeed(BOOSTING_VELOCITY);
-    _boosting = true;
-}
-
-bool Superhero::isBoosting()
-{
-    return _boosting;
 }
 
 bool Superhero::isDead()

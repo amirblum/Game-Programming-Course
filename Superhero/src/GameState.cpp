@@ -9,10 +9,10 @@
 #include "GameState.h"
 
 GameState::GameState() :
-winState(NOT_STARTED), zooming(false) {}
+winState(NOT_STARTED), boostState(NONE) {}
 
 void GameState::reset()
 {
     winState = NOT_STARTED;
-    zooming = false;
+    boostState = NONE;
 }
