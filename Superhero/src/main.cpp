@@ -196,7 +196,9 @@ void display()
     // Drawing time
     
     // Set up blur effect
-//    _blurEffect->setup();
+    if (GameState::Instance().boostState == BOOSTING) {
+        _blurEffect->setup();
+    }
     
     // Clear the screen buffer
 //    glClearColor(0.15f, 0.0f, 0.2f, 1.0f);
@@ -206,7 +208,9 @@ void display()
     // Tell the world to draw itself
     _world->recursiveRender();
     
-//    _blurEffect->render(true);
+    if (GameState::Instance().boostState == BOOSTING) {
+        _blurEffect->render(true);
+    }
     
     // Print fps
     frames++;

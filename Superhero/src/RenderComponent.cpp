@@ -332,6 +332,6 @@ std::shared_ptr<TextureComponent> TextureComponent::createCubeTexture(std::strin
 
 void TextureComponent::bind()
 {
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(_type, _textureNum);
-
 }

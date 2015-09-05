@@ -25,7 +25,7 @@ void main() {
     vec4 prevPos = prevViewProjection * worldPos;
     prevPos /= prevPos.w;
     
-    vec2 velocity = (viewportPos - prevPos).xy / 2.0f;
+    vec2 velocity = (viewportPos - prevPos).xy / 100.0f;
     
     vec2 texCoord = UV;
     vec4 outColor = texture(fbo_color_texture, texCoord);
@@ -35,5 +35,5 @@ void main() {
         outColor += texture(fbo_color_texture, texCoord);
     }
     
-    color = outColor / NUM_SAMPLES;
+    color = outColor / (NUM_SAMPLES + 1);
 }
