@@ -9,7 +9,6 @@
 #include <iostream>
 
 #include "World.h"
-#include "Controller.h"
 #include "TargetFollow.h"
 #include "SkyBox.h"
 #include "City.h"
