@@ -120,24 +120,24 @@ void World::update(float dt)
             break;
     }
     
-    if (!_superhero->isBoosting()) {
-        state.zooming = InputManager::Instance().isPressed(KEY_ACTION);
-        float newFrustumAngle;
-        if (state.zooming) {
-            newFrustumAngle = min(_camera->getFrustumAngle() + DOLLY_FRUSTUM_INCREASE * dt, pi<float>() / 2.0f);
-            if (!_wasZooming) {
-                _superhero->slowDown();
-            }
-        } else {
-            newFrustumAngle = mix(_camera->getFrustumAngle(), _camera->getDefaultFrustumAngle(), DOLLY_FRUSTUM_RETURN_SPEED * dt);
-            if (_wasZooming) {
-                _superhero->boost();
-            }
+    // Doll zoom
+    state.zooming = InputManager::Instance().isPressed(KEY_ACTION);
+    float newFrustumAngle;
+    if (state.zooming && !_superhero->isBoosting()) {
+        newFrustumAngle = min(_camera->getFrustumAngle() + DOLLY_FRUSTUM_INCREASE * dt, pi<float>() / 2.0f);
+        if (!_wasZooming) {
+            _superhero->slowDown();
         }
-        _camera->setFrustumAngle(newFrustumAngle);
-        _wasZooming = state.zooming;
+    } else {
+        newFrustumAngle = mix(_camera->getFrustumAngle(), _camera->getDefaultFrustumAngle(), DOLLY_FRUSTUM_RETURN_SPEED * dt);
+        if (_wasZooming && !_superhero->isBoosting()) {
+            _superhero->boost();
+        }
     }
+    _camera->setFrustumAngle(newFrustumAngle);
+    _wasZooming = state.zooming;
     
+    // Endless city
     _city->repositionBuildings(_superhero->getPosition(), _superhero->getForward());
 }
 

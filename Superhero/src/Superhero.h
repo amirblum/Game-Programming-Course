@@ -70,6 +70,7 @@ public:
     vec3 getForward();
     vec3 getMovementDirection();
     vec3 getVelocity();
+    float getVelocityMultiplier();
     float getSpeed();
     float getMaxSpeed();
     float getRadius();

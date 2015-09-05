@@ -25,7 +25,7 @@ SuperheroPosition::~SuperheroPosition()
 void SuperheroPosition::update(float dt)
 {
     vec3 oldPosition = _superhero->getWorldPosition();
-    vec3 newPosition = oldPosition + _superhero->getVelocity() * dt;
+    vec3 newPosition = oldPosition + _superhero->getVelocity() * _superhero->getVelocityMultiplier() * dt;
     float radius = _superhero->getRadius();
     
     float blockSize = BUILDING_WIDTH + ROAD_WIDTH;

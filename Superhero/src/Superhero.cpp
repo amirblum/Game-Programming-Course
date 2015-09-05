@@ -183,7 +183,7 @@ void Superhero::turn(bool left, float dt)
 }
 
 void Superhero::setSpeed(float speed) {
-    _velocity = _forward * speed * _velocityMultiplier;
+    _velocity = _forward * speed;
     _movingForward = speed > 0;
     if (speed <= MAX_VELOCITY) {
         _boosting = false;
@@ -245,6 +245,11 @@ vec3 Superhero::getVelocity()
     return _velocity;
 }
 
+float Superhero::getVelocityMultiplier()
+{
+    return _velocityMultiplier;
+}
+
 float Superhero::getSpeed()
 {
     return length(_velocity);
@@ -279,7 +284,7 @@ void Superhero::win()
 }
 
 void Superhero::slowDown() {
-    _velocityMultiplier = 0.9f;
+    _velocityMultiplier = 0.2f;
     _rotationMulitplier = 0.2f;
 }
 
