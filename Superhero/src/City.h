@@ -30,6 +30,7 @@ public:
     int getGridLength();
     
     Building* getClosestBuilding(vec3 position);
+    void repositionBuildings(vec3 pos, vec3 dir);
 };
 
 #endif /* defined(__CGP_Superhero__City__) */

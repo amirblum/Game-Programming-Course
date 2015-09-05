@@ -27,11 +27,13 @@ using namespace glm;
 
 class Superhero;
 class Camera;
+class City;
 
 class World : public SceneNode {
 private:
     Camera *_camera;
     Superhero *_superhero;
+    City *_city;
     
     ALuint _backgroundMusic;
     

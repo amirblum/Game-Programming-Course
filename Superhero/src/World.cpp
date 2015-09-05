@@ -46,7 +46,7 @@ _wasZooming(false)
     Camera::setMainCamera(_camera);
     
     // City
-    City *city = new City(4, 4);
+    _city = new City(5, 5);
     
     // Superhero
     _superhero = new Superhero(vec3(25.0f, 10.0f, -25.0f), quat(vec3(0.0f)), vec3(1.0f, 1.0f, 1.0f), /*radius*/1.2f);
@@ -56,7 +56,7 @@ _wasZooming(false)
     
     // Add children
     {
-        addChild(city);
+        addChild(_city);
         addChild(_superhero);
         addChild(_camera);
         _camera->addChild(skybox);
@@ -65,7 +65,7 @@ _wasZooming(false)
     
     // Scripts
     {
-        addScript(new SuperheroPosition(city, _superhero));
+        addScript(new SuperheroPosition(_city, _superhero));
         addScript(new CameraScripts(_camera, _superhero));
 //        addScript(new TargetFollow(skybox, camera));
     //    addScript(new Controller(camera));
@@ -137,6 +137,8 @@ void World::update(float dt)
         _camera->setFrustumAngle(newFrustumAngle);
         _wasZooming = state.zooming;
     }
+    
+    _city->repositionBuildings(_superhero->getPosition(), _superhero->getForward());
 }
 
 /**

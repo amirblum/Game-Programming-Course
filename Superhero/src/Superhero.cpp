@@ -136,7 +136,7 @@ void Superhero::accelerate(bool forward, float dt)
     
     
     float newSpeed = getSpeed() * speedModifier + ACCELERATION_SPEED * forwardModifier * dt;
-    std::cout << "Accelerating at speed " << newSpeed << std::endl;
+//    std::cout << "Accelerating at speed " << newSpeed << std::endl;
     setSpeed(newSpeed);
 }
 
