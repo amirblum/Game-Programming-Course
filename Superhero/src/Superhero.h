@@ -31,7 +31,7 @@ private:
     bool _dead;
     
     // Sounds
-    ALuint _flyingSound;
+    ALuint _flyingSound, _explosionSound;
     
     // Components
     Mesh *_mesh;
@@ -42,6 +42,7 @@ private:
     vec3 _velocity;
     float _holdTurnTime;
     bool _movingForward;
+    bool _collided;
     
     // Boosting
     float _velocityMultiplier;
@@ -67,6 +68,7 @@ public:
     
     // Collisions
     void collideWithBuilding();
+    void uncollide();
     
     // Getters
     vec3 getForward();

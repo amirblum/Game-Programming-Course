@@ -73,5 +73,7 @@ void SuperheroPosition::update(float dt)
     
     if (collided) {
         _superhero->collideWithBuilding();
+    } else {
+        _superhero->uncollide();
     }
 }

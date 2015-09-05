@@ -15,6 +15,7 @@
 static const std::string SUPERHERO_MESH = "assets/buzz/Creature.obj";
 //static const std::string SUPERHERO_MESH = "assets/superman/Superman.obj";
 static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
+static const std::string EXPLOSION_SOUND = "assets/sounds/explosion.wav";
 
 
 #define ACCELERATION_SPEED (15.0f)
@@ -75,6 +76,7 @@ _holdTurnTime(0.0f), _movingForward(false), _initialBlurTime(INITIAL_BLUR_TIME)
     {
         SoundManager &soundManager = SoundManager::Instance();
         _flyingSound = soundManager.loadSound(FLYING_SOUND, true);
+        _explosionSound = soundManager.loadSound(EXPLOSION_SOUND, false);
     }
 }
 
@@ -213,9 +215,11 @@ void Superhero::setSpeed(float speed) {
 
 void Superhero::collideWithBuilding()
 {
-    if (getSpeed() < MAX_VELOCITY * 0.5f) {
+    if (_collided) {
         return;
     }
+    
+    _collided = true;
     
     // Slow down
     setSpeed(MAX_VELOCITY * 0.5f);
@@ -226,7 +230,7 @@ void Superhero::collideWithBuilding()
     int newHealth = health - 1;
     
     // Sound
-//    alSourcePlay(_explosionSound);
+    alSourcePlay(_explosionSound);
     if (newHealth == 1) {
 //        alSourcePlay(_warningSound);
 //        alSourcei(_warningSound, AL_LOOPING, AL_TRUE);
@@ -239,6 +243,11 @@ void Superhero::collideWithBuilding()
             die();
         }
     }
+}
+
+void Superhero::uncollide()
+{
+    _collided = false;
 }
 
 /**
