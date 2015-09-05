@@ -7,7 +7,6 @@
 //
 
 #include "Superhero.h"
-#include "Building.h"
 #include "InputManager.h"
 #include "GameState.h"
 

@@ -15,12 +15,12 @@
 #define BUILDING_WIDTH (20.0f)
 #define ROAD_WIDTH (10.0f)
 
-class Building;
+class CityBlock;
 
 class City : public SceneNode {
 private:
     int _gridWidth, _gridLength;
-    std::vector<Building*> _buildingsGrid;
+    std::vector<CityBlock*> _blockGrid;
     
 public:
     City(int gridWidth, int gridlength);
@@ -29,7 +29,6 @@ public:
     int getGridWidth();
     int getGridLength();
     
-    Building* getClosestBuilding(vec3 position);
     void repositionBuildings(vec3 pos, vec3 dir);
 };
 
