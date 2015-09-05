@@ -25,6 +25,7 @@ static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
 #define MAX_VELOCITY (50.0f)
 #define BOOSTING_VELOCITY (150.0f)
 #define DAMPEN_PERCENT (0.5f)
+#define BOOST_DAMPEN_PERCENT (0.2f)
 #define MAX_HEALTH (5)
 
 /**
@@ -142,7 +143,8 @@ void Superhero::accelerate(bool forward, float dt)
 void Superhero::dampen(float dt)
 {
     float newSpeed = getSpeed();
-    float dampenAmount = newSpeed * DAMPEN_PERCENT * dt;
+    float dampenPercent = (GameState::Instance().boostState == BOOSTING) ? BOOST_DAMPEN_PERCENT : DAMPEN_PERCENT;
+    float dampenAmount = newSpeed * dampenPercent * dt;
     if (_movingForward) {
         newSpeed = max(newSpeed - dampenAmount, 0.0f);
     } else {
