@@ -261,6 +261,11 @@ float Superhero::getMaxSpeed()
     return MAX_VELOCITY;
 }
 
+float Superhero::getMaxBoostSpeed()
+{
+    return BOOSTING_VELOCITY;
+}
+
 float Superhero::getRadius()
 {
     return _radius;

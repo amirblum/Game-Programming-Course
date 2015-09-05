@@ -8,12 +8,14 @@
 
 #include "CameraFollow.h"
 #include "GameState.h"
+#include "RandUtils.h"
 
 #define MIN_CAMERA_DISTANCE (4.0f)
 #define MAX_CAMERA_DISTANCE (10.0f)
 #define MAX_LAG_SPEED (20.0f)
 #define POSITION_FOLLOW_PERCENT (0.085f)
 #define ROTATION_FOLLOW_PERCENT (0.07f)
+#define CAMERA_SHAKE_DISTANCE (1.0f)
 
 CameraFollow::CameraFollow(Camera *camera, Superhero *superhero) :
 _camera(camera), _superhero(superhero),
@@ -50,13 +52,20 @@ void CameraFollow::update(float dt)
     float currentFrustum = _camera->getFrustumAngle();
     float defaultFrustum = _camera->getDefaultFrustumAngle();
 //    if (currentFrustum != defaultFrustum) {
-    if(GameState::Instance().boostState == ZOOMING) {
+    if (GameState::Instance().boostState == ZOOMING) {
         float desiredHalfWidth = desiredDistanceFromSuperhero * tan(defaultFrustum / 2.0f);
         desiredDistanceFromSuperhero = desiredHalfWidth / tan(currentFrustum / 2.0f);
     }
     
     // Interpolate
     vec3 fromSuperheroTarget = -superheroForward * desiredDistanceFromSuperhero;
+    if (GameState::Instance().boostState == BOOSTING) {
+        float relativeSpeed = (_superhero->getSpeed() - _superhero->getMaxSpeed()) / (_superhero->getMaxBoostSpeed() - _superhero->getMaxSpeed());
+        float shakeRange = CAMERA_SHAKE_DISTANCE * relativeSpeed;
+        fromSuperheroTarget.x += randutils::randomRange(-shakeRange, shakeRange);
+        fromSuperheroTarget.y += randutils::randomRange(-shakeRange, shakeRange);
+        fromSuperheroTarget.z += randutils::randomRange(-shakeRange, shakeRange);
+    }
     vec3 fromSuperheroInterpolated = mix(_previousFromSuperhero, fromSuperheroTarget, POSITION_FOLLOW_PERCENT);
     _previousFromSuperhero = fromSuperheroInterpolated;
     

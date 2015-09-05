@@ -72,6 +72,7 @@ public:
     float getVelocityMultiplier();
     float getSpeed();
     float getMaxSpeed();
+    float getMaxBoostSpeed();
     float getRadius();
     
     void die();
