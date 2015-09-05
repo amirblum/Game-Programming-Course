@@ -173,7 +173,7 @@ void Superhero::turn(bool left, float dt)
         }
     }
     
-    if (InputManager::Instance().isPressed(KEY_DOWN)) {
+    if (!_movingForward) {
         newSpeed = -newSpeed;
     }
     
