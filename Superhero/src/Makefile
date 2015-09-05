@@ -12,72 +12,63 @@
 TAR = amirblum_final_project.tgz
 
 # list of all the sources files
-SRCS	=  	main.cpp		\
-		World.cpp		\
-        GameState.cpp \
-        Camera.cpp  \
-		CameraFollow.cpp \
-        CameraOpening.cpp \
-        CameraEnding.cpp \
-        CameraScripts.cpp \
-        InputManager.cpp    \
-        SoundManager.cpp \
-		ParticleSystem.cpp \
-		AsteroidParticleSystem.cpp \
-        AsteroidRigidBody.cpp \
-        ExplosionParticleSystem.cpp \
-        ThrusterParticleSystem.cpp \
-		Mesh.cpp \
-		SceneNode.cpp \
-		RenderableSceneNode.cpp \
-		Superhero.cpp 	\
-		HealthBar.cpp \
-        Shield.cpp \
-        BlackHole.cpp \
-        Beacon.cpp \
-		DummyObject.cpp \
-		SkyBox.cpp \
-        RenderComponent.cpp  \
-        PhysicsSimulation.cpp \
-        RigidBody.cpp \
-		PhysicsComponent.cpp \
-        Overlay.cpp \
-		ShaderIO.cpp \
-        RandUtils.cpp
+SRCS	=  	\
+main.cpp \
+BoundingBox.cpp \
+BoundingBoxRenderer.cpp \
+Camera.cpp \
+CameraFollow.cpp \
+CameraOpening.cpp \
+CameraEnding.cpp \
+CameraScripts.cpp \
+City.cpp
+CityBlock.cpp \
+GameState.cpp \
+HealthBar.cpp \
+InputManager.cpp \
+Mesh.cpp \
+MeshRenderer.cpp \
+Overlay.cpp \
+PPBuffer.cpp \
+RandUtils.cpp
+RenderableSceneNode.cpp \
+RenderComponent.cpp \
+SceneNode.cpp \
+ShaderIO.cpp \
+SkyBox.cpp \
+SoundManager.cpp \
+Superhero.cpp \
+TargetFollow.cpp \
+World.cpp
 
 HDRS	=  	\
-		World.h		\
-        GameState.h \
-        Camera.h  \
-		CameraFollow.h \
-        CameraOpening.h \
-        CameraEnding.h \
-        CameraScripts.h \
-		Script.h \
-        InputManager.h    \
-        SoundManager.h \
-		ParticleSystem.h \
-        AsteroidParticleSystem.h \
-        AsteroidRigidBody.h \
-        ExplosionParticleSystem.h \
-        ThrusterParticleSystem.h \
-		Mesh.h \
-		SceneNode.h \
-		RenderableSceneNode.h \
-		Superhero.h 	\
-		HealthBar.h \
-        Shield.h \
-        BlackHole.h \
-        Beacon.h \
-		DummyObject.h \
-		SkyBox.h \
-        RenderComponent.h  \
-        PhysicsSimulation.h \
-        RigidBody.h \
-		PhysicsComponent.h \
-        Overlay.h \
-		ShaderIO.h	\
-		RandUtils.h
+BoundingBox.h \
+BoundingBoxRenderer.h \
+Camera.h \
+CameraFollow.h \
+CameraOpening.h \
+CameraEnding.h \
+CameraScripts.h \
+City.h
+CityBlock.h \
+GameState.h \
+HealthBar.h \
+InputManager.h \
+Mesh.h \
+MeshRenderer.h \
+Overlay.h \
+PPBuffer.h \
+RandUtils.h
+RenderableSceneNode.h \
+RenderComponent.h \
+SceneNode.h \
+Script.h \
+ShaderIO.h \
+SkyBox.h \
+SoundManager.h \
+Superhero.h \
+TargetFollow.h \
+World.h
 
 # compiler
 CC	= g++
