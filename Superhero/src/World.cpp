@@ -28,6 +28,7 @@ static const vec3 BEACON_POS = vec3(-50.0f, 15.0f, 3500.0f);
 
 #define DOLLY_FRUSTUM_INCREASE (pi<float>() / 6.0f)
 #define DOLLY_FRUSTUM_RETURN_SPEED (10.0f)
+#define BOOST_MIN_ANGLE (pi<float>() / 2.8f)
 
 World::World() :
 SceneNode(),
@@ -142,8 +143,13 @@ void World::setZoom(float dt)
     }
     if (state.boostState == ZOOMING) {
         if (!_boostButtonPressed || newFrustumAngle >= (maxFrustum - epsilon<float>())) {
-            state.boostState = BOOSTING;
-            _superhero->boost(newFrustumAngle / maxFrustum);
+            if (newFrustumAngle > BOOST_MIN_ANGLE) {
+                state.boostState = BOOSTING;
+                _superhero->boost(newFrustumAngle / maxFrustum);
+            } else {
+                state.boostState = NONE;
+                _superhero->unslow();
+            }
         }
     } else {
         newFrustumAngle = mix(_camera->getFrustumAngle(), _camera->getDefaultFrustumAngle(), DOLLY_FRUSTUM_RETURN_SPEED * dt);

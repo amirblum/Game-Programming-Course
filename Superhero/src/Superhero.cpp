@@ -329,6 +329,11 @@ void Superhero::slowDown() {
     _rotationMulitplier = 0.2f;
 }
 
+void Superhero::unslow() {
+    _velocityMultiplier = 1.0f;
+    _rotationMulitplier = 1.0f;
+}
+
 void Superhero::boost(float boostPercent) {
     _velocityMultiplier = 1.0f;
     _rotationMulitplier = 1.0f;

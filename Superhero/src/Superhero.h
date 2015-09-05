@@ -83,6 +83,7 @@ public:
     void die();
     void win();
     void slowDown();
+    void unslow();
     void boost(float boostPercent);
     bool isDead();
 };
