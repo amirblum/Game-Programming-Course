@@ -119,19 +119,21 @@ void World::update(float dt)
             break;
     }
     
-    // Doll zoom
+    // Dolly zoom
     float newFrustumAngle = _camera->getFrustumAngle();
     float maxFrustum = pi<float>() / 2.0f;
-    bool isBoostButtonPressed = InputManager::Instance().isPressed(KEY_ACTION);
-    if (isBoostButtonPressed && state.boostState != BOOSTING) {
-        newFrustumAngle = min(_camera->getFrustumAngle() + DOLLY_FRUSTUM_INCREASE * dt, maxFrustum);
+    bool wasBoostButtonPressed = _boostButtonPressed;
+    _boostButtonPressed = InputManager::Instance().isPressed(KEY_ACTION);
+    bool legalZoom = (!wasBoostButtonPressed && _boostButtonPressed) || (state.boostState == ZOOMING && _boostButtonPressed);
+    if (legalZoom && state.boostState != BOOSTING) {
         if (state.boostState == NONE) {
             state.boostState = ZOOMING;
             _superhero->slowDown();
         }
+        newFrustumAngle = min(_camera->getFrustumAngle() + DOLLY_FRUSTUM_INCREASE * dt, maxFrustum);
     }
     if (state.boostState == ZOOMING) {
-        if (!isBoostButtonPressed || newFrustumAngle >= (maxFrustum - epsilon<float>())) {
+        if (!_boostButtonPressed || newFrustumAngle >= (maxFrustum - epsilon<float>())) {
             state.boostState = BOOSTING;
             _superhero->boost(newFrustumAngle / maxFrustum);
         }
