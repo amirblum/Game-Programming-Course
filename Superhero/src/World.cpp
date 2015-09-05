@@ -31,8 +31,7 @@ static const vec3 BEACON_POS = vec3(-50.0f, 15.0f, 3500.0f);
 
 World::World() :
 SceneNode(),
-_startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonCheck(false),
-_wasZooming(false)
+_startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonCheck(false)
 {
 //    GLenum error;
 //    error = glGetError();
@@ -121,19 +120,23 @@ void World::update(float dt)
     }
     
     // Doll zoom
-    float newFrustumAngle;
-    if (InputManager::Instance().isPressed(KEY_ACTION) && state.boostState != BOOSTING) {
-        newFrustumAngle = min(_camera->getFrustumAngle() + DOLLY_FRUSTUM_INCREASE * dt, pi<float>() / 2.0f);
+    float newFrustumAngle = _camera->getFrustumAngle();
+    float maxFrustum = pi<float>() / 2.0f;
+    bool isBoostButtonPressed = InputManager::Instance().isPressed(KEY_ACTION);
+    if (isBoostButtonPressed && state.boostState != BOOSTING) {
+        newFrustumAngle = min(_camera->getFrustumAngle() + DOLLY_FRUSTUM_INCREASE * dt, maxFrustum);
         if (state.boostState == NONE) {
             state.boostState = ZOOMING;
             _superhero->slowDown();
         }
+    }
+    if (state.boostState == ZOOMING) {
+        if (!isBoostButtonPressed || newFrustumAngle >= (maxFrustum - epsilon<float>())) {
+            state.boostState = BOOSTING;
+            _superhero->boost(newFrustumAngle / maxFrustum);
+        }
     } else {
         newFrustumAngle = mix(_camera->getFrustumAngle(), _camera->getDefaultFrustumAngle(), DOLLY_FRUSTUM_RETURN_SPEED * dt);
-        if (state.boostState == ZOOMING) {
-            state.boostState = BOOSTING;
-            _superhero->boost();
-        }
     }
     _camera->setFrustumAngle(newFrustumAngle);
     

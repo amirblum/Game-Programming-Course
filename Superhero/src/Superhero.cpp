@@ -27,6 +27,9 @@ static const std::string FLYING_SOUND = "assets/sounds/thrusters.wav";
 #define DAMPEN_PERCENT (0.5f)
 #define BOOST_DAMPEN_PERCENT (0.2f)
 #define MAX_HEALTH (5)
+#define MAX_BLUR (10.0f)
+#define INITIAL_BLUR_TIME (0.2f)
+#define BLUR_DECREASE (15.0f)
 
 /**
  * Superhero constructor
@@ -37,7 +40,7 @@ _dead(false),
 _forward(FORWARD_VECTOR),
 _radius(radius),
 _velocity(0.0f), _velocityMultiplier(1.0f), _rotationMulitplier(1.0f),
-_holdTurnTime(0.0f), _movingForward(false)
+_holdTurnTime(0.0f), _movingForward(false), _initialBlurTime(INITIAL_BLUR_TIME)
 {
     // Initialize mesh
     {
@@ -123,6 +126,21 @@ void Superhero::update(float dt)
     // Clamp velocity
     if (state.boostState != BOOSTING && getSpeed() > MAX_VELOCITY) {
         setSpeed(MAX_VELOCITY);
+    }
+    
+    // Set blur amount
+    if (state.boostState == BOOSTING) {
+        float expectedBlur = MAX_BLUR * ((getSpeed() - MAX_VELOCITY) / (BOOSTING_VELOCITY - MAX_VELOCITY));
+        if (_initialBlurTime < INITIAL_BLUR_TIME) {
+            _initialBlurTime += dt;
+            state.blurSteps = min(MAX_BLUR * (_initialBlurTime / INITIAL_BLUR_TIME), expectedBlur);
+            return;
+        }
+        state.blurSteps = expectedBlur;
+    } else {
+        _initialBlurTime = 0.0f;
+        
+        state.blurSteps = max(state.blurSteps - BLUR_DECREASE * dt, 0.0f);
     }
 }
 
@@ -296,10 +314,10 @@ void Superhero::slowDown() {
     _rotationMulitplier = 0.2f;
 }
 
-void Superhero::boost() {
+void Superhero::boost(float boostPercent) {
     _velocityMultiplier = 1.0f;
     _rotationMulitplier = 1.0f;
-    setSpeed(BOOSTING_VELOCITY);
+    setSpeed(mix(MAX_VELOCITY, BOOSTING_VELOCITY, boostPercent));
 }
 
 bool Superhero::isDead()

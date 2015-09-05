@@ -27,7 +27,7 @@ class PPBuffer {
     GLuint vbo_fbo_vertices;
     GLuint fbo, rbo_depth, fbo_color_texture, fbo_depth_texture;
     GLuint program_postproc, attribute_v_coord_postproc;
-    GLuint uniform_fbo_color_texture, uniform_fbo_depth_texture, uniform_inverseViewProj, uniform_prevViewProj;
+    GLuint uniform_fbo_color_texture, uniform_fbo_depth_texture, uniform_inverseViewProj, uniform_prevViewProj, uniform_blurSteps;
     
     mat4 _inverseViewProj, _prevViewProj;
 

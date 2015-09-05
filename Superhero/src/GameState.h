@@ -33,6 +33,7 @@ struct GameState {
     
     WinState winState;
     BoostState boostState;
+    float blurSteps;
     
     void reset();
     

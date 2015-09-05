@@ -7,6 +7,7 @@
 
 #include "ShaderIO.h"
 #include "PPBuffer.h"
+#include "GameState.h"
 
 #include <GL/glew.h>
 #ifdef __APPLE__
@@ -119,6 +120,7 @@ PPBuffer::PPBuffer(int screen_width, int screen_height) {
     uniform_fbo_depth_texture = glGetUniformLocation(program_postproc, "fbo_depth_texture");
     uniform_inverseViewProj = glGetUniformLocation(program_postproc, "inverseViewProjection");
     uniform_prevViewProj = glGetUniformLocation(program_postproc, "prevViewProjection");
+    uniform_blurSteps = glGetUniformLocation(program_postproc, "blurSteps");
     
     _prevViewProj = Camera::MainCamera()->getViewProjection();
     _inverseViewProj = inverse(_prevViewProj);
@@ -172,6 +174,8 @@ void PPBuffer::render(bool toScreen) {
     glUniformMatrix4fv(uniform_prevViewProj, 1, GL_FALSE, value_ptr(_prevViewProj));
     
     _prevViewProj = viewProj;
+    
+    glUniform1i(uniform_blurSteps, (int)(GameState::Instance().blurSteps));
     
     glBindVertexArray(_vao);
     glEnableVertexAttribArray(attribute_v_coord_postproc);

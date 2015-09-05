@@ -194,9 +194,9 @@ void display()
     _world->recursiveUpdate(dt);
     
     // Drawing time
-    
+    GameState &gameState = GameState::Instance();
     // Set up blur effect
-    if (GameState::Instance().boostState == BOOSTING) {
+    if (gameState.boostState == BOOSTING || gameState.blurSteps > 0.0f) {
         _blurEffect->setup();
     }
     
@@ -208,7 +208,7 @@ void display()
     // Tell the world to draw itself
     _world->recursiveRender();
     
-    if (GameState::Instance().boostState == BOOSTING) {
+    if (gameState.boostState == BOOSTING || gameState.blurSteps > 0.0f) {
         _blurEffect->render(true);
     }
     
