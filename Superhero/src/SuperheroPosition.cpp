@@ -35,14 +35,7 @@ void SuperheroPosition::update(float dt)
     int col = floor((newPosition.x + halfRoad) / blockSize);
     
 //    std::cout << "Row: " << row << " Col: " << col << std::endl;
-    
-    if (row < 0 || row >= _city->getGridLength() ||
-        col < 0 || col >= _city->getGridWidth()) {
-        vec3 positionDiff = newPosition - oldPosition;
-        _superhero->setPosition(_superhero->getPosition() + positionDiff);
-        return;
-    }
-    
+        
     float buildingLeft = col * blockSize;
     float buildingRight = buildingLeft + BUILDING_WIDTH;
     buildingLeft -= radius;
