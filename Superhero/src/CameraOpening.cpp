@@ -37,11 +37,12 @@ void CameraOpening::update(float dt)
         
     // Get current
     vec3 cameraPosition = _camera->getPosition();
+    vec3 superheroPosition = _superhero->getPosition();
     
     cameraPosition.z = mix(cameraPosition.z, _endPosition.z, 0.8f * dt);
     float travelPercent = abs(cameraPosition.z - _startPosition.z) / abs(_endPosition.z - _startPosition.z);
-    cameraPosition.x = -CAMERA_DISTANCE * sin(pi<float>() * travelPercent);
-    cameraPosition.y = 0.5f * CAMERA_DISTANCE * sin(pi<float>() * travelPercent);
+    cameraPosition.x = superheroPosition.x - CAMERA_DISTANCE * sin(pi<float>() * travelPercent);
+    cameraPosition.y = superheroPosition.y + 0.5f * CAMERA_DISTANCE * sin(pi<float>() * travelPercent);
     
     _camera->setPosition(cameraPosition);
     _camera->setDirection(normalize(_superhero->getPosition() - cameraPosition));

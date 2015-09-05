@@ -20,7 +20,7 @@
 #include "Overlay.h"
 #include "GameState.h"
 
-static const std::string BACKGROUND_MUSIC = "assets/sounds/BSG_battle.wav";
+static const std::string BACKGROUND_MUSIC = "assets/sounds/hero-music.wav";
 static const std::string YOU_WIN_TEXTURE = "assets/youwin.png";
 static const std::string GAME_OVER_TEXTURE = "assets/gameover.png";
 
@@ -31,7 +31,8 @@ static const vec3 BEACON_POS = vec3(-50.0f, 15.0f, 3500.0f);
 
 World::World() :
 SceneNode(),
-_startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonCheck(false)
+_startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonCheck(false),
+_boostButtonPressed(false)
 {
 //    GLenum error;
 //    error = glGetError();
@@ -69,6 +70,7 @@ _startPosition(0.0f), _gameStartedCheck(false), _gameOverCheck(false), _gameWonC
 //        addScript(new TargetFollow(skybox, camera));
     //    addScript(new Controller(camera));
     }
+    _city->repositionBuildings(_superhero->getPosition(), _superhero->getForward());
     
     // Background music
     _backgroundMusic = SoundManager::Instance().loadSound(BACKGROUND_MUSIC, true);
@@ -94,6 +96,9 @@ void World::update(float dt)
             if (!_gameStartedCheck) {
                 _gameStartedCheck = true;
                 SoundManager::Instance().playSound(_backgroundMusic);
+            } else {
+                setZoom(dt);
+                setCity();
             }
             break;
         }
@@ -118,8 +123,11 @@ void World::update(float dt)
         default:
             break;
     }
-    
-    // Dolly zoom
+}
+
+void World::setZoom(float dt)
+{
+    GameState &state = GameState::Instance();
     float newFrustumAngle = _camera->getFrustumAngle();
     float maxFrustum = pi<float>() / 2.0f;
     bool wasBoostButtonPressed = _boostButtonPressed;
@@ -141,8 +149,10 @@ void World::update(float dt)
         newFrustumAngle = mix(_camera->getFrustumAngle(), _camera->getDefaultFrustumAngle(), DOLLY_FRUSTUM_RETURN_SPEED * dt);
     }
     _camera->setFrustumAngle(newFrustumAngle);
-    
-    // Endless city
+}
+
+void World::setCity()
+{
     _city->repositionBuildings(_superhero->getPosition(), _superhero->getForward());
 }
 

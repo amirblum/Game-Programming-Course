@@ -33,8 +33,8 @@ void CameraScripts::update(float dt)
     
     switch (state.winState) {
         case NOT_STARTED:
-//            _cameraOpening->update(dt);
-            state.winState = STARTED;
+            _cameraOpening->update(dt);
+//            state.winState = STARTED;
             break;
         case STARTED:
             _cameraFollow->update(dt);

@@ -43,6 +43,9 @@ private:
     bool _gameWonCheck;
     bool _boostButtonPressed;
     
+    void setZoom(float dt);
+    void setCity();
+    
 public:
     World();
     virtual ~World();

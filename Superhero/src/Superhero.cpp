@@ -93,36 +93,38 @@ Superhero::~Superhero()
 void Superhero::update(float dt)
 {
     GameState &state = GameState::Instance();
-    if (state.winState == STARTED) {
-        InputManager &input = InputManager::Instance();
-        SoundManager &soundManager = SoundManager::Instance();
-        
-        // Turning
-        if (input.isPressed(KEY_LEFT))
-        {
-            turn(true, dt);
-        }
-        else if (input.isPressed(KEY_RIGHT))
-        {
-            turn(false, dt);
-        } else {
-            _holdTurnTime = 0;
-        }
-        
-        // Accelerating
-        if (state.boostState != BOOSTING && input.isPressed(KEY_UP))
-        {
-            accelerate(true, dt);
-            soundManager.playSound(_flyingSound);
-        }
-        else if (input.isPressed(KEY_DOWN))
-        {
-            accelerate(false, dt);
-            soundManager.playSound(_flyingSound);
-        } else {
-            dampen(dt);
-            soundManager.stopSound(_flyingSound);
-        }
+    if (state.winState != STARTED) {
+        return;
+    }
+    
+    InputManager &input = InputManager::Instance();
+    SoundManager &soundManager = SoundManager::Instance();
+    
+    // Turning
+    if (input.isPressed(KEY_LEFT))
+    {
+        turn(true, dt);
+    }
+    else if (input.isPressed(KEY_RIGHT))
+    {
+        turn(false, dt);
+    } else {
+        _holdTurnTime = 0;
+    }
+    
+    // Accelerating
+    if (state.boostState != BOOSTING && input.isPressed(KEY_UP))
+    {
+        accelerate(true, dt);
+        soundManager.playSound(_flyingSound);
+    }
+    else if (input.isPressed(KEY_DOWN))
+    {
+        accelerate(false, dt);
+        soundManager.playSound(_flyingSound);
+    } else {
+        dampen(dt);
+        soundManager.stopSound(_flyingSound);
     }
     
     // Clamp velocity
@@ -222,7 +224,11 @@ void Superhero::collideWithBuilding()
     _collided = true;
     
     // Slow down
-    setSpeed(MAX_VELOCITY * 0.5f);
+    float newSpeed = MAX_VELOCITY * 0.5f;
+    if (!_movingForward) {
+        newSpeed = -newSpeed;
+    }
+    setSpeed(newSpeed);
     GameState::Instance().boostState = NONE;
     
     // Health
