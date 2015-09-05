@@ -1,6 +1,4 @@
-# Game Programming Course Exercise 4
-
-This project builds on the previous exercise, adding more advanced physics with black holes and collisions and stuff!
+# Game Programming Course Final Project
 
 IMPORTANT NOTE
 ==============
@@ -8,43 +6,40 @@ In order to run this on the University's "aquarium" computers, build normally wi
 `setenv LD_LIBRARY_PATH ./lib/`
 Then run the game with `cgp_superhero`
 
+Intro:
+------
+This is the final project for the course. I implemented a "superhero" game (the superhero is Buzz Lightyear) flying through a city. The main draw of the game is the boost mechanic where you press and hold space to charge a boost, then unleash a great speed!
+
 Core functionality:
 ------------------
-1. Rigid-body physics engine for position. All objects (Ship, asteroids, black holes) have size and mass. The black holes act as static force sources (the rest of the objects in the simulation don't apply force to each other).
-2. Ship thrust. Thrusters apply force in the direction of the ship. This force does not move with the direction of the ship as in the previous exercise (if you want to stop/turn around you have to turn the ship around and apply force in the opposite direction)
-3. Black holes. As stated black holes apply gravity to the ship and asteroids, inversely proportional to the square distance. Black holes themselves are static.
-4. A static space beacon. The beacon takes the form of the Battlestar Galactica. You must reach it!
-5. A shield around the ship (so as to show it's radius).
+1. Endless city - you can fly through the city endlessly in any direction
+2. Tight controls - the controls are very tight. When turning at high speeds buzz will slow down, much like a race car drifting, so that you can make the turn.
+3. Incredible boost mode - this mechanic feels really good. While the space bar is held down time slows down and a dolly zoom takes effect. This time allows the player to align buzz in the direction he wants to boost. When released buzz shoots forward at great speed, while the world blurs around him! The longer you hold down space the faster he will boost.
 
 Controls:
 ---------
-W - Tilt down  
-S - Tilt up  
-A - Roll left  
-D - Roll right  
-Space - Accelerate
+W - Forward
+S - Backward  
+A - Turn left  
+D - Turn right  
+Space - Boost!
 
 (Optional keys):  
-g - Toggle game over  
 r - Reset game
 
-Bonus implementations:
--------------------------
-I implemented the following optional features as specified in the exercise description:
-* Destroy the asteroid if impact is above certain threshhold (1pt)
-* A runge-kutta 4 ODE solver (2pts)
-* Show thrust using particle system (2pts)
-* Beacon compass that shows direction to the beacon at any orientation (1pt) [Thanks to Zeev Adelman for help with the shader on this!]
-* Nicer shield. Sphere with semitransparent texture + time based color changes (2pts)
-* Music and sound effects (1pt)
-
-Total: 13 (base) + 9 (Optional) = 21 pts
+Things missing
+--------------
+There are two things I would add if I had more time:
+1. The city has a...very short visibility. This is because I load all the geometry of every building in the grid. With more time I would implement the buildings using a particle system like the astroids, and add a "fog" effect where the buildings fade in so they don't pop in like they do now.
+2. A win mechanic. Right now you can technically lose by bumping into too many buildings, but there is nothing to save in the city as originally planned. I would add things to collect like coins or other toys to save.
 
 Final note/s:
 -------------
-This wasn't as big as a jump as exercise 3, but I liked how it came out anyway so nyeh.
+The most important aspect for me was the boost mechanic and I think it feels very good. I think it's unfortunate that the city pops in so close but it at least gives the feeling of the boost as I intended.
+Of course, if Mark wants to display it at Hansen I could continue working on it before the display, but this is the version that should be graded.
 
-Dependencies (same as Ex3. Repeated here for prosperity):
+
+Dependencies (same as Ex3/4. Repeated here for prosperity):
 ---------------------------------------------------------
 This project has three main external library dependencies which I will outline here:
 
