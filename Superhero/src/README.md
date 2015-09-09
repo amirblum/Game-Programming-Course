@@ -30,6 +30,7 @@ r - Reset game
 Things missing
 --------------
 There are two things I would add if I had more time:
+
 1. The city has a...very short visibility. This is because I load all the geometry of every building in the grid. With more time I would implement the buildings using a particle system like the astroids, and add a "fog" effect where the buildings fade in so they don't pop in like they do now.
 2. A win mechanic. Right now you can technically lose by bumping into too many buildings, but there is nothing to save in the city as originally planned. I would add things to collect like coins or other toys to save.
 
